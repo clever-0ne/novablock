@@ -25,6 +25,9 @@ window.addEventListener('storage', e => {
 // Pull durable state from the backend into localStorage on boot.
 if (typeof syncFromServer === 'function') syncFromServer();
 
+// Pull-to-refresh: re-sync from the server instead of a full page reload.
+if (typeof syncFromServer === 'function') window.__pullRefresh = syncFromServer;
+
 // When the tab regains focus (e.g. after approving on the admin panel),
 // re-pull the latest server state so changes show up live.
 document.addEventListener('visibilitychange', () => {

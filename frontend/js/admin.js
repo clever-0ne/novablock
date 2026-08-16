@@ -80,6 +80,22 @@ function adminLogout() {
     document.title = 'Admin Login — NovaBlock.io';
 }
 
+/* A dead admin session (the flag cookie outlives the token — Render's free tier
+   wipes the DB on every restart/redeploy) must fall back to the login screen
+   instead of sitting on an empty panel. Any admin API 401 funnels here. */
+function adminSessionExpired() {
+    clearAdminSessionFlag();
+    setAdminMode(null);
+    hideAdminApp();
+    showAdminLoginScreen();
+    const f = $('adminLoginForm');
+    if (f) f.reset();
+    document.title = 'Admin Login — NovaBlock.io';
+}
+
+/* Pull-to-refresh hook: re-pull every data set instead of a full page reload. */
+window.__pullRefresh = function () { adminLoadUsers(); adminRenderEmailLog(); };
+
 /* ---------- Admin view switching (mirrors showView, uses [data-anav]) ---------- */
 function adminShowView(name) {
     /* Per-user views need a user open first. */
@@ -113,6 +129,7 @@ function adminLoadUsers() {
     const q = $('adUserSearch') ? $('adUserSearch').value.trim().toLowerCase() : '';
     fetch('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + getAdminToken() } })
         .then(r => r.json()).then(d => {
+            if (!d || d.error === 'Unauthorized') { adminSessionExpired(); return; }
             ADMIN_USERS = (d.users || []).filter(u => !q || (u.name + ' ' + u.email + ' ' + u.phone).toLowerCase().includes(q));
             renderAdminUsers();
             if (!q) renderAdminStats();
@@ -122,6 +139,7 @@ function adminLoadUsers() {
 function renderAdminStats() {
     fetch('/api/admin/stats', { headers: { 'Authorization': 'Bearer ' + getAdminToken() } })
         .then(r => r.json()).then(s => {
+            if (!s || s.error === 'Unauthorized') { adminSessionExpired(); return; }
             ADMIN_STATS = s;
             const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
             set('adStatsUsers', s.totalUsers);
@@ -293,6 +311,7 @@ function adminRenderEmailLog() {
     if (!body) return;
     fetch('/api/admin/emails', { headers: { 'Authorization': 'Bearer ' + getAdminToken() } })
         .then(r => r.json()).then(d => {
+            if (!d || d.error === 'Unauthorized') { adminSessionExpired(); return; }
             EMAIL_LOG = d.emails || [];
             const stMap = {
                 sent:   ['Sent',   'bg-emerald-500/15 text-emerald-300 border-emerald-500/20'],
@@ -835,11 +854,24 @@ function adminRenderReferrals() {
 }
 
 /* ---------- Boot ---------- */
-if (isAdminLoggedIn()) {
-    hideAdminLoginScreen();
-    showAdminApp();
-    adminShowView('users');
-    adminLoadUsers();
-} else {
-    showAdminLoginScreen();
+/* Verify the admin session against the server BEFORE showing the panel. The
+   flag cookie can outlive the real token (Render free tier wipes the DB on
+   every restart/redeploy), so a dead session falls back to the login screen
+   instead of flashing an empty panel. */
+async function adminBoot() {
+    if (!isAdminLoggedIn()) { showAdminLoginScreen(); return; }
+    try {
+        const r = await fetch('/api/admin/stats', { headers: { 'Authorization': 'Bearer ' + getAdminToken() } });
+        if (r.status === 401) { adminSessionExpired(); return; }
+        const s = await r.json();
+        if (!s || s.error === 'Unauthorized') { adminSessionExpired(); return; }
+        ADMIN_STATS = s;
+        hideAdminLoginScreen();
+        showAdminApp();
+        adminShowView('users');
+        adminLoadUsers();
+    } catch {
+        adminSessionExpired();
+    }
 }
+adminBoot();
