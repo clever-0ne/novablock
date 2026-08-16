@@ -72,6 +72,19 @@
         </div>
     </div>
 
+    <script>
+      /* Hide the admin login overlay BEFORE first paint when an admin session
+         flag is present, so logged-in admins never see it flash during load. */
+      (function () {
+        try {
+          if (document.cookie.indexOf('sb_admin_present=1') !== -1) {
+            var el = document.getElementById('adminLoginScreen');
+            if (el) el.classList.add('hidden');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- ===================== ADMIN APP ===================== -->
     <div id="adminApp" class="hidden fixed inset-0 z-[90] overflow-y-auto" style="background:#070a13;">
         <div class="flex min-h-full">

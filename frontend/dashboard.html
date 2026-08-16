@@ -188,6 +188,21 @@
       </div>
     </div>
 
+    <script>
+      /* Hide the login overlay BEFORE first paint when a session flag cookie is
+         present, so logged-in users never see it flash during page load. This
+         runs the moment the login screen is parsed; initAuth() in js/main.js
+         re-checks the same cookie after boot. Logged-out visitors stay as-is. */
+      (function () {
+        try {
+          if (document.cookie.indexOf('sb_session_present=1') !== -1) {
+            var el = document.getElementById('loginScreen');
+            if (el) el.classList.add('hidden');
+          }
+        } catch (e) {}
+      })();
+    </script>
+
     <!-- Ambient grid overlay -->
     <div class="grid-overlay fixed inset-0 pointer-events-none z-0"></div>
 
