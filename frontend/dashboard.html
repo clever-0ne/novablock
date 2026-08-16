@@ -1,0 +1,3702 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NovaBlock.io — Investment Platform</title>
+    <!-- Brand -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind config (must load before the CDN) -->
+    <script src="js/tailwind.config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/polish.css" />
+    <link rel="stylesheet" href="css/glossy.css" />
+  </head>
+  <body class="font-sans text-slate-100 antialiased">
+    <!-- ===================== LOGIN SCREEN ===================== -->
+    <div
+      id="loginScreen"
+      class="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto"
+      style="
+        background:
+          radial-gradient(
+            1200px 800px at 85% -10%,
+            rgba(99, 102, 241, 0.16),
+            transparent 60%
+          ),
+          radial-gradient(
+            1000px 700px at -10% 110%,
+            rgba(16, 185, 129, 0.1),
+            transparent 60%
+          ),
+          radial-gradient(
+            900px 600px at 50% 130%,
+            rgba(139, 92, 246, 0.1),
+            transparent 60%
+          ),
+          #070a13;
+      "
+    >
+      <div class="w-full max-w-md py-8">
+        <!-- brand -->
+        <div class="flex items-center justify-center gap-3 mb-6">
+          <img
+            src="/logo.png"
+            alt="NovaBlock.io"
+            class="w-12 h-12 rounded-2xl shadow-[0_10px_28px_-8px_rgba(99,102,241,0.7)]"
+          />
+          <div>
+            <p
+              class="font-display font-extrabold text-xl leading-none tracking-tight text-white"
+            >
+              Nova<span
+                class="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent"
+                >Block</span
+              >.io
+            </p>
+            <p class="text-[10px] text-slate-500 mt-1 tracking-wide">
+              INVESTMENT PLATFORM
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="glass rounded-3xl p-6 md:p-7 rise"
+          style="box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9)"
+        >
+          <h1 class="font-display text-xl font-bold text-white">
+            Welcome back
+          </h1>
+          <p class="text-xs text-slate-400 mt-1 mb-6">
+            Log in to access your portfolio.
+          </p>
+
+          <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <div>
+              <label
+                class="block text-xs text-slate-300 mb-1.5"
+                for="loginEmail"
+                >Email Address</label
+              >
+              <input
+                id="loginEmail"
+                type="email"
+                required
+                autocomplete="username"
+                placeholder="you@example.com"
+                class="inp"
+              />
+            </div>
+            <div>
+              <label
+                class="block text-xs text-slate-300 mb-1.5"
+                for="loginPassword"
+                >Password</label
+              >
+              <div class="relative">
+                <input
+                  id="loginPassword"
+                  type="password"
+                  required
+                  autocomplete="current-password"
+                  placeholder="••••••••"
+                  class="inp pr-11"
+                />
+                <button
+                  type="button"
+                  onclick="toggleLoginPassword()"
+                  class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition"
+                  title="Show password"
+                >
+                  <i id="loginPassIcon" class="fa-regular fa-eye"></i>
+                </button>
+              </div>
+            </div>
+
+            <p id="loginError" class="hidden text-[11px] text-rose-300">
+              <i class="fa-solid fa-circle-exclamation mr-1"></i>Invalid email
+              or password.
+            </p>
+
+            <button
+              type="submit"
+              class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+            >
+              Log In
+            </button>
+          </form>
+
+          <div
+            class="mt-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 p-3.5"
+          >
+            <p
+              class="text-[10px] text-indigo-200 font-semibold uppercase tracking-wider mb-1"
+            >
+              New here?
+            </p>
+            <p class="text-[11px] text-slate-400 fig">
+              Create your account with your own name, address and details.
+            </p>
+          </div>
+
+          <div class="mt-5 flex items-center justify-between text-xs">
+            <a
+              href="signup.html"
+              class="text-indigo-300 hover:text-indigo-200 font-medium transition"
+            >
+              Create account
+            </a>
+            <a
+              href="forgot.html"
+              class="text-slate-500 hover:text-slate-300 transition"
+            >
+              Forgot password?
+            </a>
+          </div>
+
+          <div
+            class="mt-5 pt-4 border-t border-white/5 flex items-center justify-center gap-4 text-[11px] text-slate-500"
+          >
+            <a href="legal.html#terms" class="hover:text-white transition"
+              >Terms of Service</a
+            >
+            <a href="legal.html#privacy" class="hover:text-white transition"
+              >Privacy Policy</a
+            >
+            <a href="legal.html#risk" class="hover:text-white transition"
+              >Risk Disclosure</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ambient grid overlay -->
+    <div class="grid-overlay fixed inset-0 pointer-events-none z-0"></div>
+
+    <div class="relative z-10 flex">
+      <!-- ===================== SIDEBAR ===================== -->
+      <aside
+        id="sidebar"
+        class="fixed inset-y-0 left-0 z-40 w-64 shrink-0 -translate-x-full lg:translate-x-0 transition-transform duration-300 lg:sticky lg:top-0 lg:h-screen"
+      >
+        <div
+          class="h-full flex flex-col p-5 border-r border-white/5"
+          style="
+            background: linear-gradient(
+              180deg,
+              rgba(13, 18, 32, 0.9),
+              rgba(7, 10, 19, 0.6)
+            );
+            backdrop-filter: blur(24px);
+          "
+        >
+          <!-- Brand -->
+          <a href="#" class="flex items-center gap-3 px-1 mb-8">
+            <div
+              class="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-400 via-indigo-500 to-fuchsia-500 flex items-center justify-center shadow-[0_10px_28px_-8px_rgba(99,102,241,0.7)]"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                class="w-5 h-5 text-white"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.4"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M4 17l5-5 4 3 7-8" />
+                <path d="M15 7h5v5" />
+              </svg>
+            </div>
+            <div>
+              <p
+                class="font-display font-extrabold text-lg leading-none tracking-tight"
+              >
+                Nova<span
+                  class="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent"
+                  >Block</span
+                >.io
+              </p>
+              <p class="text-[10px] text-slate-500 mt-0.5 tracking-wide">
+                INVESTMENT PLATFORM
+              </p>
+            </div>
+          </a>
+
+          <!-- User card -->
+          <div class="glass rounded-2xl p-4 mb-6 relative overflow-hidden">
+            <div
+              class="absolute -top-10 -right-10 w-28 h-28 rounded-full bg-indigo-500/20 blur-2xl"
+            ></div>
+            <div class="relative flex items-center gap-3">
+              <div class="relative">
+                <div
+                  class="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center font-bold text-sm ring-2 ring-white/10"
+                  data-avatar=""
+                >
+                </div>
+                <span
+                  class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-emerald-400 rounded-full border-2 border-plane"
+                ></span>
+              </div>
+              <div class="min-w-0">
+                <p
+                  class="text-sm font-semibold text-white truncate"
+                  data-username=""
+                >
+                </p>
+                <p class="text-[11px] text-emerald-400 font-medium">● Online</p>
+              </div>
+            </div>
+            <div class="relative mt-4 pt-3 border-t border-white/5">
+              <p
+                class="text-[10px] text-slate-500 uppercase tracking-wider mb-0.5"
+              >
+                Available Balance
+              </p>
+              <p
+                class="text-lg font-bold text-white fig balance-figure"
+                data-amount="$1,298,980.00"
+              >
+                $1,298,980.00
+              </p>
+            </div>
+          </div>
+
+          <!-- Navigation -->
+          <nav class="flex-1 space-y-6 text-sm overflow-y-auto -mx-2 px-2">
+            <div>
+              <p
+                class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2 px-3"
+              >
+                Main
+              </p>
+              <ul class="space-y-1">
+                <li>
+                  <a
+                    href="#"
+                    data-nav="dashboard"
+                    onclick="
+                      showView('dashboard');
+                      return false;
+                    "
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500/20 to-violet-500/10 text-white font-medium border border-indigo-500/25 shadow-[0_8px_24px_-12px_rgba(99,102,241,0.5)]"
+                  >
+                    <i class="fa-solid fa-chart-line w-5 text-indigo-300"></i>
+                    Dashboard
+                  </a>
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    data-nav="profile"
+                    onclick="
+                      showView('profile');
+                      return false;
+                    "
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"
+                  >
+                    <i class="fa-solid fa-user w-5"></i> Profile
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p
+                class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2 px-3"
+              >
+                Finance
+              </p>
+              <ul class="space-y-1">
+                <li>
+                  <a
+                    href="#"
+                    onclick="toggleModal('depositModal')"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"
+                    ><i class="fa-solid fa-wallet w-5"></i> Deposit</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    onclick="toggleModal('withdrawModal')"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"
+                    ><i class="fa-solid fa-arrow-up-right-from-square w-5"></i>
+                    Withdraw</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    data-nav="transactions"
+                    onclick="
+                      showView('transactions');
+                      return false;
+                    "
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"
+                    ><i class="fa-solid fa-list-check w-5"></i> Transactions</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    data-nav="transfer"
+                    onclick="
+                      showView('transfer');
+                      return false;
+                    "
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"
+                    ><i class="fa-solid fa-paper-plane w-5"></i> Transfer
+                    Funds</a
+                  >
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p
+                class="text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2 px-3"
+              >
+                Services
+              </p>
+              <ul class="space-y-1">
+                <li>
+                  <a
+                    href="#"
+                    data-nav="swap"
+                    onclick="
+                      showView('swap');
+                      return false;
+                    "
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"
+                    ><i class="fa-solid fa-rotate w-5"></i> Swap Crypto</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    data-nav="trade"
+                    onclick="
+                      showView('trade');
+                      return false;
+                    "
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"
+                    ><i class="fa-solid fa-chart-line w-5"></i> Trade</a
+                  >
+                </li>
+                <li>
+                  <a
+                    href="#"
+                    data-nav="referrals"
+                    onclick="
+                      showView('referrals');
+                      return false;
+                    "
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"
+                    ><i class="fa-solid fa-users w-5"></i> Referrals</a
+                  >
+                </li>
+              </ul>
+            </div>
+          </nav>
+
+          <!-- KYC progress card -->
+          <div
+            class="mt-6 rounded-2xl p-4 bg-gradient-to-br from-indigo-500/15 to-violet-500/10 border border-indigo-500/20"
+          >
+            <div
+              class="flex items-center gap-2 text-xs text-indigo-200 font-semibold"
+            >
+              <i class="fa-solid fa-shield-halved"></i> KYC Verification
+            </div>
+            <p class="text-[11px] text-slate-400 mt-1 mb-3" id="kycSideDesc">
+              Verify your identity to unlock withdrawals.
+            </p>
+            <div class="h-1.5 rounded-full bg-white/10 overflow-hidden">
+              <div
+                class="h-full w-1/3 rounded-full bg-gradient-to-r from-indigo-400 to-violet-400"
+                id="kycSideBar"
+              ></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
+              <span>Profile</span
+              ><span class="text-indigo-300" id="kycSideText">1 / 3</span>
+            </div>
+            <button
+              onclick="showView('kyc')"
+              id="kycSideBtn"
+              class="mt-3 w-full py-2 rounded-lg bg-white/10 hover:bg-white/15 text-xs font-semibold text-white transition"
+            >
+              Complete KYC
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Sidebar backdrop (mobile) -->
+      <div
+        id="sidebarBackdrop"
+        class="fixed inset-0 bg-black/60 backdrop-blur-sm z-30 hidden lg:hidden"
+        onclick="closeSidebar()"
+      ></div>
+
+      <!-- ===================== MAIN ===================== -->
+      <div class="flex-1 min-w-0">
+        <!-- Topbar -->
+        <header
+          class="sticky top-0 z-20 flex flex-wrap items-center gap-3 px-4 lg:px-8 border-b border-white/5 py-2.5"
+          style="background: rgba(7, 10, 19, 0.7); backdrop-filter: blur(20px)"
+        >
+          <button
+            onclick="openSidebar()"
+            class="order-1 lg:hidden w-10 h-10 rounded-xl glass flex items-center justify-center text-slate-300"
+          >
+            <i class="fa-solid fa-bars"></i>
+          </button>
+
+          <div
+            class="order-2 hidden sm:flex items-center gap-2 text-xs text-slate-500"
+          >
+            <img
+              src="/logo.png"
+              alt="NovaBlock.io"
+              class="w-5 h-5 rounded-md"
+            />
+            <span class="text-slate-200 font-medium">NovaBlock.io</span>
+            <i class="fa-solid fa-chevron-right text-[9px]"></i>
+            <span id="crumb">Dashboard</span>
+          </div>
+
+          <!-- Search (full width row on mobile, inline on desktop) -->
+          <div
+            id="topSearchWrap"
+            class="order-4 md:order-3 relative w-full md:w-64"
+          >
+            <div
+              class="flex items-center gap-2 w-full h-10 px-3 rounded-xl glass text-slate-400"
+            >
+              <i class="fa-solid fa-magnifying-glass text-xs"></i>
+              <input
+                id="topSearch"
+                type="text"
+                placeholder="Search assets, transactions..."
+                autocomplete="off"
+                oninput="onSearchInput()"
+                onfocus="onSearchInput()"
+                onkeydown="return onSearchKeydown(event);"
+                class="w-full bg-transparent outline-none text-xs text-slate-200 placeholder:text-slate-500"
+              />
+            </div>
+            <div
+              id="searchResults"
+              class="hidden absolute top-12 right-0 w-full md:w-80 max-h-96 overflow-y-auto rounded-2xl p-1.5 z-50"
+              style="
+                background: rgba(13, 18, 32, 0.98);
+                border: 1px solid rgba(148, 163, 184, 0.14);
+                box-shadow: 0 30px 70px -20px rgba(0, 0, 0, 0.9);
+                backdrop-filter: blur(20px);
+              "
+            ></div>
+          </div>
+
+          <div class="order-3 md:order-4 ml-auto flex items-center gap-3">
+            <!-- Market status -->
+            <span
+              class="hidden sm:flex items-center gap-2 px-3 h-10 rounded-xl glass text-xs text-slate-300"
+            >
+              <span class="relative flex h-2 w-2">
+                <span
+                  class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
+                ></span>
+                <span
+                  class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 live-dot"
+                ></span>
+              </span>
+              Markets Open
+            </span>
+
+            <!-- Notifications -->
+            <div class="relative">
+              <button
+                onclick="toggleNotifications()"
+                title="Notifications"
+                class="relative w-10 h-10 rounded-xl glass flex items-center justify-center text-slate-300 hover:text-white transition"
+              >
+                <i class="fa-regular fa-bell"></i>
+                <span
+                  id="notifBadge"
+                  class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 ring-2 ring-ink flex items-center justify-center text-[10px] font-bold text-white"
+                  >0</span
+                >
+              </button>
+              <div
+                id="notifPanel"
+                class="hidden absolute right-0 top-12 w-80 max-w-[calc(100vw-2rem)] rounded-2xl glass border border-white/10 overflow-hidden z-[120]"
+                style="box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.9)"
+              >
+                <div
+                  class="flex items-center justify-between px-4 py-3 border-b border-white/5"
+                >
+                  <p class="text-sm font-semibold text-white">Notifications</p>
+                  <button
+                    onclick="markAllNotificationsRead()"
+                    class="text-[11px] text-indigo-300 hover:text-indigo-200 transition"
+                  >
+                    Mark all read
+                  </button>
+                </div>
+                <div id="notifList" class="max-h-72 overflow-y-auto"></div>
+              </div>
+            </div>
+
+            <!-- Theme toggle -->
+            <button
+              data-theme-toggle
+              title="Switch to light mode"
+              class="w-10 h-10 rounded-xl glass flex items-center justify-center text-slate-300 hover:text-white transition"
+            >
+              <i class="fa-regular fa-sun icon-sun"></i>
+              <i class="fa-solid fa-moon icon-moon hidden"></i>
+            </button>
+
+            <!-- Log out -->
+            <button
+              onclick="logout()"
+              title="Log out"
+              class="w-10 h-10 rounded-xl glass flex items-center justify-center text-slate-300 hover:text-rose-300 hover:border-rose-500/25 transition"
+            >
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+
+            <!-- Avatar -->
+            <button
+              onclick="showView('kyc')"
+              class="flex items-center gap-2 px-2 py-1.5 rounded-xl glass hover:border-white/20 transition"
+            >
+              <div
+                class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-xs font-bold"
+                data-avatar=""
+              >
+              </div>
+              <div class="hidden xl:block text-left leading-tight">
+                <p
+                  class="text-xs font-semibold text-white"
+                  data-username=""
+                >
+                </p>
+                <p class="text-[10px] text-amber-400" id="topbarKycBadge">
+                  <i class="fa-solid fa-circle-exclamation mr-1"></i>KYC Pending
+                </p>
+              </div>
+            </button>
+          </div>
+        </header>
+
+        <!-- Content -->
+        <main class="p-3 sm:p-4 lg:p-8 space-y-6 max-w-[1400px]">
+          <div id="view-dashboard" class="space-y-4 xl:space-y-6">
+            <!-- Welcome row -->
+            <div
+              class="rise flex flex-col md:flex-row md:items-end justify-between gap-4"
+            >
+              <div>
+                <div class="flex items-center gap-2 text-[11px] text-slate-500">
+                  <i class="fa-solid fa-calendar-days"></i>
+                  <span id="currentDate">Wednesday, August 12, 2026</span>
+                </div>
+                <h1
+                  class="font-display text-2xl md:text-3xl font-bold text-white mt-1"
+                >
+                  Welcome back, <span id="welcomeName"></span>
+                  <span class="inline-block">👋</span>
+                </h1>
+                <p class="text-sm text-slate-400 mt-1" id="greeting">
+                  Here's your portfolio at a glance.
+                </p>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <button
+                  onclick="toggleModal('depositModal')"
+                  class="flex items-center justify-center gap-2 px-4 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+                >
+                  <i class="fa-solid fa-arrow-down-long"></i> Deposit
+                </button>
+                <button
+                  onclick="toggleModal('withdrawModal')"
+                  class="flex items-center justify-center gap-2 px-4 h-11 rounded-xl glass text-sm font-semibold text-slate-200 hover:border-white/20 hover:text-white transition"
+                >
+                  <i class="fa-solid fa-arrow-up-long"></i> Withdraw
+                </button>
+              </div>
+            </div>
+
+            <!-- KPI row -->
+            <div class="grid grid-cols-2 xl:grid-cols-4 gap-3 md:gap-5">
+              <!-- Account Balance -->
+              <div
+                class="rise glass glass-hover rounded-2xl p-3.5 md:p-5"
+                style="animation-delay: 0.05s"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="text-xs text-slate-400 font-medium flex items-center gap-2"
+                  >
+                    <span
+                      class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-indigo-500/15 text-indigo-300 flex items-center justify-center"
+                      ><i class="fa-solid fa-wallet text-[10px] md:text-xs"></i
+                    ></span>
+                    Account Balance
+                  </span>
+                  <i
+                    class="fa-regular fa-eye balance-eye cursor-pointer text-slate-500 hover:text-white transition"
+                    onclick="toggleBalance()"
+                  ></i>
+                </div>
+                <div class="mt-2 md:mt-4">
+                  <h2
+                    class="text-lg md:text-2xl font-bold text-white fig balance-figure"
+                    data-amount="$1,298,980.00"
+                  >
+                    $1,298,980.00
+                  </h2>
+                  <span
+                    class="hidden sm:inline-flex items-center gap-1 mt-1.5 px-2 py-0.5 text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 rounded-md"
+                  >
+                    <i class="fa-solid fa-circle-check text-[9px]"></i>
+                    Available for withdrawal
+                  </span>
+                </div>
+                <div
+                  class="mt-2 md:mt-4 pt-2 md:pt-3 border-t border-white/5 flex items-end justify-between"
+                >
+                  <span class="text-[11px] text-slate-500"
+                    >+12.4% <span class="text-slate-600">this month</span></span
+                  >
+                  <svg
+                    viewBox="0 0 108 28"
+                    class="hidden sm:block w-24 h-7"
+                    preserveAspectRatio="none"
+                    fill="none"
+                  >
+                    <polyline
+                      points="0 24 9 22 18 22.5 27 19 36 20 45 15 54 16 63 12 72 13 81 8 90 9 99 5 108 3"
+                      stroke="#3987e5"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      vector-effect="non-scaling-stroke"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Bonus -->
+              <div
+                class="rise glass glass-hover rounded-2xl p-3.5 md:p-5"
+                style="animation-delay: 0.1s"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="text-xs text-slate-400 font-medium flex items-center gap-2"
+                  >
+                    <span
+                      class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-amber-500/15 text-amber-300 flex items-center justify-center"
+                      ><i class="fa-solid fa-gift text-[10px] md:text-xs"></i
+                    ></span>
+                    Total Bonus
+                  </span>
+                  <i class="fa-solid fa-lock text-[10px] text-amber-400/70"></i>
+                </div>
+                <div class="mt-2 md:mt-4">
+                  <h2
+                    class="text-lg md:text-2xl font-bold text-white fig"
+                    id="kpiBonus"
+                  >
+                    $100,254.00
+                  </h2>
+                  <p class="text-[11px] text-amber-300/80 mt-1">
+                    Rewards & Promotions
+                  </p>
+                </div>
+                <div
+                  class="mt-2 md:mt-4 pt-2 md:pt-3 border-t border-white/5 flex items-end justify-between"
+                >
+                  <span class="text-[11px] text-slate-500"
+                    >Active campaign</span
+                  >
+                  <svg
+                    viewBox="0 0 108 28"
+                    class="hidden sm:block w-24 h-7"
+                    preserveAspectRatio="none"
+                    fill="none"
+                  >
+                    <polyline
+                      points="0 23 9 20 18 22 27 16 36 19 45 12 54 15 63 10 72 13 81 7 90 9 99 4 108 6"
+                      stroke="#c98500"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      vector-effect="non-scaling-stroke"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Total Deposit -->
+              <div
+                class="rise glass glass-hover rounded-2xl p-3.5 md:p-5"
+                style="animation-delay: 0.15s"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="text-xs text-slate-400 font-medium flex items-center gap-2"
+                  >
+                    <span
+                      class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-emerald-500/15 text-emerald-300 flex items-center justify-center"
+                      ><i
+                        class="fa-solid fa-arrow-down-long text-[10px] md:text-xs"
+                      ></i
+                    ></span>
+                    Total Deposit
+                  </span>
+                </div>
+                <div class="mt-2 md:mt-4">
+                  <h2
+                    class="text-lg md:text-2xl font-bold text-white fig"
+                    id="kpiDeposit"
+                  >
+                    $209,635.00
+                  </h2>
+                  <p class="text-[11px] text-emerald-300/80 mt-1">
+                    <i class="fa-solid fa-arrow-trend-up mr-1"></i>+$18,240 this
+                    month
+                  </p>
+                </div>
+                <div
+                  class="mt-2 md:mt-4 pt-2 md:pt-3 border-t border-white/5 flex items-end justify-between"
+                >
+                  <span class="text-[11px] text-slate-500">8 transactions</span>
+                  <svg
+                    viewBox="0 0 108 28"
+                    class="hidden sm:block w-24 h-7"
+                    preserveAspectRatio="none"
+                    fill="none"
+                  >
+                    <polyline
+                      points="0 25 9 23 18 20 27 21 36 16 45 18 54 12 63 13 72 9 81 11 90 6 99 8 108 4"
+                      stroke="#199e70"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      vector-effect="non-scaling-stroke"
+                    />
+                  </svg>
+                </div>
+              </div>
+
+              <!-- Total Withdrawal -->
+              <div
+                class="rise glass glass-hover rounded-2xl p-3.5 md:p-5"
+                style="animation-delay: 0.2s"
+              >
+                <div class="flex items-center justify-between">
+                  <span
+                    class="text-xs text-slate-400 font-medium flex items-center gap-2"
+                  >
+                    <span
+                      class="w-7 h-7 md:w-8 md:h-8 rounded-lg bg-rose-500/15 text-rose-300 flex items-center justify-center"
+                      ><i
+                        class="fa-solid fa-arrow-up-long text-[10px] md:text-xs"
+                      ></i
+                    ></span>
+                    Total Withdrawal
+                  </span>
+                </div>
+                <div class="mt-2 md:mt-4">
+                  <h2
+                    class="text-lg md:text-2xl font-bold text-white fig"
+                    id="kpiWithdrawal"
+                  >
+                    $0.00
+                  </h2>
+                  <p class="text-[11px] text-slate-500 mt-1">
+                    No withdrawals yet
+                  </p>
+                </div>
+                <div
+                  class="mt-2 md:mt-4 pt-2 md:pt-3 border-t border-white/5 flex items-end justify-between"
+                >
+                  <span class="text-[11px] text-slate-500">Awaiting KYC</span>
+                  <svg
+                    viewBox="0 0 108 28"
+                    class="hidden sm:block w-24 h-7"
+                    preserveAspectRatio="none"
+                    fill="none"
+                  >
+                    <polyline
+                      points="0 22 9 21 18 23 27 22 36 24 45 23 54 25 63 24 72 26 81 24 90 25 99 26 108 24"
+                      stroke="#64748b"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      vector-effect="non-scaling-stroke"
+                    />
+                  </svg>
+                </div>
+              </div>
+            </div>
+
+            <!-- Portfolio + Allocation -->
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 xl:gap-5">
+              <!-- Portfolio performance -->
+              <div
+                class="rise xl:col-span-2 glass rounded-2xl p-4 md:p-6"
+                style="animation-delay: 0.25s"
+              >
+                <div
+                  class="flex flex-wrap items-center justify-between gap-3 mb-5"
+                >
+                  <div>
+                    <h3 class="font-display text-base font-semibold text-white">
+                      Portfolio Performance
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">
+                      Net asset value across all holdings
+                    </p>
+                  </div>
+                  <div
+                    class="flex gap-1 p-1 rounded-xl bg-white/5 border border-white/5 text-[11px] font-medium"
+                  >
+                    <button
+                      data-period="1D"
+                      onclick="renderChart('1D', this)"
+                      class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition"
+                    >
+                      1D
+                    </button>
+                    <button
+                      data-period="1W"
+                      onclick="renderChart('1W', this)"
+                      class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition"
+                    >
+                      1W
+                    </button>
+                    <button
+                      data-period="1M"
+                      onclick="renderChart('1M', this)"
+                      class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition"
+                    >
+                      1M
+                    </button>
+                    <button
+                      data-period="1Y"
+                      onclick="renderChart('1Y', this)"
+                      class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition"
+                    >
+                      1Y
+                    </button>
+                    <button
+                      data-period="ALL"
+                      onclick="renderChart('ALL', this)"
+                      class="px-2.5 py-1 rounded-lg text-slate-400 hover:text-white transition"
+                    >
+                      ALL
+                    </button>
+                  </div>
+                </div>
+
+                <div class="flex items-baseline gap-3 mb-1">
+                  <h4
+                    id="chartValue"
+                    class="font-display text-2xl md:text-3xl font-bold text-white fig"
+                  >
+                    $1,298,980.00
+                  </h4>
+                  <span
+                    id="chartChange"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 text-[11px] font-semibold rounded-md bg-emerald-500/15 text-emerald-300"
+                  >
+                    <i class="fa-solid fa-arrow-trend-up"></i> +1.00%
+                  </span>
+                </div>
+                <p class="text-[11px] text-slate-500 mb-4" id="chartSub">
+                  Last 24 hours · Updated just now
+                </p>
+
+                <div id="chartWrap" class="relative w-full cursor-crosshair">
+                  <svg
+                    id="lineSvg"
+                    viewBox="0 0 720 260"
+                    class="w-full h-56 md:h-64"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <defs>
+                      <linearGradient
+                        id="areaFill"
+                        x1="0"
+                        y1="0"
+                        x2="0"
+                        y2="260"
+                        gradientUnits="userSpaceOnUse"
+                      >
+                        <stop
+                          offset="0%"
+                          stop-color="#3987e5"
+                          stop-opacity="0.30"
+                        />
+                        <stop
+                          offset="100%"
+                          stop-color="#3987e5"
+                          stop-opacity="0"
+                        />
+                      </linearGradient>
+                    </defs>
+                    <g id="grid"></g>
+                    <path id="areaPath" fill="url(#areaFill)" />
+                    <path
+                      id="linePath"
+                      stroke="#3987e5"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                    <line
+                      id="crosshairLine"
+                      x1="0"
+                      y1="0"
+                      x2="0"
+                      y2="260"
+                      stroke="rgba(148,163,184,0.35)"
+                      stroke-width="1"
+                      stroke-dasharray="3 3"
+                      opacity="0"
+                    />
+                    <circle
+                      id="crosshairDot"
+                      cx="0"
+                      cy="0"
+                      r="4.5"
+                      fill="#3987e5"
+                      stroke="#0b1020"
+                      stroke-width="2"
+                      opacity="0"
+                    />
+                  </svg>
+                  <div id="chartTip" class="chart-tip"></div>
+                </div>
+              </div>
+
+              <!-- Asset allocation -->
+              <div
+                class="rise glass rounded-2xl p-4 md:p-6 flex flex-col"
+                style="animation-delay: 0.3s"
+              >
+                <div class="flex items-center justify-between mb-5">
+                  <div>
+                    <h3 class="font-display text-base font-semibold text-white">
+                      Asset Allocation
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">
+                      Distribution across assets
+                    </p>
+                  </div>
+                  <span
+                    id="allocCount"
+                    class="px-2 py-0.5 text-[10px] font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/20 rounded-md"
+                    >0 Assets</span
+                  >
+                </div>
+
+                <!-- Stacked bar -->
+                <div
+                  class="flex gap-0.5 h-3.5 rounded-full overflow-hidden mb-6"
+                >
+                  <div
+                    id="allocBarBTC"
+                    style="width: 0%"
+                    class="h-full bg-[#3987e5]"
+                    title="Bitcoin"
+                  ></div>
+                  <div
+                    id="allocBarETH"
+                    style="width: 0%"
+                    class="h-full bg-[#d95926]"
+                    title="Ethereum"
+                  ></div>
+                  <div
+                    id="allocBarUSDT"
+                    style="width: 0%"
+                    class="h-full bg-[#199e70]"
+                    title="Tether"
+                  ></div>
+                  <div
+                    id="allocBarBNB"
+                    style="width: 0%"
+                    class="h-full bg-[#c98500]"
+                    title="BNB"
+                  ></div>
+                </div>
+
+                <!-- Legend -->
+                <ul id="allocationList" class="space-y-3 text-sm flex-1">
+                  <li id="allocRowBTC" class="flex items-center gap-3 hidden">
+                    <span class="w-2.5 h-2.5 rounded-[3px] bg-[#3987e5]"></span>
+                    <span class="text-slate-300 flex-1 flex items-center gap-2"
+                      ><i class="fa-brands fa-bitcoin text-amber-500"></i>
+                      Bitcoin</span
+                    >
+                    <span id="allocAmtBTC" class="text-slate-400">$0.00</span>
+                    <span
+                      id="allocPctBTC"
+                      class="w-10 text-right text-white font-semibold"
+                      >0%</span
+                    >
+                  </li>
+                  <li id="allocRowETH" class="flex items-center gap-3 hidden">
+                    <span class="w-2.5 h-2.5 rounded-[3px] bg-[#d95926]"></span>
+                    <span class="text-slate-300 flex-1 flex items-center gap-2"
+                      ><i class="fa-brands fa-ethereum text-indigo-400"></i>
+                      Ethereum</span
+                    >
+                    <span id="allocAmtETH" class="text-slate-400">$0.00</span>
+                    <span
+                      id="allocPctETH"
+                      class="w-10 text-right text-white font-semibold"
+                      >0%</span
+                    >
+                  </li>
+                  <li id="allocRowUSDT" class="flex items-center gap-3 hidden">
+                    <span class="w-2.5 h-2.5 rounded-[3px] bg-[#199e70]"></span>
+                    <span class="text-slate-300 flex-1 flex items-center gap-2"
+                      ><i class="fa-solid fa-dollar-sign text-emerald-400"></i>
+                      Tether</span
+                    >
+                    <span id="allocAmtUSDT" class="text-slate-400">$0.00</span>
+                    <span
+                      id="allocPctUSDT"
+                      class="w-10 text-right text-white font-semibold"
+                      >0%</span
+                    >
+                  </li>
+                  <li id="allocRowBNB" class="flex items-center gap-3 hidden">
+                    <span class="w-2.5 h-2.5 rounded-[3px] bg-[#c98500]"></span>
+                    <span class="text-slate-300 flex-1 flex items-center gap-2"
+                      ><i class="fa-solid fa-coins text-amber-400"></i>
+                      BNB</span
+                    >
+                    <span id="allocAmtBNB" class="text-slate-400">$0.00</span>
+                    <span
+                      id="allocPctBNB"
+                      class="w-10 text-right text-white font-semibold"
+                      >0%</span
+                    >
+                  </li>
+                </ul>
+
+                <div class="mt-6 pt-4 border-t border-white/5">
+                  <button
+                    onclick="toggleModal('depositModal')"
+                    class="w-full py-2.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 text-xs font-semibold text-slate-200 transition"
+                  >
+                    + Add more assets
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Market overview -->
+            <section class="rise" style="animation-delay: 0.35s">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-display text-lg font-semibold text-white">
+                  Market Overview
+                </h3>
+                <div class="flex gap-2">
+                  <button
+                    class="w-8 h-8 rounded-lg glass text-xs text-slate-300 hover:text-white hover:border-white/20 transition"
+                  >
+                    <i class="fa-solid fa-chevron-left"></i>
+                  </button>
+                  <button
+                    class="w-8 h-8 rounded-lg glass text-xs text-slate-300 hover:text-white hover:border-white/20 transition"
+                  >
+                    <i class="fa-solid fa-chevron-right"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+                <!-- BTC -->
+                <div class="glass glass-hover rounded-2xl p-3 md:p-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2.5">
+                      <span
+                        class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-amber-500/15 text-amber-400 flex items-center justify-center"
+                        ><i class="fa-brands fa-bitcoin text-lg"></i
+                      ></span>
+                      <div>
+                        <p class="text-sm font-semibold text-white">Bitcoin</p>
+                        <p class="text-[10px] text-slate-500">BTC / USD</p>
+                      </div>
+                    </div>
+                    <span
+                      class="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 rounded-md"
+                      >+2.99%</span
+                    >
+                  </div>
+                  <div class="flex items-end justify-between">
+                    <div>
+                      <p class="text-base md:text-lg font-bold text-white fig">
+                        $60,274.00
+                      </p>
+                      <p class="text-[11px] text-emerald-400 mt-0.5">
+                        <i class="fa-solid fa-arrow-up mr-1 text-[9px]"></i
+                        >+$1,752.19
+                      </p>
+                    </div>
+                    <svg
+                      viewBox="0 0 120 32"
+                      class="hidden sm:block w-20 h-8"
+                      preserveAspectRatio="none"
+                      fill="none"
+                    >
+                      <polyline
+                        points="0 27 10 24 20 25 30 21 40 22 50 17 60 18 70 13 80 15 90 9 100 11 110 6 120 4"
+                        stroke="#d95926"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- ETH -->
+                <div class="glass glass-hover rounded-2xl p-3 md:p-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2.5">
+                      <span
+                        class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-indigo-500/15 text-indigo-300 flex items-center justify-center"
+                        ><i class="fa-brands fa-ethereum text-lg"></i
+                      ></span>
+                      <div>
+                        <p class="text-sm font-semibold text-white">Ethereum</p>
+                        <p class="text-[10px] text-slate-500">ETH / USD</p>
+                      </div>
+                    </div>
+                    <span
+                      class="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 rounded-md"
+                      >+3.26%</span
+                    >
+                  </div>
+                  <div class="flex items-end justify-between">
+                    <div>
+                      <p class="text-base md:text-lg font-bold text-white fig">
+                        $1,617.82
+                      </p>
+                      <p class="text-[11px] text-emerald-400 mt-0.5">
+                        <i class="fa-solid fa-arrow-up mr-1 text-[9px]"></i
+                        >+$51.04
+                      </p>
+                    </div>
+                    <svg
+                      viewBox="0 0 120 32"
+                      class="hidden sm:block w-20 h-8"
+                      preserveAspectRatio="none"
+                      fill="none"
+                    >
+                      <polyline
+                        points="0 26 10 22 20 24 30 18 40 20 50 14 60 16 70 10 80 13 90 7 100 9 110 5 120 3"
+                        stroke="#3987e5"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- USDT -->
+                <div class="glass glass-hover rounded-2xl p-3 md:p-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2.5">
+                      <span
+                        class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-emerald-500/15 text-emerald-300 flex items-center justify-center"
+                        ><i class="fa-solid fa-dollar-sign text-lg"></i
+                      ></span>
+                      <div>
+                        <p class="text-sm font-semibold text-white">Tether</p>
+                        <p class="text-[10px] text-slate-500">USDT / USD</p>
+                      </div>
+                    </div>
+                    <span
+                      class="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 rounded-md"
+                      >+0.03%</span
+                    >
+                  </div>
+                  <div class="flex items-end justify-between">
+                    <div>
+                      <p class="text-base md:text-lg font-bold text-white fig">
+                        $1.00
+                      </p>
+                      <p class="text-[11px] text-emerald-400 mt-0.5">
+                        <i class="fa-solid fa-arrow-up mr-1 text-[9px]"></i
+                        >+$0.00
+                      </p>
+                    </div>
+                    <svg
+                      viewBox="0 0 120 32"
+                      class="hidden sm:block w-20 h-8"
+                      preserveAspectRatio="none"
+                      fill="none"
+                    >
+                      <polyline
+                        points="0 20 10 21 20 19 30 20 40 21 50 19 60 20 70 21 80 19 90 20 100 21 110 20 120 20"
+                        stroke="#008300"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- BNB -->
+                <div class="glass glass-hover rounded-2xl p-3 md:p-4">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="flex items-center gap-2.5">
+                      <span
+                        class="w-8 h-8 md:w-9 md:h-9 rounded-xl bg-amber-500/15 text-amber-300 flex items-center justify-center"
+                        ><i class="fa-solid fa-coins text-lg"></i
+                      ></span>
+                      <div>
+                        <p class="text-sm font-semibold text-white">BNB</p>
+                        <p class="text-[10px] text-slate-500">BNB / USD</p>
+                      </div>
+                    </div>
+                    <span
+                      class="px-2 py-0.5 text-[10px] font-bold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 rounded-md"
+                      >+1.12%</span
+                    >
+                  </div>
+                  <div class="flex items-end justify-between">
+                    <div>
+                      <p class="text-base md:text-lg font-bold text-white fig">
+                        $552.21
+                      </p>
+                      <p class="text-[11px] text-emerald-400 mt-0.5">
+                        <i class="fa-solid fa-arrow-up mr-1 text-[9px]"></i
+                        >+$6.10
+                      </p>
+                    </div>
+                    <svg
+                      viewBox="0 0 120 32"
+                      class="hidden sm:block w-20 h-8"
+                      preserveAspectRatio="none"
+                      fill="none"
+                    >
+                      <polyline
+                        points="0 28 10 25 20 26 30 22 40 23 50 18 60 20 70 14 80 16 90 11 100 13 110 8 120 6"
+                        stroke="#c98500"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        vector-effect="non-scaling-stroke"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Recent transactions -->
+            <section class="rise" style="animation-delay: 0.4s">
+              <div class="flex items-center justify-between mb-4">
+                <div>
+                  <h3 class="font-display text-lg font-semibold text-white">
+                    Recent Transactions
+                  </h3>
+                  <p class="text-[11px] text-slate-500 mt-0.5">
+                    Your latest account activity
+                  </p>
+                </div>
+                <a
+                  href="#"
+                  onclick="
+                    showView('transactions');
+                    return false;
+                  "
+                  class="text-xs text-indigo-300 hover:text-indigo-200 font-medium transition"
+                  >View all <i class="fa-solid fa-arrow-right ml-1"></i
+                ></a>
+              </div>
+
+              <div class="glass rounded-2xl overflow-hidden">
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                    <thead>
+                      <tr
+                        class="text-[10px] text-slate-500 uppercase tracking-widest border-b border-white/5"
+                      >
+                        <th class="text-left font-semibold px-5 py-3.5">
+                          Transaction
+                        </th>
+                        <th class="text-left font-semibold px-5 py-3.5">
+                          Asset
+                        </th>
+                        <th class="text-right font-semibold px-5 py-3.5">
+                          Amount
+                        </th>
+                        <th
+                          class="text-left font-semibold px-5 py-3.5 hidden md:table-cell"
+                        >
+                          Date
+                        </th>
+                        <th class="text-right font-semibold px-5 py-3.5">
+                          Status
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody id="dashRecentBody" class="divide-y divide-white/5">
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </section>
+          </div>
+          <!-- /view-dashboard -->
+
+          <!-- ===================== PROFILE VIEW ===================== -->
+          <div id="view-profile" class="hidden space-y-6">
+            <!-- Profile banner -->
+            <div class="rise glass rounded-3xl overflow-hidden">
+              <div
+                class="relative h-32 md:h-40 bg-gradient-to-r from-indigo-600/50 via-violet-600/35 to-fuchsia-600/40 overflow-hidden"
+              >
+                <div
+                  class="absolute -top-16 -right-10 w-64 h-64 rounded-full bg-indigo-500/30 blur-3xl"
+                ></div>
+                <div
+                  class="absolute bottom-0 left-1/3 w-40 h-40 rounded-full bg-fuchsia-500/20 blur-3xl"
+                ></div>
+              </div>
+              <div class="px-6 pb-6 -mt-14 md:-mt-16 relative">
+                <div class="flex flex-col md:flex-row md:items-end gap-4">
+                  <div class="relative w-fit">
+                    <div
+                      id="profileAvatar"
+                      class="w-28 h-28 md:w-32 md:h-32 rounded-3xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-4xl font-bold text-white ring-4 ring-[#0d1220] shadow-[0_20px_50px_-20px_rgba(99,102,241,0.7)]"
+                    >
+                    </div>
+                    <button
+                      onclick="openEditProfile()"
+                      class="absolute -bottom-2 -right-2 w-9 h-9 rounded-xl glass text-slate-300 hover:text-white hover:border-white/25 transition flex items-center justify-center shadow-lg"
+                    >
+                      <i class="fa-solid fa-camera text-xs"></i>
+                    </button>
+                  </div>
+                  <div class="md:pb-1 flex-1 min-w-0">
+                    <div class="flex flex-wrap items-center gap-2 mt-3 md:mt-0">
+                      <h2
+                        id="profileName"
+                        class="font-display text-2xl md:text-3xl font-bold text-white"
+                      >
+                      </h2>
+                      <span
+                        class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 rounded-md"
+                        ><i class="fa-solid fa-circle-check text-[9px]"></i>
+                        Verified Email</span
+                      >
+                      <span
+                        class="inline-flex items-center gap-1 px-2 py-0.5 text-[10px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/20 rounded-md"
+                        ><i
+                          class="fa-solid fa-circle-exclamation text-[9px]"
+                        ></i>
+                        KYC Pending</span
+                      >
+                    </div>
+                    <p class="text-sm text-slate-400 mt-1">
+                      <span id="profileUsername">@</span> · Joined
+                      <span id="profileJoined"></span>
+                    </p>
+                  </div>
+                  <div class="flex gap-2 md:pb-1">
+                    <button
+                      onclick="openEditProfile()"
+                      class="flex items-center gap-2 px-4 h-10 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-xs font-semibold text-white shadow-accent transition"
+                    >
+                      <i class="fa-solid fa-pen"></i> Edit Profile
+                    </button>
+                    <button
+                      onclick="showToast('Profile link copied to clipboard')"
+                      class="flex items-center gap-2 px-4 h-10 rounded-xl glass text-xs font-semibold text-slate-200 hover:border-white/20 hover:text-white transition"
+                    >
+                      <i class="fa-solid fa-share-nodes"></i> Share
+                    </button>
+                  </div>
+                </div>
+                <!-- meta chips -->
+                <div class="mt-5 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  <div
+                    class="rounded-xl bg-white/[0.03] border border-white/5 p-3"
+                  >
+                    <p
+                      class="text-[10px] text-slate-500 uppercase tracking-wider"
+                    >
+                      Account ID
+                    </p>
+                    <p
+                      id="profileAccountId"
+                      class="text-sm font-semibold text-white fig mt-0.5"
+                    >
+                    </p>
+                  </div>
+                  <div
+                    onclick="showView('referrals')"
+                    class="rounded-xl bg-white/[0.03] border border-white/5 p-3 cursor-pointer hover:bg-white/[0.06] transition"
+                  >
+                    <p
+                      class="text-[10px] text-slate-500 uppercase tracking-wider"
+                    >
+                      Referral Code
+                    </p>
+                    <p
+                      id="profileReferral"
+                      class="text-sm font-semibold text-white fig mt-0.5"
+                    >
+                    </p>
+                  </div>
+                  <div
+                    class="rounded-xl bg-white/[0.03] border border-white/5 p-3"
+                  >
+                    <p
+                      class="text-[10px] text-slate-500 uppercase tracking-wider"
+                    >
+                      Verification
+                    </p>
+                    <p class="text-sm font-semibold text-amber-300 mt-0.5">
+                      Level 1 / 3
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Personal info + address -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <div
+                class="rise glass rounded-2xl p-6"
+                style="animation-delay: 0.05s"
+              >
+                <div class="flex items-center justify-between mb-5">
+                  <h3
+                    class="font-display text-base font-semibold text-white flex items-center gap-2"
+                  >
+                    <span
+                      class="w-8 h-8 rounded-lg bg-indigo-500/15 text-indigo-300 flex items-center justify-center"
+                      ><i class="fa-solid fa-id-card text-xs"></i
+                    ></span>
+                    Personal Information
+                  </h3>
+                  <button
+                    onclick="openEditProfile()"
+                    class="text-xs text-indigo-300 hover:text-indigo-200 font-medium transition"
+                  >
+                    Edit
+                  </button>
+                </div>
+                <ul class="space-y-4 text-sm">
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">Full Name</span
+                    ><span
+                      id="pFullName"
+                      class="text-slate-100 font-medium text-right"
+                      ></span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">Username</span
+                    ><span
+                      id="pUsername"
+                      class="text-slate-100 font-medium text-right"
+                      ></span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">Email</span
+                    ><span
+                      id="pEmail"
+                      class="text-slate-100 font-medium text-right break-all"
+                      ></span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">Phone</span
+                    ><span
+                      id="pPhone"
+                      class="text-slate-100 font-medium text-right"
+                      ></span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">Date of Birth</span
+                    ><span
+                      id="pDob"
+                      class="text-slate-100 font-medium text-right"
+                      ></span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">Member Since</span
+                    ><span
+                      id="pJoined"
+                      class="text-slate-100 font-medium text-right"
+                      ></span
+                    >
+                  </li>
+                </ul>
+              </div>
+              <div
+                class="rise glass rounded-2xl p-6"
+                style="animation-delay: 0.1s"
+              >
+                <div class="flex items-center justify-between mb-5">
+                  <h3
+                    class="font-display text-base font-semibold text-white flex items-center gap-2"
+                  >
+                    <span
+                      class="w-8 h-8 rounded-lg bg-emerald-500/15 text-emerald-300 flex items-center justify-center"
+                      ><i class="fa-solid fa-location-dot text-xs"></i
+                    ></span>
+                    Address & Location
+                  </h3>
+                  <button
+                    onclick="openEditProfile()"
+                    class="text-xs text-indigo-300 hover:text-indigo-200 font-medium transition"
+                  >
+                    Edit
+                  </button>
+                </div>
+                <ul class="space-y-4 text-sm">
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">Street Address</span
+                    ><span
+                      id="pStreet"
+                      class="text-slate-100 font-medium text-right"
+                      ></span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">City</span
+                    ><span
+                      id="pCity"
+                      class="text-slate-100 font-medium text-right"
+                      ></span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">State / Province</span
+                    ><span
+                      id="pState"
+                      class="text-slate-100 font-medium text-right"
+                      ></span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">Postal Code</span
+                    ><span
+                      id="pPostal"
+                      class="text-slate-100 font-medium text-right"
+                      ></span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="text-slate-400">Country</span
+                    ><span
+                      id="pCountry"
+                      class="text-slate-100 font-medium text-right"
+                      ></span
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Security + KYC -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+              <div
+                class="rise glass rounded-2xl p-6"
+                style="animation-delay: 0.15s"
+              >
+                <h3
+                  class="font-display text-base font-semibold text-white flex items-center gap-2 mb-5"
+                >
+                  <span
+                    class="w-8 h-8 rounded-lg bg-rose-500/15 text-rose-300 flex items-center justify-center"
+                    ><i class="fa-solid fa-shield-halved text-xs"></i
+                  ></span>
+                  Account Security
+                </h3>
+                <ul class="space-y-4 text-sm">
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="flex items-center gap-2 text-slate-300"
+                      ><i class="fa-solid fa-envelope text-slate-500 w-4"></i>
+                      Email Verified</span
+                    >
+                    <span
+                      class="px-2.5 py-1 text-[11px] font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 rounded-md"
+                      ><i class="fa-solid fa-check text-[9px] mr-1"></i
+                      >Yes</span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="flex items-center gap-2 text-slate-300"
+                      ><i class="fa-solid fa-key text-slate-500 w-4"></i>
+                      Password</span
+                    >
+                    <span class="text-slate-500"
+                      >••••••••
+                      <button
+                        class="text-indigo-300 hover:text-indigo-200 ml-2 text-xs"
+                      >
+                        Change
+                      </button></span
+                    >
+                  </li>
+                  <li class="flex items-center justify-between gap-4">
+                    <span class="flex items-center gap-2 text-slate-300"
+                      ><i class="fa-solid fa-laptop text-slate-500 w-4"></i>
+                      Active Sessions</span
+                    >
+                    <button
+                      class="text-xs text-indigo-300 hover:text-indigo-200"
+                    >
+                      Manage (2)
+                    </button>
+                  </li>
+                </ul>
+              </div>
+              <div
+                class="rise glass rounded-2xl p-6"
+                style="animation-delay: 0.2s"
+              >
+                <div class="flex items-center justify-between mb-5">
+                  <h3
+                    class="font-display text-base font-semibold text-white flex items-center gap-2"
+                  >
+                    <span
+                      class="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-300 flex items-center justify-center"
+                      ><i class="fa-solid fa-clipboard-check text-xs"></i
+                    ></span>
+                    KYC & Verification
+                  </h3>
+                  <button
+                    onclick="showView('kyc')"
+                    id="profileKycBtn"
+                    class="text-xs text-indigo-300 hover:text-indigo-200 font-medium transition"
+                  >
+                    Complete
+                  </button>
+                </div>
+                <p class="text-xs text-slate-400 mb-4" id="profileKycDesc">
+                  Complete all three levels to unlock unlimited deposits and
+                  withdrawals.
+                </p>
+                <div class="space-y-4">
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="w-6 h-6 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-[10px]"
+                      ><i class="fa-solid fa-check"></i
+                    ></span>
+                    <div class="flex-1">
+                      <p class="text-xs font-medium text-slate-200">
+                        Identity — Email & Phone
+                      </p>
+                      <p class="text-[10px] text-slate-500">
+                        Verified on March 4, 2019
+                      </p>
+                    </div>
+                    <span
+                      class="text-[10px] font-semibold text-emerald-300"
+                      id="kycRow1Status"
+                      >Done</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="w-6 h-6 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center text-[10px] font-bold"
+                      >2</span
+                    >
+                    <div class="flex-1">
+                      <p class="text-xs font-medium text-slate-200">
+                        Government ID
+                      </p>
+                      <p class="text-[10px] text-slate-500">
+                        Upload ID document
+                      </p>
+                    </div>
+                    <span
+                      class="text-[10px] font-semibold text-amber-300"
+                      id="kycRow2Status"
+                      >Pending</span
+                    >
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <span
+                      class="w-6 h-6 rounded-full bg-slate-600/30 text-slate-400 flex items-center justify-center text-[10px] font-bold"
+                      >3</span
+                    >
+                    <div class="flex-1">
+                      <p class="text-xs font-medium text-slate-300">
+                        Proof of Address
+                      </p>
+                      <p class="text-[10px] text-slate-600">
+                        Locked until level 2
+                      </p>
+                    </div>
+                    <span
+                      class="text-[10px] font-semibold text-slate-500"
+                      id="kycRow3Status"
+                      >Locked</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /view-profile -->
+
+          <!-- ===================== TRANSACTIONS VIEW ===================== -->
+          <div id="view-transactions" class="hidden space-y-6">
+            <!-- header -->
+            <div
+              class="rise flex flex-col md:flex-row md:items-end justify-between gap-4"
+            >
+              <div>
+                <div class="flex items-center gap-2 text-[11px] text-slate-500">
+                  <i class="fa-solid fa-list-check"></i>
+                  <span>Account activity</span>
+                </div>
+                <h1
+                  class="font-display text-2xl md:text-3xl font-bold text-white mt-1"
+                >
+                  Transactions
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">
+                  Every deposit, withdrawal, swap and bonus on your account.
+                </p>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <button
+                  onclick="toggleModal('depositModal')"
+                  class="flex items-center justify-center gap-2 px-4 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+                >
+                  <i class="fa-solid fa-arrow-down-long"></i> Deposit
+                </button>
+                <button
+                  onclick="toggleModal('withdrawModal')"
+                  class="flex items-center justify-center gap-2 px-4 h-11 rounded-xl glass text-sm font-semibold text-slate-200 hover:border-white/20 hover:text-white transition"
+                >
+                  <i class="fa-solid fa-arrow-up-long"></i> Withdraw
+                </button>
+              </div>
+            </div>
+
+            <!-- summary chips -->
+            <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
+              <div
+                class="rise glass rounded-2xl p-4"
+                style="animation-delay: 0.05s"
+              >
+                <p
+                  class="text-[10px] text-slate-500 uppercase tracking-wider flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-arrow-down-long text-emerald-400"></i>
+                  Total In
+                </p>
+                <p class="text-lg font-bold text-white fig mt-1" id="txSumIn">
+                  $0.00
+                </p>
+              </div>
+              <div
+                class="rise glass rounded-2xl p-4"
+                style="animation-delay: 0.1s"
+              >
+                <p
+                  class="text-[10px] text-slate-500 uppercase tracking-wider flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-arrow-up-long text-rose-400"></i> Total
+                  Out
+                </p>
+                <p class="text-lg font-bold text-white fig mt-1" id="txSumOut">
+                  $0.00
+                </p>
+              </div>
+              <div
+                class="rise glass rounded-2xl p-4"
+                style="animation-delay: 0.15s"
+              >
+                <p
+                  class="text-[10px] text-slate-500 uppercase tracking-wider flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-list-check text-indigo-400"></i>
+                  Transactions
+                </p>
+                <p
+                  class="text-lg font-bold text-white fig mt-1"
+                  id="txSumCount"
+                >
+                  0
+                </p>
+              </div>
+              <div
+                class="rise glass rounded-2xl p-4"
+                style="animation-delay: 0.2s"
+              >
+                <p
+                  class="text-[10px] text-slate-500 uppercase tracking-wider flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-clock text-amber-400"></i> Last Activity
+                </p>
+                <p class="text-lg font-bold text-white fig mt-1" id="txSumLast">
+                  —
+                </p>
+              </div>
+            </div>
+
+            <!-- filter + table -->
+            <div
+              class="rise glass rounded-2xl p-5"
+              style="animation-delay: 0.25s"
+            >
+              <div class="flex flex-wrap items-center gap-3">
+                <div
+                  class="flex gap-1 p-1 rounded-xl bg-white/5 border border-white/5 text-xs font-medium"
+                >
+                  <button
+                    data-tx-filter="all"
+                    onclick="setTxFilter('all', this)"
+                    class="px-3 py-1.5 rounded-lg transition bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-accent"
+                  >
+                    All
+                  </button>
+                  <button
+                    data-tx-filter="deposit"
+                    onclick="setTxFilter('deposit', this)"
+                    class="px-3 py-1.5 rounded-lg transition text-slate-400 hover:text-white"
+                  >
+                    Deposits
+                  </button>
+                  <button
+                    data-tx-filter="withdrawal"
+                    onclick="setTxFilter('withdrawal', this)"
+                    class="px-3 py-1.5 rounded-lg transition text-slate-400 hover:text-white"
+                  >
+                    Withdrawals
+                  </button>
+                  <button
+                    data-tx-filter="swap"
+                    onclick="setTxFilter('swap', this)"
+                    class="px-3 py-1.5 rounded-lg transition text-slate-400 hover:text-white"
+                  >
+                    Swaps
+                  </button>
+                  <button
+                    data-tx-filter="bonus"
+                    onclick="setTxFilter('bonus', this)"
+                    class="px-3 py-1.5 rounded-lg transition text-slate-400 hover:text-white"
+                  >
+                    Bonuses
+                  </button>
+                </div>
+                <div
+                  class="ml-auto flex items-center gap-2 w-full sm:w-64 h-10 px-3 rounded-xl glass text-slate-400"
+                >
+                  <i class="fa-solid fa-magnifying-glass text-xs"></i>
+                  <input
+                    id="txSearch"
+                    type="text"
+                    placeholder="Search transactions..."
+                    oninput="renderTransactions()"
+                    class="w-full bg-transparent outline-none text-xs text-slate-200 placeholder:text-slate-500"
+                  />
+                </div>
+              </div>
+              <div class="overflow-x-auto mt-4">
+                <table class="w-full text-sm">
+                  <thead>
+                    <tr
+                      class="text-[10px] text-slate-500 uppercase tracking-widest border-b border-white/5"
+                    >
+                      <th class="text-left font-semibold px-5 py-3.5">
+                        Transaction
+                      </th>
+                      <th class="text-left font-semibold px-5 py-3.5">Asset</th>
+                      <th class="text-right font-semibold px-5 py-3.5">
+                        Amount
+                      </th>
+                      <th
+                        class="text-left font-semibold px-5 py-3.5 hidden md:table-cell"
+                      >
+                        Date
+                      </th>
+                      <th class="text-right font-semibold px-5 py-3.5">
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody id="txBody" class="divide-y divide-white/5"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          <!-- /view-transactions -->
+
+          <!-- ===================== KYC VIEW ===================== -->
+          <div id="view-kyc" class="hidden space-y-6">
+            <!-- header -->
+            <div
+              class="rise flex flex-col md:flex-row md:items-end justify-between gap-4"
+            >
+              <div>
+                <div class="flex items-center gap-2 text-[11px] text-slate-500">
+                  <i class="fa-solid fa-shield-halved"></i>
+                  <span>Identity verification</span>
+                </div>
+                <h1
+                  class="font-display text-2xl md:text-3xl font-bold text-white mt-1"
+                >
+                  Verification Center
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">
+                  Complete the three levels to unlock deposits, withdrawals and
+                  higher limits.
+                </p>
+              </div>
+              <span
+                id="kycOverallChip"
+                class="px-3 py-1.5 text-xs font-semibold bg-slate-600/30 text-slate-400 border border-white/5 rounded-lg"
+                >Not started</span
+              >
+            </div>
+
+            <!-- overall progress -->
+            <div
+              class="rise glass rounded-2xl p-5 md:p-6"
+              style="animation-delay: 0.05s"
+            >
+              <div class="flex items-center justify-between mb-2">
+                <p class="text-sm font-semibold text-white">Overall progress</p>
+                <p class="text-xs text-slate-400" id="kycOverallText">
+                  Start with Level 1 below.
+                </p>
+              </div>
+              <div class="h-2 rounded-full bg-white/10 overflow-hidden">
+                <div
+                  class="h-full w-0 rounded-full bg-gradient-to-r from-emerald-400 to-teal-400 transition-all duration-500"
+                  id="kycOverallBar"
+                ></div>
+              </div>
+              <div class="flex justify-between text-[10px] text-slate-500 mt-2">
+                <span>Level 1 · Identity</span
+                ><span>Level 2 · Government ID</span
+                ><span>Level 3 · Proof of Address</span>
+              </div>
+            </div>
+
+            <!-- done banner -->
+            <div
+              id="kycDoneBanner"
+              class="hidden rise glass rounded-2xl p-5"
+              style="border-color: rgba(16, 185, 129, 0.35)"
+            >
+              <div class="flex items-center gap-4">
+                <div
+                  class="w-12 h-12 rounded-2xl bg-emerald-500/15 text-emerald-300 flex items-center justify-center text-xl"
+                >
+                  <i class="fa-solid fa-award"></i>
+                </div>
+                <div>
+                  <p class="font-display font-semibold text-white">
+                    You're fully verified 🎉
+                  </p>
+                  <p class="text-xs text-slate-400 mt-0.5">
+                    Identity, government ID and proof of address confirmed.
+                    Deposits, withdrawals and all account features are unlocked.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Level 1 -->
+            <div
+              class="rise glass rounded-2xl p-5 md:p-6"
+              style="animation-delay: 0.1s"
+              id="kycCard1"
+            >
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-300 flex items-center justify-center font-bold"
+                    >1</span
+                  >
+                  <div>
+                    <h3 class="font-display text-base font-semibold text-white">
+                      Identity — Email &amp; Phone
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">
+                      Confirm the email and phone number on your account.
+                    </p>
+                  </div>
+                </div>
+                <span
+                  id="kycL1Badge"
+                  class="px-2.5 py-1 text-[11px] font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/20 rounded-md"
+                  >In progress</span
+                >
+              </div>
+              <div
+                id="kycL1Form"
+                class="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-4"
+              >
+                <div>
+                  <label class="block text-xs text-slate-300 mb-1.5"
+                    >Email Address</label
+                  >
+                  <input
+                    id="kyc-email"
+                    type="email"
+                    class="inp"
+                    placeholder="you@example.com"
+                  />
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-300 mb-1.5"
+                    >Phone Number</label
+                  >
+                  <input
+                    id="kyc-phone"
+                    type="tel"
+                    class="inp"
+                    placeholder="+1 (555) 000-0000"
+                  />
+                </div>
+              </div>
+              <button
+                id="kycL1Btn"
+                onclick="submitKYCLevel(1)"
+                class="mt-5 px-5 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+              >
+                Verify Email
+              </button>
+            </div>
+
+            <!-- Level 2 -->
+            <div
+              class="rise glass rounded-2xl p-5 md:p-6"
+              style="animation-delay: 0.15s"
+              id="kycCard2"
+            >
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-300 flex items-center justify-center font-bold"
+                    >2</span
+                  >
+                  <div>
+                    <h3 class="font-display text-base font-semibold text-white">
+                      Government ID
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">
+                      Upload your driving license or passport — a national ID also works.
+                    </p>
+                  </div>
+                </div>
+                <span
+                  id="kycL2Badge"
+                  class="px-2.5 py-1 text-[11px] font-semibold bg-slate-600/30 text-slate-400 border border-white/5 rounded-md"
+                  >Locked</span
+                >
+              </div>
+              <p id="kycL2Lock" class="hidden text-[11px] text-slate-500 mt-4">
+                <i class="fa-solid fa-lock mr-1"></i>Complete Level 1 to unlock
+                this step.
+              </p>
+              <div id="kycL2Form" class="mt-5 space-y-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-xs text-slate-300 mb-1.5"
+                      >Document Type</label
+                    >
+                    <select id="kyc-doc-type" class="inp">
+                      <option class="bg-slate-900">Driver's License</option>
+                      <option class="bg-slate-900">Passport</option>
+                      <option class="bg-slate-900">National ID Card</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-300 mb-1.5"
+                      >Upload ID Document</label
+                    >
+                    <input
+                      id="kyc-id-upload"
+                      type="file"
+                      accept="image/*,.pdf"
+                      onchange="showKYCFileName(2)"
+                      class="sr-only"
+                    />
+                    <label
+                      for="kyc-id-upload"
+                      class="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-white/5 border border-dashed border-white/15 hover:border-indigo-400/50 hover:bg-indigo-500/5 text-sm text-slate-300 font-medium cursor-pointer transition"
+                    >
+                      <i class="fa-solid fa-image text-indigo-300"></i> Choose File
+                    </label>
+                    <p class="text-[10px] text-slate-600 mt-1.5">
+                      Opens your photo gallery or file manager.
+                    </p>
+                  </div>
+                </div>
+                <p class="text-[11px] text-slate-500" id="kycL2File">
+                  No file selected
+                </p>
+              </div>
+              <button
+                id="kycL2Btn"
+                onclick="submitKYCLevel(2)"
+                class="mt-5 px-5 h-11 rounded-xl bg-white/5 border border-white/10 text-sm font-semibold text-slate-500 transition"
+                disabled
+              >
+                Submit ID
+              </button>
+            </div>
+
+            <!-- Level 3 -->
+            <div
+              class="rise glass rounded-2xl p-5 md:p-6"
+              style="animation-delay: 0.2s"
+              id="kycCard3"
+            >
+              <div class="flex flex-wrap items-start justify-between gap-3">
+                <div class="flex items-center gap-3">
+                  <span
+                    class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-300 flex items-center justify-center font-bold"
+                    >3</span
+                  >
+                  <div>
+                    <h3 class="font-display text-base font-semibold text-white">
+                      Proof of Address
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">
+                      Upload a recent utility bill or bank statement matching
+                      your address.
+                    </p>
+                  </div>
+                </div>
+                <span
+                  id="kycL3Badge"
+                  class="px-2.5 py-1 text-[11px] font-semibold bg-slate-600/30 text-slate-400 border border-white/5 rounded-md"
+                  >Locked</span
+                >
+              </div>
+              <p id="kycL3Lock" class="hidden text-[11px] text-slate-500 mt-4">
+                <i class="fa-solid fa-lock mr-1"></i>Complete Level 2 to unlock
+                this step.
+              </p>
+              <div id="kycL3Form" class="mt-5 space-y-4">
+                <div
+                  class="rounded-xl bg-white/[0.03] border border-white/5 p-4"
+                >
+                  <p
+                    class="text-[10px] text-slate-500 uppercase tracking-wider mb-1"
+                  >
+                    Registered Address
+                  </p>
+                  <p class="text-sm text-slate-200" id="kyc-address-display">
+                    —
+                  </p>
+                </div>
+                <div>
+                  <label class="block text-xs text-slate-300 mb-1.5"
+                    >Upload Proof of Address</label
+                  >
+                  <input
+                    id="kyc-address-upload"
+                    type="file"
+                    accept="image/*,.pdf"
+                    onchange="showKYCFileName(3)"
+                    class="sr-only"
+                  />
+                  <label
+                    for="kyc-address-upload"
+                    class="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-white/5 border border-dashed border-white/15 hover:border-emerald-400/50 hover:bg-emerald-500/5 text-sm text-slate-300 font-medium cursor-pointer transition"
+                  >
+                    <i class="fa-solid fa-image text-emerald-300"></i> Choose File
+                  </label>
+                  <p class="text-[10px] text-slate-600 mt-1.5">
+                    Opens your photo gallery or file manager.
+                  </p>
+                </div>
+                <p class="text-[11px] text-slate-500" id="kycL3File">
+                  No file selected
+                </p>
+              </div>
+              <button
+                id="kycL3Btn"
+                onclick="submitKYCLevel(3)"
+                class="mt-5 px-5 h-11 rounded-xl bg-white/5 border border-white/10 text-sm font-semibold text-slate-500 transition"
+                disabled
+              >
+                Submit Proof
+              </button>
+            </div>
+
+            <!-- reset -->
+            <div class="text-center pt-2">
+              <button
+                onclick="resetKYCData()"
+                class="text-[11px] text-slate-600 hover:text-slate-400 transition"
+              >
+                Reset KYC data
+              </button>
+            </div>
+          </div>
+          <!-- /view-kyc -->
+
+          <!-- ===================== SWAP VIEW ===================== -->
+          <div id="view-swap" class="hidden space-y-6">
+            <div
+              class="rise flex flex-col md:flex-row md:items-end justify-between gap-4"
+            >
+              <div>
+                <div class="flex items-center gap-2 text-[11px] text-slate-500">
+                  <i class="fa-solid fa-rotate"></i>
+                  <span>Instant exchange</span>
+                </div>
+                <h1
+                  class="font-display text-2xl md:text-3xl font-bold text-white mt-1"
+                >
+                  Swap Crypto
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">
+                  Convert between assets at live market rates.
+                </p>
+              </div>
+              <span
+                class="px-3 py-1.5 text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 rounded-lg"
+                ><i class="fa-solid fa-bolt mr-1"></i>Instant execution</span
+              >
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6 items-stretch">
+              <!-- swap card -->
+              <div
+                class="rise lg:col-span-2 glass rounded-2xl p-5 md:p-6"
+                style="animation-delay: 0.05s"
+              >
+                <div class="flex items-center justify-between mb-5">
+                  <h3 class="font-display text-base font-semibold text-white">
+                    Convert
+                  </h3>
+                  <button
+                    onclick="resetSwap()"
+                    class="text-[11px] text-slate-500 hover:text-slate-300 transition"
+                  >
+                    <i class="fa-solid fa-rotate-left mr-1"></i>Reset
+                  </button>
+                </div>
+
+                <!-- From -->
+                <div
+                  class="rounded-2xl bg-white/[0.03] border border-white/5 p-4 md:p-5"
+                >
+                  <div class="flex items-center justify-between mb-3">
+                    <p
+                      class="text-[10px] text-slate-500 uppercase tracking-wider"
+                    >
+                      You pay
+                    </p>
+                    <p class="text-[11px] text-slate-500">
+                      Balance:
+                      <span class="text-slate-300 fig" id="swapFromBal"
+                        >$0.00</span
+                      >
+                    </p>
+                  </div>
+                  <div class="flex flex-col sm:flex-row gap-3">
+                    <select
+                      id="swapFrom"
+                      onchange="swapFromChanged()"
+                      class="inp w-full sm:w-48 min-w-0"
+                    ></select>
+                    <input
+                      id="swapFromAmount"
+                      type="number"
+                      min="0"
+                      placeholder="$0.00"
+                      oninput="updateSwapEstimate()"
+                      class="inp flex-1"
+                    />
+                  </div>
+                </div>
+
+                <!-- flip -->
+                <div class="flex justify-center -my-2 relative z-10">
+                  <button
+                    onclick="flipSwap()"
+                    class="w-10 h-10 rounded-xl glass text-slate-300 hover:text-white hover:border-white/25 transition flex items-center justify-center shadow-lg"
+                    title="Swap direction"
+                  >
+                    <i class="fa-solid fa-arrow-down-up"></i>
+                  </button>
+                </div>
+
+                <!-- To -->
+                <div
+                  class="rounded-2xl bg-white/[0.03] border border-white/5 p-4 md:p-5"
+                >
+                  <div class="flex items-center justify-between mb-3">
+                    <p
+                      class="text-[10px] text-slate-500 uppercase tracking-wider"
+                    >
+                      You receive
+                    </p>
+                    <p class="text-[11px] text-slate-500">
+                      Balance:
+                      <span class="text-slate-300 fig" id="swapToBal"
+                        >$0.00</span
+                      >
+                    </p>
+                  </div>
+                  <div class="flex flex-col sm:flex-row gap-3">
+                    <select
+                      id="swapTo"
+                      onchange="swapToChanged()"
+                      class="inp w-full sm:w-48 min-w-0"
+                    ></select>
+                    <input
+                      id="swapToAmount"
+                      type="text"
+                      readonly
+                      placeholder="0.00"
+                      class="inp flex-1 text-emerald-300 font-semibold"
+                    />
+                  </div>
+                </div>
+
+                <div class="mt-4 space-y-1.5 text-[11px] text-slate-500">
+                  <p class="flex justify-between">
+                    <span>Rate</span
+                    ><span class="text-slate-300" id="swapRate">—</span>
+                  </p>
+                  <p class="flex justify-between">
+                    <span>Network fee</span
+                    ><span class="text-slate-300" id="swapFee">$2.50</span>
+                  </p>
+                  <p class="flex justify-between">
+                    <span>Limits</span
+                    ><span class="text-slate-300">Min $10 · Max $100,000</span>
+                  </p>
+                </div>
+
+                <button
+                  id="swapBtn"
+                  onclick="doSwap()"
+                  class="mt-5 w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+                >
+                  Swap Now
+                </button>
+              </div>
+
+              <!-- side column -->
+              <div class="space-y-5 flex flex-col">
+                <div
+                  class="rise glass rounded-2xl p-5 md:p-6 flex-1"
+                  style="animation-delay: 0.1s"
+                >
+                  <h3
+                    class="font-display text-sm font-semibold text-white mb-4"
+                  >
+                    Your Balances
+                  </h3>
+                  <ul id="swapBalances" class="divide-y divide-white/5 text-sm"></ul>
+                </div>
+                <div
+                  class="rise glass rounded-2xl p-5 md:p-6 flex-1"
+                  style="animation-delay: 0.15s"
+                >
+                  <h3
+                    class="font-display text-sm font-semibold text-white mb-4"
+                  >
+                    Recent Swaps
+                  </h3>
+                  <ul id="swapRecent" class="divide-y divide-white/5"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /view-swap -->
+
+          <!-- ===================== TRADE VIEW ===================== -->
+          <div id="view-trade" class="hidden space-y-6">
+            <div
+              class="rise flex flex-col md:flex-row md:items-end justify-between gap-4"
+            >
+              <div>
+                <div class="flex items-center gap-2 text-[11px] text-slate-500">
+                  <i class="fa-solid fa-chart-line"></i>
+                  <span>Live markets</span>
+                </div>
+                <h1
+                  class="font-display text-2xl md:text-3xl font-bold text-white mt-1"
+                >
+                  Trade
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">
+                  Buy and sell stocks and crypto at live market prices.
+                </p>
+              </div>
+              <span
+                class="px-3 py-1.5 text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 rounded-lg"
+                ><i class="fa-solid fa-bolt mr-1"></i>Instant execution</span
+              >
+            </div>
+
+            <!-- Live flow chart -->
+            <div class="rise glass rounded-2xl p-4 md:p-5">
+              <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3 mb-3">
+                <div>
+                  <h3 class="font-display text-base font-semibold text-white">
+                    Live Flow — <span id="tradeLiveAsset">—</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-500 mt-0.5" id="tradeLiveSub"></p>
+                </div>
+                <div class="flex items-baseline gap-3">
+                  <p class="text-sm font-semibold fig" id="tradeLivePrice">—</p>
+                  <p class="text-xs font-semibold" id="tradeLiveChange">—</p>
+                </div>
+              </div>
+              <div id="tlWrap" class="relative w-full cursor-crosshair">
+                <svg viewBox="0 0 720 220" class="w-full h-48 md:h-56" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="tlAreaFill" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stop-color="#3987e5" stop-opacity="0.28"/>
+                      <stop offset="100%" stop-color="#3987e5" stop-opacity="0"/>
+                    </linearGradient>
+                  </defs>
+                  <g id="tlGrid"></g>
+                  <path id="tlArea" fill="url(#tlAreaFill)"/>
+                  <path id="tlLine" stroke="#3987e5" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 lg:gap-6 items-stretch">
+              <!-- market table -->
+              <div class="rise lg:col-span-2 glass rounded-2xl p-4 md:p-5">
+                <div class="flex items-center justify-between mb-4">
+                  <h3 class="font-display text-base font-semibold text-white">
+                    Markets
+                  </h3>
+                  <span class="text-[11px] text-slate-500 fig"
+                    >Portfolio:
+                    <span class="text-white font-semibold" id="tradePortfolioTotal"
+                      >$0.00</span
+                    ></span
+                  >
+                </div>
+                <div class="overflow-x-auto -mx-4 md:-mx-5 px-4 md:px-5">
+                  <table class="w-full text-sm min-w-[460px]">
+                    <thead>
+                      <tr
+                        class="text-left text-[11px] uppercase tracking-wider text-slate-500 border-b border-white/5"
+                      >
+                        <th class="px-2 py-3">Asset</th>
+                        <th class="px-2 py-3 text-right">Price</th>
+                        <th class="px-2 py-3 text-right">24h</th>
+                        <th class="px-2 py-3 text-right">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="tradeMarketBody"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- side column -->
+              <div class="space-y-5 flex flex-col">
+                <!-- trade form -->
+                <div
+                  class="rise glass rounded-2xl p-4 md:p-5"
+                  style="animation-delay: 0.1s"
+                >
+                  <h3
+                    class="font-display text-base font-semibold text-white mb-4"
+                  >
+                    Place Order
+                  </h3>
+                  <div class="grid grid-cols-2 gap-2 mb-4">
+                    <button
+                      data-trade-side="buy"
+                      onclick="setTradeSide('buy')"
+                      class="py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-accent"
+                    >
+                      Buy
+                    </button>
+                    <button
+                      data-trade-side="sell"
+                      onclick="setTradeSide('sell')"
+                      class="py-2.5 rounded-lg text-sm font-semibold bg-white/5 text-slate-400 hover:text-white"
+                    >
+                      Sell
+                    </button>
+                  </div>
+                  <div class="space-y-3">
+                    <div>
+                      <label
+                        class="block text-xs text-slate-300 mb-1.5"
+                        for="tradeAsset"
+                        >Asset</label
+                      >
+                      <select id="tradeAsset" onchange="tradeAssetChanged()" class="inp"></select>
+                    </div>
+                    <div>
+                      <label
+                        class="block text-xs text-slate-300 mb-1.5"
+                        for="tradeAmount"
+                        >Amount ($)</label
+                      >
+                      <input
+                        id="tradeAmount"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        placeholder="$0.00"
+                        oninput="updateTradeEstimate()"
+                        class="inp"
+                      />
+                    </div>
+                    <div
+                      class="rounded-xl bg-white/[0.03] border border-white/5 p-3 text-[11px] text-slate-500 space-y-1"
+                    >
+                      <p class="flex justify-between">
+                        <span>Available balance</span
+                        ><span class="text-slate-300 fig" id="tradeAvail"
+                          >$0.00</span
+                        >
+                      </p>
+                      <p class="flex justify-between">
+                        <span>Position</span
+                        ><span class="text-slate-300 fig" id="tradePos"
+                          >0 shares</span
+                        >
+                      </p>
+                      <p class="flex justify-between">
+                        <span id="tradeSideLabel">Buying</span
+                        ><span class="text-indigo-300 fig" id="tradeEstimate"
+                          >—</span
+                        >
+                      </p>
+                    </div>
+                    <button
+                      id="tradeBtn"
+                      onclick="doTrade()"
+                      class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+                    >
+                      Buy Now
+                    </button>
+                  </div>
+                </div>
+
+                <!-- portfolio -->
+                <div
+                  class="rise glass rounded-2xl p-4 md:p-5 flex-1"
+                  style="animation-delay: 0.15s"
+                >
+                  <h3
+                    class="font-display text-sm font-semibold text-white mb-3"
+                  >
+                    Your Positions
+                  </h3>
+                  <ul id="tradePortfolio" class="divide-y divide-white/5 text-sm"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /view-trade -->
+
+          <!-- ===================== REFERRALS VIEW ===================== -->
+          <div id="view-referrals" class="hidden space-y-6">
+            <!-- promo banner -->
+            <div
+              class="rise rounded-2xl p-6 md:p-7 relative overflow-hidden border border-indigo-500/25"
+              style="
+                background: linear-gradient(
+                  120deg,
+                  rgba(99, 102, 241, 0.22),
+                  rgba(139, 92, 246, 0.14),
+                  rgba(217, 70, 239, 0.12)
+                );
+              "
+            >
+              <div
+                class="absolute -top-16 -right-10 w-56 h-56 rounded-full bg-indigo-500/30 blur-3xl"
+              ></div>
+              <div
+                class="absolute -bottom-20 left-1/4 w-48 h-48 rounded-full bg-fuchsia-500/20 blur-3xl"
+              ></div>
+              <div class="relative">
+                <p
+                  class="text-[11px] text-indigo-200 font-semibold uppercase tracking-widest"
+                >
+                  Referral program
+                </p>
+                <h2
+                  class="font-display text-2xl md:text-3xl font-bold text-white mt-1"
+                >
+                  Earn up to 1.5% on every trade
+                </h2>
+                <p class="text-sm text-slate-300/80 mt-1 max-w-xl">
+                  Share your link — you earn a commission on every trade your
+                  referrals make, for life.
+                </p>
+                <div class="mt-5 flex flex-col sm:flex-row gap-3 max-w-2xl">
+                  <div
+                    class="flex-1 flex items-center gap-2 px-3 h-12 rounded-xl glass"
+                  >
+                    <i class="fa-solid fa-link text-slate-500"></i>
+                    <input
+                      id="refLink"
+                      type="text"
+                      readonly
+                      class="w-full bg-transparent outline-none text-xs text-indigo-200 fig"
+                    />
+                  </div>
+                  <button
+                    onclick="copyRefLink()"
+                    class="flex items-center justify-center gap-2 px-5 h-12 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+                  >
+                    <i class="fa-regular fa-copy"></i> Copy Link
+                  </button>
+                  <button
+                    onclick="shareRef('WhatsApp')"
+                    class="flex items-center justify-center px-4 h-12 rounded-xl glass text-slate-200 hover:border-white/20 transition"
+                    title="WhatsApp"
+                  >
+                    <i
+                      class="fa-brands fa-whatsapp text-emerald-400 text-lg"
+                    ></i>
+                  </button>
+                  <button
+                    onclick="shareRef('Telegram')"
+                    class="flex items-center justify-center px-4 h-12 rounded-xl glass text-slate-200 hover:border-white/20 transition"
+                    title="Telegram"
+                  >
+                    <i class="fa-brands fa-telegram text-sky-400 text-lg"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- stats -->
+            <div class="grid grid-cols-2 xl:grid-cols-4 gap-4">
+              <div
+                class="rise glass rounded-2xl p-4"
+                style="animation-delay: 0.05s"
+              >
+                <p
+                  class="text-[10px] text-slate-500 uppercase tracking-wider flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-user-plus text-indigo-400"></i> Total
+                  Referrals
+                </p>
+                <p
+                  class="text-lg font-bold text-white fig mt-1"
+                  id="refStatsTotal"
+                >
+                  0
+                </p>
+              </div>
+              <div
+                class="rise glass rounded-2xl p-4"
+                style="animation-delay: 0.1s"
+              >
+                <p
+                  class="text-[10px] text-slate-500 uppercase tracking-wider flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-user-check text-emerald-400"></i> Active
+                  Traders
+                </p>
+                <p
+                  class="text-lg font-bold text-white fig mt-1"
+                  id="refStatsActive"
+                >
+                  0
+                </p>
+              </div>
+              <div
+                class="rise glass rounded-2xl p-4"
+                style="animation-delay: 0.15s"
+              >
+                <p
+                  class="text-[10px] text-slate-500 uppercase tracking-wider flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-sack-dollar text-amber-400"></i> Total
+                  Earned
+                </p>
+                <p
+                  class="text-lg font-bold text-white fig mt-1"
+                  id="refStatsEarned"
+                >
+                  $0.00
+                </p>
+              </div>
+              <div
+                class="rise glass rounded-2xl p-4"
+                style="animation-delay: 0.2s"
+              >
+                <p
+                  class="text-[10px] text-slate-500 uppercase tracking-wider flex items-center gap-1.5"
+                >
+                  <i class="fa-solid fa-hourglass-half text-violet-400"></i>
+                  Pending Rewards
+                </p>
+                <p
+                  class="text-lg font-bold text-white fig mt-1"
+                  id="refStatsPending"
+                >
+                  $0.00
+                </p>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+              <!-- table -->
+              <div
+                class="rise xl:col-span-2 glass rounded-2xl p-5 md:p-6"
+                style="animation-delay: 0.05s"
+              >
+                <div class="flex items-center justify-between mb-4">
+                  <div>
+                    <h3 class="font-display text-base font-semibold text-white">
+                      Your Referrals
+                    </h3>
+                    <p class="text-[11px] text-slate-500 mt-0.5">
+                      Everyone who signed up with your link
+                    </p>
+                  </div>
+                  <span
+                    class="px-2.5 py-1 text-[11px] font-semibold bg-indigo-500/15 text-indigo-300 border border-indigo-500/20 rounded-md"
+                    id="refTableCount"
+                    >0 members</span
+                  >
+                </div>
+                <div class="overflow-x-auto">
+                  <table class="w-full text-sm">
+                    <thead>
+                      <tr
+                        class="text-[10px] text-slate-500 uppercase tracking-widest border-b border-white/5"
+                      >
+                        <th class="text-left font-semibold px-5 py-3.5">
+                          Name
+                        </th>
+                        <th
+                          class="text-left font-semibold px-5 py-3.5 hidden md:table-cell"
+                        >
+                          Joined
+                        </th>
+                        <th class="text-left font-semibold px-5 py-3.5">
+                          Tier
+                        </th>
+                        <th class="text-right font-semibold px-5 py-3.5">
+                          Volume
+                        </th>
+                        <th class="text-right font-semibold px-5 py-3.5">
+                          Earned
+                        </th>
+                        <th class="text-right font-semibold px-5 py-3.5">
+                          Status
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody id="refBody" class="divide-y divide-white/5"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <!-- side -->
+              <div class="space-y-5">
+                <div
+                  class="rise glass rounded-2xl p-5"
+                  style="animation-delay: 0.1s"
+                >
+                  <h3 class="font-display text-sm font-semibold text-white">
+                    Tier &amp; Commission
+                  </h3>
+                  <p class="text-xs text-slate-400 mt-1">
+                    Current tier:
+                    <span class="text-indigo-300 font-semibold" id="refTierName"
+                      >—</span
+                    >
+                  </p>
+                  <div
+                    class="h-1.5 rounded-full bg-white/10 overflow-hidden mt-3"
+                  >
+                    <div
+                      class="h-full w-0 rounded-full bg-gradient-to-r from-indigo-400 to-violet-400 transition-all duration-500"
+                      id="refTierBar"
+                    ></div>
+                  </div>
+                  <p class="text-[11px] text-slate-500 mt-2" id="refTierNext">
+                    —
+                  </p>
+                  <ul class="mt-4 space-y-2.5 text-xs">
+                    <li
+                      class="flex items-center justify-between rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2.5"
+                    >
+                      <span class="text-slate-300 font-medium">Silver</span
+                      ><span class="text-slate-500"
+                        >1.0% · up to $25k volume</span
+                      >
+                    </li>
+                    <li
+                      class="flex items-center justify-between rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2.5"
+                    >
+                      <span class="text-slate-300 font-medium">Gold</span
+                      ><span class="text-slate-500">1.25% · $25k – $100k</span>
+                    </li>
+                    <li
+                      class="flex items-center justify-between rounded-lg bg-white/[0.03] border border-white/5 px-3 py-2.5"
+                    >
+                      <span class="text-slate-300 font-medium">Platinum</span
+                      ><span class="text-slate-500">1.5% · $100k+</span>
+                    </li>
+                  </ul>
+                </div>
+                <div
+                  class="rise glass rounded-2xl p-5"
+                  style="animation-delay: 0.15s"
+                >
+                  <h3
+                    class="font-display text-sm font-semibold text-white mb-3"
+                  >
+                    How it works
+                  </h3>
+                  <ul class="space-y-3 text-xs text-slate-400">
+                    <li class="flex gap-2.5">
+                      <span
+                        class="w-5 h-5 rounded-md bg-indigo-500/15 text-indigo-300 flex items-center justify-center text-[10px] font-bold shrink-0"
+                        >1</span
+                      >Share your unique link with friends.
+                    </li>
+                    <li class="flex gap-2.5">
+                      <span
+                        class="w-5 h-5 rounded-md bg-indigo-500/15 text-indigo-300 flex items-center justify-center text-[10px] font-bold shrink-0"
+                        >2</span
+                      >They sign up and start trading.
+                    </li>
+                    <li class="flex gap-2.5">
+                      <span
+                        class="w-5 h-5 rounded-md bg-indigo-500/15 text-indigo-300 flex items-center justify-center text-[10px] font-bold shrink-0"
+                        >3</span
+                      >You earn a commission on their fees — paid monthly.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /view-referrals -->
+
+          <!-- ===================== TRANSFER VIEW ===================== -->
+          <div id="view-transfer" class="hidden space-y-6">
+            <div
+              class="rise flex flex-col md:flex-row md:items-end justify-between gap-4"
+            >
+              <div>
+                <div class="flex items-center gap-2 text-[11px] text-slate-500">
+                  <i class="fa-solid fa-paper-plane"></i>
+                  <span>Move funds</span>
+                </div>
+                <h1
+                  class="font-display text-2xl md:text-3xl font-bold text-white mt-1"
+                >
+                  Transfer Funds
+                </h1>
+                <p class="text-sm text-slate-400 mt-1">
+                  Send money to other NovaBlock.io users instantly, or to an
+                  external wallet.
+                </p>
+              </div>
+              <span
+                class="px-3 py-1.5 text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/20 rounded-lg"
+                ><i class="fa-solid fa-bolt mr-1"></i>Internal transfers are
+                free</span
+              >
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <!-- form -->
+              <div
+                class="rise lg:col-span-2 glass rounded-2xl p-5 md:p-6"
+                style="animation-delay: 0.05s"
+              >
+                <h3
+                  class="font-display text-base font-semibold text-white mb-5"
+                >
+                  Send Money
+                </h3>
+                <form
+                  id="transferForm"
+                  onsubmit="
+                    event.preventDefault();
+                    doTransfer();
+                  "
+                  class="space-y-4"
+                >
+                  <div>
+                    <label class="block text-xs text-slate-300 mb-1.5"
+                      >Transfer Type</label
+                    >
+                    <div class="grid grid-cols-2 gap-2">
+                      <button
+                        type="button"
+                        id="transferTypeInternal"
+                        onclick="setTransferType('internal')"
+                        class="py-2.5 rounded-xl text-xs font-semibold border transition bg-indigo-500/20 text-indigo-200 border-indigo-500/40"
+                      >
+                        <i class="fa-solid fa-user-group mr-1.5"></i>Internal —
+                        NovaBlock.io user
+                      </button>
+                      <button
+                        type="button"
+                        id="transferTypeExternal"
+                        onclick="setTransferType('external')"
+                        class="py-2.5 rounded-xl text-xs font-semibold border transition bg-white/5 text-slate-400 border-white/10 hover:text-slate-200"
+                      >
+                        <i class="fa-solid fa-wallet mr-1.5"></i>External wallet
+                      </button>
+                    </div>
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-300 mb-1.5"
+                      >Recipient</label
+                    >
+                    <input
+                      id="transferTo"
+                      type="text"
+                      class="inp"
+                      placeholder="Username or wallet address"
+                    />
+                  </div>
+                  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs text-slate-300 mb-1.5"
+                        >Asset</label
+                      >
+                      <select id="transferAsset" class="inp">
+                        <option class="bg-slate-900">USDT</option>
+                        <option class="bg-slate-900">Bitcoin</option>
+                        <option class="bg-slate-900">Ethereum</option>
+                        <option class="bg-slate-900">BNB</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-xs text-slate-300 mb-1.5"
+                        >Amount (USD)</label
+                      >
+                      <div class="relative">
+                        <span
+                          class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-semibold"
+                          >$</span
+                        >
+                        <input
+                          id="transferAmount"
+                          type="number"
+                          min="1"
+                          placeholder="0.00"
+                          oninput="updateTransferFee()"
+                          class="inp pl-8"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    class="rounded-xl bg-white/[0.03] border border-white/5 p-4 space-y-1.5 text-[11px] text-slate-500"
+                  >
+                    <p class="flex justify-between">
+                      <span>Available balance</span
+                      ><span class="text-slate-300 fig" id="transferAvailable"
+                        >$1,298,980.00</span
+                      >
+                    </p>
+                    <p class="flex justify-between">
+                      <span>Fee</span
+                      ><span class="text-slate-300 fig" id="transferFee"
+                        >$0.00</span
+                      >
+                    </p>
+                    <p class="flex justify-between">
+                      <span>You send</span
+                      ><span
+                        class="text-white font-semibold fig"
+                        id="transferTotal"
+                        >$0.00</span
+                      >
+                    </p>
+                    <p
+                      id="transferKycNote"
+                      class="hidden text-[11px] text-amber-300/90 pt-1 border-t border-white/5"
+                    >
+                      <i class="fa-solid fa-circle-exclamation mr-1"></i>KYC
+                      verification is required for external transfers —
+                      <button
+                        onclick="showView('kyc')"
+                        class="underline hover:text-amber-200"
+                      >
+                        verify now
+                      </button>
+                    </p>
+                  </div>
+                  <button
+                    type="submit"
+                    id="transferBtn"
+                    class="w-full py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+                  >
+                    Send Transfer
+                  </button>
+                </form>
+              </div>
+
+              <!-- side -->
+              <div class="space-y-5">
+                <div
+                  class="rise glass rounded-2xl p-5"
+                  style="animation-delay: 0.1s"
+                >
+                  <h3
+                    class="font-display text-sm font-semibold text-white mb-4"
+                  >
+                    Transfer Limits
+                  </h3>
+                  <ul class="space-y-3 text-xs text-slate-400">
+                    <li class="flex justify-between">
+                      <span>Internal (NovaBlock.io)</span
+                      ><span class="text-emerald-300 font-semibold"
+                        >Free · Instant</span
+                      >
+                    </li>
+                    <li class="flex justify-between">
+                      <span>External wallet</span
+                      ><span class="text-slate-300 font-semibold"
+                        >0.5% fee</span
+                      >
+                    </li>
+                    <li class="flex justify-between">
+                      <span>Daily limit</span
+                      ><span class="text-slate-300 font-semibold"
+                        >$250,000</span
+                      >
+                    </li>
+                    <li class="flex justify-between">
+                      <span>External requires</span
+                      ><span class="text-amber-300 font-semibold"
+                        >KYC Level 3</span
+                      >
+                    </li>
+                  </ul>
+                </div>
+                <div
+                  class="rise glass rounded-2xl p-5"
+                  style="animation-delay: 0.15s"
+                >
+                  <h3
+                    class="font-display text-sm font-semibold text-white mb-4"
+                  >
+                    Recent Transfers
+                  </h3>
+                  <ul id="transferRecent" class="divide-y divide-white/5"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- /view-transfer -->
+        </main>
+
+        <!-- Footer -->
+        <footer class="px-6 lg:px-8 py-8 border-t border-white/5">
+          <div
+            class="max-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-between gap-4"
+          >
+            <p class="text-xs text-slate-500">
+              © 2026 NovaBlock.io Markets Ltd. All rights reserved.
+            </p>
+            <div class="flex items-center gap-5 text-xs text-slate-400">
+              <a href="legal.html#terms" class="hover:text-white transition"
+                >Terms of Service</a
+              >
+              <a href="legal.html#privacy" class="hover:text-white transition"
+                >Privacy Policy</a
+              >
+              <a href="legal.html#risk" class="hover:text-white transition"
+                >Risk Disclosure</a
+              >
+              <a href="#" class="hover:text-white transition">Support</a>
+            </div>
+          </div>
+          <p
+            class="max-w-[1400px] mx-auto text-[10px] text-slate-600 mt-4 leading-relaxed"
+          >
+            Risk warning: Trading digital assets and leveraged products involves
+            substantial risk of loss and is not suitable for every investor.
+            Past performance is not indicative of future results. NovaBlock.io is a
+            regulated investment platform — always do your own research before
+            investing.
+          </p>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ===================== REGISTRATION MODAL ===================== -->
+    <div
+      id="registerModal"
+      class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-[110]"
+    >
+      <div
+        class="w-full max-w-md rounded-3xl p-6 md:p-7 relative rise"
+        style="
+          background: linear-gradient(
+            165deg,
+            rgba(20, 26, 44, 0.95),
+            rgba(10, 14, 25, 0.98)
+          );
+          border: 1px solid rgba(148, 163, 184, 0.14);
+          box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9);
+        "
+      >
+        <button
+          onclick="toggleModal('registerModal')"
+          class="absolute top-4 right-4 w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div
+          id="registerHeadIcon"
+          class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white mb-4"
+        >
+          <i class="fa-solid fa-user-plus"></i>
+        </div>
+        <h2
+          id="registerHeadTitle"
+          class="font-display text-xl font-bold text-white"
+        >
+          Create Account
+        </h2>
+        <p id="registerHeadSub" class="text-xs text-slate-400 mt-1 mb-6">
+          Enter your details to open a secure investment account.
+        </p>
+
+        <form
+          id="registerForm"
+          onsubmit="registerSubmit(event)"
+          class="space-y-4"
+        >
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5">Full Name</label>
+            <input
+              id="regName"
+              type="text"
+              required
+              placeholder="John Doe"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 transition"
+            />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5"
+              >Email Address</label
+            >
+            <input
+              id="regEmail"
+              type="email"
+              required
+              placeholder="user@example.com"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 transition"
+            />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5"
+              >Phone Number</label
+            >
+            <input
+              id="regPhone"
+              type="tel"
+              required
+              placeholder="+1 (555) 000-0000"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 transition"
+            />
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5">Password</label>
+            <input
+              id="regPass"
+              type="password"
+              required
+              placeholder="••••••••"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 transition"
+            />
+          </div>
+          <button
+            type="submit"
+            class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+          >
+            Create Account
+          </button>
+        </form>
+
+      </div>
+    </div>
+
+    <!-- ===================== DEPOSIT MODAL ===================== -->
+    <div
+      id="depositModal"
+      class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50"
+    >
+      <div
+        class="w-full max-w-md rounded-3xl p-6 md:p-7 relative rise"
+        style="
+          background: linear-gradient(
+            165deg,
+            rgba(20, 26, 44, 0.95),
+            rgba(10, 14, 25, 0.98)
+          );
+          border: 1px solid rgba(148, 163, 184, 0.14);
+          box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9);
+        "
+      >
+        <button
+          onclick="toggleModal('depositModal')"
+          class="absolute top-4 right-4 w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div
+          class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white mb-4"
+        >
+          <i class="fa-solid fa-arrow-down-long"></i>
+        </div>
+        <h2 class="font-display text-xl font-bold text-white">Deposit Funds</h2>
+        <p class="text-xs text-slate-400 mt-1 mb-6">
+          Choose a payment method and enter the amount.
+        </p>
+
+        <form onsubmit="handleDeposit(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5"
+              >Amount (USD)</label
+            >
+            <div class="relative">
+              <span
+                class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-semibold"
+                >$</span
+              >
+              <input
+                type="number"
+                required
+                min="1"
+                placeholder="0.00"
+                id="depositAmount"
+                class="w-full bg-white/5 border border-white/10 rounded-xl pl-8 pr-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 transition"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5"
+              >Payment Method</label
+            >
+            <select
+              id="depositMethod"
+              onchange="renderDepositWallet()"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500/60 focus:ring-2 focus:ring-indigo-500/20 transition"
+            >
+              <option class="bg-slate-900">Bitcoin</option>
+              <option class="bg-slate-900">USDT</option>
+              <option class="bg-slate-900">Ethereum</option>
+            </select>
+          </div>
+
+          <div
+            id="depositWalletBox"
+            class="hidden rounded-xl p-3.5 border border-amber-500/25 bg-amber-500/10"
+          >
+            <p
+              class="text-[11px] text-amber-200/80 mb-2 flex items-center gap-1.5"
+            >
+              <i class="fa-solid fa-circle-exclamation"></i
+              ><span id="depositWalletLabel">Send Bitcoin to this address</span>
+            </p>
+            <div class="flex items-center gap-2">
+              <input
+                readonly
+                id="depositWalletAddress"
+                value=""
+                class="flex-1 min-w-0 bg-black/30 border border-white/10 rounded-lg px-3 py-2 text-xs text-slate-200 font-mono truncate focus:outline-none"
+              />
+              <button
+                type="button"
+                onclick="copyDepositWallet()"
+                class="shrink-0 px-3 h-9 rounded-lg bg-indigo-500/20 hover:bg-indigo-500/30 text-xs font-semibold text-indigo-300 transition"
+              >
+                <i class="fa-regular fa-copy"></i>
+              </button>
+            </div>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+          >
+            Continue to Deposit
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===================== WITHDRAW MODAL ===================== -->
+    <div
+      id="withdrawModal"
+      class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50"
+    >
+      <div
+        class="w-full max-w-md rounded-3xl p-6 md:p-7 relative rise"
+        style="
+          background: linear-gradient(
+            165deg,
+            rgba(20, 26, 44, 0.95),
+            rgba(10, 14, 25, 0.98)
+          );
+          border: 1px solid rgba(148, 163, 184, 0.14);
+          box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9);
+        "
+      >
+        <button
+          onclick="toggleModal('withdrawModal')"
+          class="absolute top-4 right-4 w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div
+          class="w-11 h-11 rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center text-white mb-4"
+        >
+          <i class="fa-solid fa-arrow-up-long"></i>
+        </div>
+        <h2 class="font-display text-xl font-bold text-white">
+          Withdraw Funds
+        </h2>
+        <p class="text-xs text-slate-400 mt-1 mb-6">
+          Enter the amount and your wallet details.
+        </p>
+
+        <div
+          id="withdrawKycNotice"
+          class="hidden rounded-xl p-4 border border-amber-500/25 bg-amber-500/10 text-xs mb-4"
+        >
+          <p class="font-semibold text-amber-200 flex items-center gap-2">
+            <i class="fa-solid fa-shield-halved"></i> KYC required to withdraw
+          </p>
+          <p class="text-amber-200/70 mt-1">
+            Complete identity verification to unlock withdrawals.
+          </p>
+          <button
+            onclick="
+              toggleModal('withdrawModal');
+              showView('kyc');
+            "
+            class="mt-3 w-full py-2 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-xs font-semibold text-amber-200 transition"
+          >
+            Go to Verification Center
+          </button>
+        </div>
+
+        <form
+          id="withdrawForm"
+          onsubmit="handleWithdraw(event)"
+          class="space-y-4"
+        >
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5">Coin</label>
+            <select
+              id="withdrawCoin"
+              onchange="renderWithdrawCoin()"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white focus:outline-none focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/20 transition"
+            >
+              <option class="bg-slate-900">Bitcoin</option>
+              <option class="bg-slate-900">USDT</option>
+              <option class="bg-slate-900">Ethereum</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5"
+              >Amount (USD)</label
+            >
+            <div class="relative">
+              <span
+                class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm font-semibold"
+                >$</span
+              >
+              <input
+                type="number"
+                required
+                min="1"
+                placeholder="0.00"
+                id="withdrawAmount"
+                class="w-full bg-white/5 border border-white/10 rounded-xl pl-8 pr-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/20 transition"
+              />
+            </div>
+            <p id="withdrawAvailable" class="text-[11px] text-slate-500 mt-1.5"
+              >Available: $0.00</p
+            >
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5"
+              >Destination</label
+            >
+            <input
+              type="text"
+              required
+              placeholder="Wallet address"
+              id="withdrawDestination"
+              class="w-full bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-sm text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/60 focus:ring-2 focus:ring-emerald-500/20 transition"
+            />
+          </div>
+          <button
+            type="submit"
+            id="withdrawSubmitBtn"
+            class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-sm font-semibold text-white transition"
+          >
+            Request Withdrawal
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- ===================== EDIT PROFILE MODAL ===================== -->
+    <div
+      id="editProfileModal"
+      class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50"
+    >
+      <div
+        class="w-full max-w-lg rounded-3xl p-6 md:p-7 relative rise max-h-[90vh] overflow-y-auto"
+        style="
+          background: linear-gradient(
+            165deg,
+            rgba(20, 26, 44, 0.95),
+            rgba(10, 14, 25, 0.98)
+          );
+          border: 1px solid rgba(148, 163, 184, 0.14);
+          box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9);
+        "
+      >
+        <button
+          onclick="toggleModal('editProfileModal')"
+          class="absolute top-4 right-4 w-8 h-8 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition"
+        >
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+        <div
+          class="w-11 h-11 rounded-2xl bg-gradient-to-br from-indigo-500 to-violet-500 flex items-center justify-center text-white mb-4"
+        >
+          <i class="fa-solid fa-user-pen"></i>
+        </div>
+        <h2 class="font-display text-xl font-bold text-white">Edit Profile</h2>
+        <p class="text-xs text-slate-400 mt-1 mb-6">
+          Update your personal details and address.
+        </p>
+
+        <form
+          id="editProfileForm"
+          onsubmit="
+            event.preventDefault();
+            saveProfile();
+          "
+          class="space-y-4"
+        >
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-slate-300 mb-1.5"
+                >Full Name</label
+              >
+              <input
+                id="edit-fullName"
+                type="text"
+                required
+                class="inp"
+                placeholder="John Doe"
+              />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1.5"
+                >Username</label
+              >
+              <input
+                id="edit-username"
+                type="text"
+                required
+                class="inp"
+                placeholder="johndoe"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5"
+              >Email Address</label
+            >
+            <input
+              id="edit-email"
+              type="email"
+              required
+              class="inp"
+              placeholder="user@example.com"
+            />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-slate-300 mb-1.5">Phone</label>
+              <input
+                id="edit-phone"
+                type="tel"
+                required
+                class="inp"
+                placeholder="+1 (555) 000-0000"
+              />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1.5"
+                >Date of Birth</label
+              >
+              <input
+                id="edit-dob"
+                type="text"
+                required
+                class="inp"
+                placeholder="March 12, 1989"
+              />
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-300 mb-1.5"
+              >Street Address</label
+            >
+            <input
+              id="edit-street"
+              type="text"
+              required
+              class="inp"
+              placeholder="Street, suite, apartment"
+            />
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-xs text-slate-300 mb-1.5">City</label>
+              <input
+                id="edit-city"
+                type="text"
+                required
+                class="inp"
+                placeholder="City"
+              />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1.5"
+                >State / Province</label
+              >
+              <input
+                id="edit-state"
+                type="text"
+                required
+                class="inp"
+                placeholder="State"
+              />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1.5"
+                >Postal Code</label
+              >
+              <input
+                id="edit-postal"
+                type="text"
+                required
+                class="inp"
+                placeholder="Postal code"
+              />
+            </div>
+            <div>
+              <label class="block text-xs text-slate-300 mb-1.5">Country</label>
+              <input
+                id="edit-country"
+                type="text"
+                required
+                class="inp"
+                placeholder="Country"
+              />
+            </div>
+          </div>
+          <button
+            type="submit"
+            class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+          >
+            Save Changes
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div
+      id="toast"
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[130] flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-white opacity-0 pointer-events-none transition-all duration-300"
+      style="
+        background: rgba(13, 18, 32, 0.95);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(12px);
+      "
+    >
+      <i class="fa-solid fa-circle-check text-emerald-400"></i
+      ><span id="toastText">Saved</span>
+    </div>
+
+    <!-- ===================== SCRIPTS ===================== -->
+    <script src="js/app.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/chart.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/kyc.js"></script>
+    <script src="js/transactions.js"></script>
+    <script src="js/referrals.js"></script>
+    <script src="js/swap.js"></script>
+    <script src="js/transfer.js"></script>
+    <script src="js/trading.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/search.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/polish.js"></script>
+  </body>
+</html>

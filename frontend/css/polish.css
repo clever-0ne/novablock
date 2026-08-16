@@ -1,0 +1,197 @@
+/* ================================================================
+   NovaBlock.io — UI polish pack
+   Light theme + scroll progress + back-to-top + floating contact
+   + skip-to-content + boot loader + announcement banner + FAQ accordion
+   ================================================================ */
+
+/* ---------- Light theme (toggled via `.light` on <html>) ---------- */
+html.light body {
+    background:
+        radial-gradient(1200px 800px at 85% -10%, rgba(99,102,241,0.10), transparent 60%),
+        radial-gradient(1000px 700px at -10% 110%, rgba(16,185,129,0.06), transparent 60%),
+        #eef1f6 !important;
+    color: #0f172a;
+}
+
+/* Glass cards + inputs flip to light frosted surfaces */
+html.light .glass {
+    background: linear-gradient(160deg, rgba(255,255,255,0.92), rgba(255,255,255,0.72));
+    border-color: rgba(15,23,42,0.08);
+}
+html.light .inp {
+    background: rgba(255,255,255,0.9);
+    border-color: rgba(15,23,42,0.12);
+    color: #0f172a;
+}
+html.light .inp::placeholder { color: #94a3b8; }
+html.light .inp:focus { border-color: rgba(99,102,241,0.55); box-shadow: 0 0 0 3px rgba(99,102,241,0.12); }
+
+/* Dark slate surfaces → light */
+html.light .bg-slate-900  { background-color: #f8fafc !important; }
+html.light .bg-slate-950  { background-color: #eef1f6 !important; }
+html.light .bg-slate-600\/30 { background-color: rgba(15,23,42,0.08) !important; }
+html.light .bg-\[#070a13\]  { background-color: #eef1f6 !important; }
+html.light .bg-\[#0a0f1e\]  { background-color: #f8fafc !important; }
+html.light .bg-\[#05070d\]  { background-color: #eef1f6 !important; }
+
+/* Subtle white overlays become subtle dark overlays */
+html.light .bg-white\/5, html.light .bg-white\/10 { background-color: rgba(15,23,42,0.05) !important; }
+html.light .border-white\/5  { border-color: rgba(15,23,42,0.08) !important; }
+html.light .border-white\/10 { border-color: rgba(15,23,42,0.12) !important; }
+html.light .border-white\/20 { border-color: rgba(15,23,42,0.20) !important; }
+
+/* Text readability on light surfaces */
+html.light .text-slate-100, html.light .text-slate-200, html.light .text-slate-300 { color: #334155 !important; }
+html.light .text-slate-400 { color: #5b6b7e !important; }
+html.light .text-slate-500 { color: #64748b !important; }
+html.light .text-slate-600 { color: #475569 !important; }
+html.light .text-slate-700 { color: #64748b !important; }
+
+/* White text that sits on light surfaces (topbar/sidebar/glass) → dark.
+   Accent-gradient buttons keep their white label because they are not glass. */
+html.light header .text-white,
+html.light aside  .text-white,
+html.light .glass  .text-white { color: #0f172a !important; }
+
+/* Sticky frosted headers (site + admin) turn light */
+html.light header.sticky {
+    background: rgba(255,255,255,0.78) !important;
+    border-color: rgba(15,23,42,0.08) !important;
+}
+/* Admin sidebar */
+html.light aside[style*="rgba(13,18,32"] { background: rgba(248,250,252,0.92) !important; }
+html.light aside {
+    background: rgba(248,250,252,0.92) !important;
+    border-color: rgba(15,23,42,0.08) !important;
+}
+
+/* Chart tooltip readable on light */
+html.light .chart-tip { background: rgba(255,255,255,0.96); border-color: rgba(15,23,42,0.12); }
+html.light .chart-tip b { color: #0f172a; }
+html.light .chart-tip span { color: #64748b; }
+
+/* Subtle grid overlay keeps working on light */
+html.light .grid-overlay {
+    background-image:
+        linear-gradient(rgba(15,23,42,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(15,23,42,0.03) 1px, transparent 1px);
+}
+
+/* Admin bottom taskbar */
+html.light .admin-taskbar {
+    background: rgba(248,250,252,0.94);
+    border-top-color: rgba(15,23,42,0.10);
+}
+html.light .admin-taskbar a { color: #5b6b7e; }
+
+/* Scrollbar on light */
+html.light ::-webkit-scrollbar-thumb { background: rgba(15,23,42,0.20); }
+
+/* ---------- Scroll progress bar ---------- */
+.scroll-progress {
+    position: fixed; top: 0; left: 0; height: 3px; z-index: 9999;
+    width: 0%;
+    background: linear-gradient(90deg, #22d3ee, #6366f1, #8b5cf6);
+    opacity: 0; transition: opacity .3s;
+}
+.scroll-progress.visible { opacity: 1; }
+
+/* ---------- Back to top ---------- */
+.back-to-top {
+    position: fixed; right: 18px; bottom: 86px; z-index: 900;
+    width: 44px; height: 44px; border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff; font-size: 15px; cursor: pointer;
+    box-shadow: 0 14px 30px -10px rgba(99,102,241,0.6);
+    opacity: 0; transform: translateY(12px); pointer-events: none;
+    transition: opacity .3s, transform .3s;
+}
+.back-to-top.visible { opacity: 1; transform: none; pointer-events: auto; }
+.back-to-top:hover { filter: brightness(1.12); }
+
+/* ---------- Floating contact ---------- */
+.floating-contact {
+    position: fixed; right: 18px; bottom: 24px; z-index: 900;
+    width: 48px; height: 48px; border-radius: 16px;
+    display: flex; align-items: center; justify-content: center;
+    background: #0ea5e9; color: #fff; font-size: 19px;
+    box-shadow: 0 14px 30px -10px rgba(14,165,233,0.6);
+    transition: transform .2s;
+}
+.floating-contact:hover { transform: translateY(-3px); }
+.floating-contact .tip {
+    position: absolute; right: 58px; top: 50%; transform: translateY(-50%);
+    white-space: nowrap; font-size: 11px; font-weight: 600; color: #0f172a;
+    background: #fff; padding: 6px 10px; border-radius: 8px;
+    box-shadow: 0 8px 20px -8px rgba(0,0,0,0.4);
+    opacity: 0; pointer-events: none; transition: opacity .2s;
+}
+.floating-contact:hover .tip { opacity: 1; }
+
+/* ---------- Skip to content ---------- */
+.skip-link {
+    position: fixed; top: -48px; left: 12px; z-index: 10000;
+    padding: 10px 16px; border-radius: 10px;
+    background: #6366f1; color: #fff; font-size: 13px; font-weight: 600;
+    transition: top .2s;
+}
+.skip-link:focus { top: 12px; }
+#main { scroll-margin-top: 70px; }
+
+/* ---------- Boot loader ---------- */
+.boot-loader {
+    position: fixed; inset: 0; z-index: 10001;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+    background: #070a13;
+    transition: opacity .45s, visibility .45s;
+}
+.boot-loader.done { opacity: 0; visibility: hidden; pointer-events: none; }
+html.light .boot-loader { background: #eef1f6; }
+.boot-loader .logo { font-size: 21px; font-weight: 800; color: #fff; letter-spacing: .5px; }
+html.light .boot-loader .logo { color: #0f172a; }
+.boot-loader .spinner {
+    width: 46px; height: 46px; border-radius: 50%;
+    border: 3px solid rgba(148,163,184,0.2); border-top-color: #8b5cf6;
+    animation: polish-spin 0.8s linear infinite;
+}
+@keyframes polish-spin { to { transform: rotate(360deg); } }
+
+/* ---------- Announcement banner ---------- */
+.announce {
+    position: relative; z-index: 40;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    color: #fff; font-size: 12.5px; text-align: center;
+    padding: 8px 40px 8px 16px;
+}
+.announce a { color: #fff; text-decoration: underline; }
+.announce .close {
+    position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+    background: none; border: 0; color: rgba(255,255,255,0.85);
+    cursor: pointer; font-size: 13px; padding: 4px;
+}
+.announce .close:hover { color: #fff; }
+
+/* ---------- FAQ accordion ---------- */
+.faq-item { border-bottom: 1px solid rgba(148,163,184,0.12); }
+.faq-q {
+    width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 14px 4px; text-align: left; cursor: pointer;
+    background: none; border: 0; color: #e2e8f0; font-size: 14px; font-weight: 600;
+}
+html.light .faq-q { color: #0f172a; }
+.faq-q .chev { color: #8b5cf6; transition: transform .25s; }
+.faq-item.open .chev { transform: rotate(180deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .3s ease; }
+.faq-item.open .faq-a { max-height: 600px; }
+.faq-a p { padding: 0 4px 16px; margin: 0; font-size: 13px; color: #94a3b8; line-height: 1.7; }
+html.light .faq-a p { color: #64748b; }
+
+/* ---------- Print stylesheet ---------- */
+@media print {
+    .scroll-progress, .back-to-top, .floating-contact, .skip-link,
+    .boot-loader, .announce, .admin-taskbar, header, aside, nav { display: none !important; }
+    body, .glass { background: #fff !important; color: #000 !important; border-color: #ddd !important; }
+    a { color: #000; text-decoration: underline; }
+    #main, main { max-width: 100% !important; }
+}

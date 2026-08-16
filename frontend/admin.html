@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login — NovaBlock.io</title>
+    <!-- Brand -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS CDN -->
+    <!-- Tailwind config (must load before the CDN) -->
+    <script src="../js/tailwind.config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+        <link rel="stylesheet" href="../css/styles.css">
+        <link rel="stylesheet" href="../css/polish.css">
+        <link rel="stylesheet" href="../css/glossy.css">
+</head>
+<body class="font-sans text-slate-100 antialiased">
+
+    <!-- ===================== ADMIN LOGIN ===================== -->
+    <div id="adminLoginScreen" class="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto"
+         style="background: radial-gradient(1200px 800px at 85% -10%, rgba(99,102,241,0.16), transparent 60%), radial-gradient(1000px 700px at -10% 110%, rgba(16,185,129,0.10), transparent 60%), radial-gradient(900px 600px at 50% 130%, rgba(139,92,246,0.10), transparent 60%), #070a13;">
+        <div class="w-full max-w-md py-8">
+            <!-- brand -->
+            <div class="flex items-center justify-center gap-3 mb-6">
+                <img src="/logo.png" alt="NovaBlock.io" class="w-12 h-12 rounded-2xl shadow-[0_10px_28px_-8px_rgba(99,102,241,0.7)]">
+                <div>
+                    <p class="font-display font-extrabold text-xl leading-none tracking-tight text-white">Nova<span class="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent">Block</span>.io <span class="text-[10px] align-middle px-1.5 py-0.5 rounded-md bg-rose-500/15 text-rose-300 border border-rose-500/25 ml-1">ADMIN</span></p>
+                    <p class="text-[10px] text-slate-500 mt-1 tracking-wide">SUPER ADMINISTRATOR</p>
+                </div>
+            </div>
+
+            <div class="glass rounded-3xl p-6 md:p-7 rise" style="box-shadow: 0 40px 90px -30px rgba(0,0,0,0.9);">
+                <h1 class="font-display text-xl font-bold text-white">Admin Login</h1>
+                <p class="text-xs text-slate-400 mt-1 mb-6">Restricted area — super administrator access only.</p>
+
+                <form id="adminLoginForm" onsubmit="handleAdminLogin(event)" class="space-y-4">
+                    <div>
+                        <label class="block text-xs text-slate-300 mb-1.5" for="adminLoginPassword">Admin password</label>
+                        <div class="relative">
+                            <input id="adminLoginPassword" type="password" required autocomplete="current-password" placeholder="••••••••" class="inp pr-11">
+                            <button type="button" onclick="toggleAdminPassword()" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 transition" title="Show password">
+                                <i id="adminLoginPassIcon" class="fa-regular fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <p id="adminLoginError" class="hidden text-[11px] text-rose-300"><i class="fa-solid fa-circle-exclamation mr-1"></i>Invalid admin password.</p>
+
+                    <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition">
+                        Sign In to Admin
+                    </button>
+                </form>
+
+                <div class="mt-4 rounded-xl bg-indigo-500/10 border border-indigo-500/20 p-3.5">
+                    <p class="text-[10px] text-indigo-200 font-semibold uppercase tracking-wider">Admin access</p>
+                    <p class="text-[11px] text-slate-400 mt-0.5">The admin password is set in the server's environment — it is never shown here.</p>
+                </div>
+
+                <div class="mt-5 flex items-center justify-between text-xs">
+                    <a href="../dashboard.html" class="text-slate-500 hover:text-indigo-300 transition">← Back to user login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================== ADMIN APP ===================== -->
+    <div id="adminApp" class="hidden fixed inset-0 z-[90] overflow-y-auto" style="background:#070a13;">
+        <div class="flex min-h-full">
+
+            <!-- Admin sidebar -->
+            <aside class="w-60 shrink-0 sticky top-0 h-screen hidden lg:flex flex-col p-4 border-r border-white/5 bg-plane/90" style="background: rgba(13,18,32,0.9);">
+                <div class="flex items-center gap-2.5 px-1 mb-6">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-400 via-indigo-500 to-fuchsia-500 flex items-center justify-center shadow-[0_8px_20px_-6px_rgba(99,102,241,0.6)]">
+                        <i class="fa-solid fa-shield-halved text-sm text-white"></i>
+                    </div>
+                    <div>
+                        <p class="font-display font-bold text-sm leading-none text-white">Admin Panel</p>
+                        <p class="text-[10px] text-slate-500 mt-0.5">NovaBlock.io Control</p>
+                    </div>
+                </div>
+
+                <nav class="space-y-1.5 flex-1">
+                    <a href="#" data-anav="users" onclick="adminShowView('users'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-users w-4 text-center"></i> Users</a>
+                    <a href="#" data-anav="overview" onclick="adminShowView('overview'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-gauge-high w-4 text-center"></i> Overview</a>
+                    <a href="#" data-anav="transactions" onclick="adminShowView('transactions'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-list-check w-4 text-center"></i> Transactions <span id="adminPendingCount" class="hidden ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">0</span></a>
+                    <a href="#" data-anav="kyc" onclick="adminShowView('kyc'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-user-check w-4 text-center"></i> KYC</a>
+                    <a href="#" data-anav="profile" onclick="adminShowView('profile'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-user-pen w-4 text-center"></i> Profile</a>
+                    <a href="#" data-anav="referrals" onclick="adminShowView('referrals'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-share-nodes w-4 text-center"></i> Referrals</a>
+                    <a href="#" data-anav="email" onclick="adminShowView('email'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-envelope w-4 text-center"></i> Email</a>
+                </nav>
+
+                <div class="pt-4 border-t border-white/5 space-y-2">
+                    <a href="../dashboard.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-right-from-bracket w-4 text-center"></i> Open user app</a>
+                    <button onclick="adminLogout()" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-rose-300/80 hover:bg-rose-500/10 hover:text-rose-300 transition"><i class="fa-solid fa-power-off w-4 text-center"></i> Log out</button>
+                </div>
+            </aside>
+
+            <!-- Admin main column -->
+            <div class="flex-1 min-w-0">
+                <!-- Admin topbar -->
+                <header class="sticky top-0 z-20 flex flex-wrap items-center justify-between gap-3 px-4 sm:px-6 py-3 border-b border-white/5" style="background: rgba(7,10,19,0.8); backdrop-filter: blur(20px);">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <h1 id="adminCrumb" class="font-display text-base sm:text-lg font-bold text-white">Users</h1>
+                        <span class="text-[10px] px-2 py-0.5 rounded-md bg-rose-500/15 text-rose-300 border border-rose-500/25 font-semibold hidden sm:inline-block">SUPER ADMIN</span>
+                        <span id="adminManaging" class="hidden items-center gap-2 text-xs">
+                            <span class="px-2 py-1 rounded-md bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 font-semibold">Managing: <span id="adminManagingName"></span></span>
+                            <button onclick="adminBackToUsers()" class="px-2 py-1 rounded-md bg-white/5 text-slate-300 hover:text-white border border-white/10 transition">← Users</button>
+                        </span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs">
+                        <button data-theme-toggle title="Switch to light mode" class="relative p-2 rounded-lg text-slate-400 hover:bg-white/5 hover:text-slate-200 transition">
+                            <i class="fa-solid fa-sun icon-sun"></i>
+                            <i class="fa-solid fa-moon icon-moon hidden"></i>
+                        </button>
+                        <button onclick="adminShowView('transactions')" class="relative p-2 rounded-lg text-slate-400 hover:bg-white/5 hover:text-slate-200 transition" title="Pending approvals">
+                            <i class="fa-solid fa-bell text-sm"></i>
+                            <span id="adminBellCount" class="hidden absolute -top-0.5 -right-0.5 min-w-4 h-4 px-1 rounded-full bg-amber-500 text-[10px] font-bold text-slate-950 flex items-center justify-center">0</span>
+                        </button>
+                        <span class="hidden sm:inline"><a href="../dashboard.html" class="text-slate-400 hover:text-slate-200 transition">Open user app</a></span>
+                        <span class="text-slate-700 hidden sm:inline">|</span>
+                        <button onclick="adminLogout()" class="text-rose-300/80 hover:text-rose-300 transition">Log out</button>
+                    </div>
+                </header>
+
+                <main class="p-3 sm:p-6 space-y-5 max-w-4xl pb-24 lg:pb-6">
+
+                    <!-- ===== Pending-approval notification bar ===== -->
+                    <div id="adminPendingBar" class="hidden items-center justify-between gap-3 px-4 py-3 rounded-xl border border-amber-500/25 bg-amber-500/10 text-sm">
+                        <span class="text-amber-200"><i class="fa-solid fa-clock mr-2"></i><span id="adminPendingText"></span></span>
+                        <button onclick="adminShowView('transactions')" class="shrink-0 px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-xs font-semibold text-amber-200 transition">Review</button>
+                    </div>
+
+                    <!-- ===== Overview ===== -->
+                    <div id="adminview-overview" class="space-y-5">
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h2 class="font-display text-lg font-bold text-white">User Balances</h2>
+                                    <p class="text-xs text-slate-400 mt-0.5">These amounts are shown on the user's dashboard. Changes persist and appear there on reload.</p>
+                                </div>
+                                <i class="fa-solid fa-sack-dollar text-indigo-300/70"></i>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminBalance">Account Balance ($)</label>
+                                    <input id="adminBalance" type="number" step="0.01" class="inp">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminBonus">Total Bonus ($)</label>
+                                    <input id="adminBonus" type="number" step="0.01" class="inp">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminDeposit">Total Deposit ($)</label>
+                                    <input id="adminDeposit" type="number" step="0.01" class="inp">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminWithdrawal">Total Withdrawal ($)</label>
+                                    <input id="adminWithdrawal" type="number" step="0.01" class="inp">
+                                </div>
+                            </div>
+                            <div class="mt-5 flex flex-wrap gap-3">
+                                <button onclick="adminSaveBalance()" class="px-5 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition">Save Balances</button>
+                                <button onclick="adminResetUser()" class="px-5 h-11 rounded-xl bg-rose-500/10 text-rose-300 border border-rose-500/25 hover:bg-rose-500/20 text-sm font-semibold transition">Reset user data</button>
+                            </div>
+                        </div>
+
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h2 class="font-display text-lg font-bold text-white">Crypto Holdings</h2>
+                                    <p class="text-xs text-slate-400 mt-0.5">Per-coin balances the user can swap — grows from approved deposits, shrinks from approved withdrawals.</p>
+                                </div>
+                                <i class="fa-solid fa-arrows-rotate text-indigo-300/70"></i>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                <div class="rounded-xl bg-white/[0.03] border border-white/5 p-3">
+                                    <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1"><i class="fa-brands fa-bitcoin text-amber-500 mr-1"></i>Bitcoin</p>
+                                    <p id="adHoldBTC" class="text-white font-semibold fig">$0.00</p>
+                                </div>
+                                <div class="rounded-xl bg-white/[0.03] border border-white/5 p-3">
+                                    <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1"><i class="fa-solid fa-dollar-sign text-emerald-400 mr-1"></i>USDT</p>
+                                    <p id="adHoldUSDT" class="text-white font-semibold fig">$0.00</p>
+                                </div>
+                                <div class="rounded-xl bg-white/[0.03] border border-white/5 p-3">
+                                    <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1"><i class="fa-brands fa-ethereum text-indigo-400 mr-1"></i>Ethereum</p>
+                                    <p id="adHoldETH" class="text-white font-semibold fig">$0.00</p>
+                                </div>
+                                <div class="rounded-xl bg-white/[0.03] border border-white/5 p-3">
+                                    <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1"><i class="fa-solid fa-coins text-amber-400 mr-1"></i>BNB</p>
+                                    <p id="adHoldBNB" class="text-white font-semibold fig">$0.00</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <div class="flex items-center justify-between mb-4">
+                                <div>
+                                    <h2 class="font-display text-lg font-bold text-white">Deposit Addresses</h2>
+                                    <p class="text-xs text-slate-400 mt-0.5">Wallets shown to the user when they deposit. Changes persist and appear there on reload.</p>
+                                </div>
+                                <i class="fa-solid fa-wallet text-indigo-300/70"></i>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adDepositBTC">Bitcoin</label>
+                                    <input id="adDepositBTC" type="text" class="inp font-mono text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adDepositUSDT">USDT</label>
+                                    <input id="adDepositUSDT" type="text" class="inp font-mono text-xs">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adDepositETH">Ethereum</label>
+                                    <input id="adDepositETH" type="text" class="inp font-mono text-xs">
+                                </div>
+                            </div>
+                            <button onclick="adminSaveDepositAddresses()" class="mt-5 px-5 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition">Save Addresses</button>
+                        </div>
+
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <h2 class="font-display text-base font-bold text-white mb-3">Managing user</h2>
+                            <p class="text-sm text-slate-400 fig"><span class="text-slate-200 font-semibold" id="adminWho"></span> · <span id="adminEmail"></span></p>
+                            <p class="text-xs text-slate-500 mt-1">This user's records are loaded for editing — changes save straight to their account.</p>
+                        </div>
+                    </div>
+
+                    <!-- ===== Users ===== -->
+                    <div id="adminview-users" class="hidden space-y-5">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
+                            <div class="rise glass rounded-2xl p-4">
+                                <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1"><i class="fa-solid fa-users mr-1 text-indigo-300"></i>Total users</p>
+                                <p id="adStatsUsers" class="text-white text-xl font-bold fig">0</p>
+                            </div>
+                            <div class="rise glass rounded-2xl p-4">
+                                <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1"><i class="fa-solid fa-sack-dollar mr-1 text-emerald-300"></i>Total balance</p>
+                                <p id="adStatsBalance" class="text-white text-xl font-bold fig">$0.00</p>
+                            </div>
+                            <div class="rise glass rounded-2xl p-4">
+                                <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1"><i class="fa-solid fa-clock mr-1 text-amber-300"></i>Pending approvals</p>
+                                <p id="adStatsPending" class="text-white text-xl font-bold fig">0</p>
+                            </div>
+                            <div class="rise glass rounded-2xl p-4">
+                                <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-1"><i class="fa-solid fa-envelope mr-1 text-sky-300"></i>Emails sent</p>
+                                <p id="adStatsEmails" class="text-white text-xl font-bold fig">0</p>
+                            </div>
+                        </div>
+
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+                                <h2 class="font-display text-lg font-bold text-white">Registered Users <span class="text-xs font-normal text-slate-500" id="adUsersCount"></span></h2>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <input id="adUserSearch" oninput="adminLoadUsers()" placeholder="Search name, email, phone…" class="inp w-56">
+                                    <button onclick="openAdminAddUser()" class="px-4 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"><i class="fa-solid fa-user-plus mr-1.5"></i>Add user</button>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm min-w-[680px]">
+                                    <thead>
+                                        <tr class="text-left text-[11px] uppercase tracking-wider text-slate-500 border-b border-white/5">
+                                            <th class="px-4 py-3">User</th>
+                                            <th class="px-4 py-3">Email</th>
+                                            <th class="px-4 py-3">Phone</th>
+                                            <th class="px-4 py-3 text-right">Balance</th>
+                                            <th class="px-4 py-3">KYC</th>
+                                            <th class="px-4 py-3">Joined</th>
+                                            <th class="px-4 py-3 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adUsersBody"></tbody>
+                                </table>
+                            </div>
+                            <p id="adUsersEmpty" class="hidden text-center text-sm text-slate-500 py-10">No users yet. Create an account from the user app or click "Add user".</p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center justify-between gap-3 glass rounded-2xl p-4">
+                            <div>
+                                <h2 class="font-display text-sm font-bold text-white">Danger zone</h2>
+                                <p class="text-xs text-slate-500 mt-0.5">Reset the platform — deletes every user, transaction and email.</p>
+                            </div>
+                            <button onclick="adminResetPlatform()" class="px-4 h-10 rounded-xl bg-rose-500/10 text-rose-300 border border-rose-500/25 hover:bg-rose-500/20 text-xs font-semibold transition">Reset platform</button>
+                        </div>
+                    </div>
+
+                    <!-- ===== Transactions ===== -->
+                    <div id="adminview-transactions" class="hidden space-y-5">
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <h2 class="font-display text-lg font-bold text-white mb-4">Add Transaction</h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminTxType">Type</label>
+                                    <select id="adminTxType" class="inp">
+                                        <option value="deposit">Deposit</option>
+                                        <option value="withdrawal">Withdrawal</option>
+                                        <option value="swap">Swap</option>
+                                        <option value="bonus">Referral Bonus</option>
+                                        <option value="transfer">Transfer</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminTxAsset">Asset</label>
+                                    <select id="adminTxAsset" class="inp">
+                                        <option value="Bitcoin">Bitcoin</option>
+                                        <option value="Ethereum">Ethereum</option>
+                                        <option value="USDT">USDT</option>
+                                        <option value="BNB">BNB</option>
+                                        <option value="Reward">Reward</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminTxAmount">Amount ($, + in / − out)</label>
+                                    <input id="adminTxAmount" type="number" step="0.01" class="inp" placeholder="0.00">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminTxStatus">Status</label>
+                                    <select id="adminTxStatus" class="inp">
+                                        <option value="completed">Completed</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="failed">Failed</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminTxDate">Date</label>
+                                    <input id="adminTxDate" type="text" class="inp" placeholder="Aug 12, 2026">
+                                </div>
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminTxTime">Time</label>
+                                    <input id="adminTxTime" type="text" class="inp" placeholder="09:24">
+                                </div>
+                            </div>
+                            <button onclick="adminAddTx()" class="mt-5 px-5 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition">Add Transaction</button>
+                        </div>
+
+                        <div class="rise glass rounded-2xl p-4 sm:p-5 overflow-x-auto">
+                            <h2 class="font-display text-lg font-bold text-white mb-4">Transactions <span class="text-xs font-normal text-slate-500" id="adminTxCount"></span></h2>
+                            <table class="w-full text-sm min-w-[560px]">
+                                <thead>
+                                    <tr class="text-left text-[11px] uppercase tracking-wider text-slate-500 border-b border-white/5">
+                                        <th class="px-4 py-3">Type</th>
+                                        <th class="px-4 py-3">Asset</th>
+                                        <th class="px-4 py-3 text-right">Amount</th>
+                                        <th class="px-4 py-3">Date · Time</th>
+                                        <th class="px-4 py-3">Status</th>
+                                        <th class="px-4 py-3 text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminTxBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ===== KYC ===== -->
+                    <div id="adminview-kyc" class="hidden space-y-5">
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <h2 class="font-display text-lg font-bold text-white mb-1">KYC Verification Levels</h2>
+                            <p class="text-xs text-slate-400">Levels unlock in order on the user side. Verifying a higher level auto-verifies the ones before it.</p>
+                        </div>
+                        <div class="grid md:grid-cols-3 gap-4">
+                            <div class="glass rounded-2xl p-4 sm:p-5 flex flex-col">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="w-9 h-9 rounded-lg bg-indigo-500/15 text-indigo-300 flex items-center justify-center"><i class="fa-solid fa-envelope text-sm"></i></span>
+                                    <span id="adminKycL1Status" class="px-2.5 py-1 text-[11px] font-semibold rounded-md"></span>
+                                </div>
+                                <h3 class="font-display text-sm font-bold text-white">Level 1</h3>
+                                <p class="text-xs text-slate-500 mt-1 mb-4 flex-1">Email &amp; phone verification</p>
+                                <div class="flex gap-2">
+                                    <button onclick="adminSetKYC(1, true)" class="flex-1 h-9 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 hover:bg-emerald-500/25 text-xs font-semibold transition">Verify</button>
+                                    <button onclick="adminSetKYC(1, false)" class="flex-1 h-9 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/25 hover:bg-rose-500/20 text-xs font-semibold transition">Revoke</button>
+                                </div>
+                            </div>
+                            <div class="glass rounded-2xl p-4 sm:p-5 flex flex-col">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="w-9 h-9 rounded-lg bg-indigo-500/15 text-indigo-300 flex items-center justify-center"><i class="fa-solid fa-id-card text-sm"></i></span>
+                                    <span id="adminKycL2Status" class="px-2.5 py-1 text-[11px] font-semibold rounded-md"></span>
+                                </div>
+                                <h3 class="font-display text-sm font-bold text-white">Level 2</h3>
+                                <p class="text-xs text-slate-500 mt-1 mb-2 flex-1">Government ID document</p>
+                                <div id="adminKycL2Doc"></div>
+                                <div class="flex gap-2 mt-3">
+                                    <button onclick="adminSetKYC(2, true)" class="flex-1 h-9 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 hover:bg-emerald-500/25 text-xs font-semibold transition">Verify</button>
+                                    <button onclick="adminSetKYC(2, false)" class="flex-1 h-9 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/25 hover:bg-rose-500/20 text-xs font-semibold transition">Revoke</button>
+                                </div>
+                            </div>
+                            <div class="glass rounded-2xl p-4 sm:p-5 flex flex-col">
+                                <div class="flex items-center justify-between mb-3">
+                                    <span class="w-9 h-9 rounded-lg bg-indigo-500/15 text-indigo-300 flex items-center justify-center"><i class="fa-solid fa-house text-sm"></i></span>
+                                    <span id="adminKycL3Status" class="px-2.5 py-1 text-[11px] font-semibold rounded-md"></span>
+                                </div>
+                                <h3 class="font-display text-sm font-bold text-white">Level 3</h3>
+                                <p class="text-xs text-slate-500 mt-1 mb-2 flex-1">Proof of address</p>
+                                <div id="adminKycL3Doc"></div>
+                                <div class="flex gap-2 mt-3">
+                                    <button onclick="adminSetKYC(3, true)" class="flex-1 h-9 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/25 hover:bg-emerald-500/25 text-xs font-semibold transition">Verify</button>
+                                    <button onclick="adminSetKYC(3, false)" class="flex-1 h-9 rounded-lg bg-rose-500/10 text-rose-300 border border-rose-500/25 hover:bg-rose-500/20 text-xs font-semibold transition">Revoke</button>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="text-xs text-slate-500">Full verification (all 3 levels) unlocks withdrawals and external transfers on the user side.</p>
+                    </div>
+
+                    <!-- ===== Profile ===== -->
+                    <div id="adminview-profile" class="hidden space-y-5">
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <h2 class="font-display text-lg font-bold text-white mb-1">Edit User Profile</h2>
+                            <p class="text-xs text-slate-400 mb-5">Saved changes appear on the user's Profile page and update the login email.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adFullName">Full name</label><input id="adFullName" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adUsername">Username</label><input id="adUsername" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adEmail">Email (login)</label><input id="adEmail" type="email" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adPhone">Phone</label><input id="adPhone" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adDob">Date of birth</label><input id="adDob" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adStreet">Street</label><input id="adStreet" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adCity">City</label><input id="adCity" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adState">State</label><input id="adState" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adPostal">Postal code</label><input id="adPostal" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adCountry">Country</label><input id="adCountry" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adJoined">Member since</label><input id="adJoined" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adAccountId">Account ID</label><input id="adAccountId" class="inp"></div>
+                                <div class="sm:col-span-2"><label class="block text-xs text-slate-300 mb-1.5" for="adReferral">Referral code</label><input id="adReferral" class="inp"></div>
+                            </div>
+                            <button onclick="adminSaveProfile()" class="mt-5 px-5 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition">Save Profile</button>
+                        </div>
+                    </div>
+
+                    <!-- ===== Referrals ===== -->
+                    <div id="adminview-referrals" class="hidden space-y-5">
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <h2 class="font-display text-lg font-bold text-white mb-4">Referral Stats</h2>
+                            <div class="grid grid-cols-1 gap-3">
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adminRefPending">Pending rewards ($)</label>
+                                    <input id="adminRefPending" type="number" step="0.01" class="inp">
+                                </div>
+                            </div>
+                            <button onclick="adminSaveRefStats()" class="mt-5 px-5 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition">Save Stats</button>
+                        </div>
+
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <h2 class="font-display text-lg font-bold text-white mb-4">Add / Edit Referred User</h2>
+                            <input type="hidden" id="adminRefEditIndex" value="-1">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adminRefName">Name</label><input id="adminRefName" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adminRefJoined">Joined</label><input id="adminRefJoined" class="inp" placeholder="May 12, 2026"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adminRefTier">Tier</label>
+                                    <select id="adminRefTier" class="inp"><option>Silver</option><option>Gold</option><option>Platinum</option></select>
+                                </div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adminRefVolume">Volume ($)</label><input id="adminRefVolume" type="number" step="0.01" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adminRefEarned">Earned ($)</label><input id="adminRefEarned" type="number" step="0.01" class="inp"></div>
+                                <div><label class="block text-xs text-slate-300 mb-1.5" for="adminRefStatus">Status</label>
+                                    <select id="adminRefStatus" class="inp"><option value="active">Active</option><option value="inactive">Inactive</option></select>
+                                </div>
+                            </div>
+                            <div class="mt-5 flex flex-wrap gap-3">
+                                <button onclick="adminRefAddOrSave()" class="px-5 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition">Add Referred User</button>
+                                <button onclick="adminRefCancelEdit()" class="px-5 h-11 rounded-xl bg-white/5 text-slate-400 border border-white/10 hover:text-slate-200 text-sm font-semibold transition hidden" id="adminRefCancelBtn">Cancel edit</button>
+                            </div>
+                        </div>
+
+                        <div class="rise glass rounded-2xl p-4 sm:p-5 overflow-x-auto">
+                            <h2 class="font-display text-lg font-bold text-white mb-4">Referred Users <span class="text-xs font-normal text-slate-500" id="adminRefCount"></span></h2>
+                            <table class="w-full text-sm min-w-[560px]">
+                                <thead>
+                                    <tr class="text-left text-[11px] uppercase tracking-wider text-slate-500 border-b border-white/5">
+                                        <th class="px-4 py-3">Name</th>
+                                        <th class="px-4 py-3">Joined</th>
+                                        <th class="px-4 py-3">Tier</th>
+                                        <th class="px-4 py-3 text-right">Volume</th>
+                                        <th class="px-4 py-3 text-right">Earned</th>
+                                        <th class="px-4 py-3">Status</th>
+                                        <th class="px-4 py-3 text-right">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminRefBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- ===== Email ===== -->
+                    <div id="adminview-email" class="hidden space-y-5">
+                        <div id="adMailStatus" class="px-4 py-3 rounded-xl border text-sm"></div>
+
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <h2 class="font-display text-lg font-bold text-white mb-1">Send message to <span id="adMailTo" class="text-indigo-300">—</span></h2>
+                            <p class="text-xs text-slate-400 mb-4">Pick a template to pre-fill it, then edit before sending. Messages go to the selected user's email.</p>
+                            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
+                                <div>
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adMailTemplate">Template</label>
+                                    <select id="adMailTemplate" onchange="adMailTemplateChanged()" class="inp">
+                                        <option value="welcome">Welcome</option>
+                                        <option value="verify-code">Verification code</option>
+                                        <option value="kyc-verified">KYC Verified</option>
+                                        <option value="custom">Custom message</option>
+                                    </select>
+                                </div>
+                                <div class="sm:col-span-2">
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adMailSubject">Subject</label>
+                                    <input id="adMailSubject" class="inp" placeholder="Email subject">
+                                </div>
+                                <div class="sm:col-span-3">
+                                    <label class="block text-xs text-slate-300 mb-1.5" for="adMailMessage">Message</label>
+                                    <textarea id="adMailMessage" rows="8" class="inp resize-y" placeholder="Write your message… {{name}} {{accountId}} are filled automatically."></textarea>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex flex-wrap items-center gap-3">
+                                <button onclick="adminSendEmail()" class="px-5 h-11 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"><i class="fa-solid fa-paper-plane mr-1.5"></i>Send Email</button>
+                                <span id="adMailHint" class="text-xs text-slate-500"></span>
+                            </div>
+                        </div>
+
+                        <div class="rise glass rounded-2xl p-4 sm:p-5 overflow-x-auto">
+                            <h2 class="font-display text-lg font-bold text-white mb-4 flex items-center justify-between gap-3 flex-wrap">
+                                <span>Email log <span class="text-xs font-normal text-slate-500" id="adMailLogCount"></span></span>
+                                <button onclick="adminClearEmails()" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-rose-300/90 border border-rose-500/25 bg-rose-500/10 hover:bg-rose-500/20 hover:text-rose-200 transition" title="Delete all rows from the email log">
+                                    <i class="fa-solid fa-trash-can"></i> Clear all
+                                </button>
+                            </h2>
+                            <table class="w-full text-sm min-w-[560px]">
+                                <thead>
+                                    <tr class="text-left text-[11px] uppercase tracking-wider text-slate-500 border-b border-white/5">
+                                        <th class="px-4 py-3">To</th>
+                                        <th class="px-4 py-3">Template</th>
+                                        <th class="px-4 py-3">Subject</th>
+                                        <th class="px-4 py-3">Status</th>
+                                        <th class="px-4 py-3">Sent</th>
+                                        <th class="px-4 py-3 text-right">View</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adMailLogBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </main>
+            </div>
+        </div>
+
+        <!-- Admin mobile bottom taskbar (sidebar is hidden below lg) -->
+        <nav class="admin-taskbar lg:hidden">
+            <a href="#" data-bnav="users" onclick="adminShowView('users'); return false;"><i class="fa-solid fa-users"></i><span>Users</span></a>
+            <a href="#" data-bnav="overview" onclick="adminShowView('overview'); return false;"><i class="fa-solid fa-gauge-high"></i><span>Overview</span></a>
+            <a href="#" data-bnav="transactions" onclick="adminShowView('transactions'); return false;"><i class="fa-solid fa-list-check"></i><span>Transactions</span></a>
+            <a href="#" data-bnav="email" onclick="adminShowView('email'); return false;"><i class="fa-solid fa-envelope"></i><span>Email</span></a>
+            <a href="#" data-bnav="profile" onclick="adminShowView('profile'); return false;"><i class="fa-solid fa-user-pen"></i><span>Profile</span></a>
+            <a href="../dashboard.html" class="bnav-user"><i class="fa-solid fa-right-from-bracket"></i><span>User app</span></a>
+        </nav>
+    </div>
+
+    <!-- ===================== ADD USER MODAL ===================== -->
+    <div id="adAddUserModal" class="hidden fixed inset-0 z-[120] flex items-center justify-center p-4" style="background: rgba(7,10,19,0.8); backdrop-filter: blur(6px);">
+        <div class="glass rounded-3xl p-6 w-full max-w-md rise" style="box-shadow: 0 40px 90px -30px rgba(0,0,0,0.9);">
+            <h2 class="font-display text-lg font-bold text-white mb-1">Add user</h2>
+            <p class="text-xs text-slate-400 mb-5">Creates an account and sends (or logs) the welcome email.</p>
+            <div class="space-y-3">
+                <input id="adAddName" class="inp" placeholder="Full name">
+                <input id="adAddEmail" class="inp" placeholder="Email address">
+                <input id="adAddPhone" class="inp" placeholder="Phone">
+                <input id="adAddPass" type="password" class="inp" placeholder="Password (6+ characters)">
+            </div>
+            <div class="mt-5 flex gap-3">
+                <button onclick="adminAddUser()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition">Create Account</button>
+                <button onclick="closeAdminAddUser()" class="px-5 py-3 rounded-xl bg-white/5 text-slate-400 border border-white/10 hover:text-slate-200 text-sm font-semibold transition">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[130] flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-white opacity-0 pointer-events-none transition-all duration-300"
+         style="background: rgba(13,18,32,0.95); border: 1px solid rgba(16,185,129,0.35); box-shadow: 0 20px 60px -20px rgba(0,0,0,0.9); backdrop-filter: blur(12px);">
+        <i class="fa-solid fa-circle-check text-emerald-400"></i><span id="toastText">Saved</span>
+    </div>
+
+    <!-- ===================== SCRIPTS ===================== -->
+    <script src="../js/app.js"></script>
+    <script src="../js/store.js"></script>
+    <script src="/js/admin.js"></script>
+    <script src="../js/polish.js"></script>
+</body>
+</html>

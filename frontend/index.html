@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="NovaBlock.io — a modern investment platform for stocks and cryptocurrencies. Deposit, trade, swap and track your portfolio with 24/7 access."
+    />
+    <title>NovaBlock.io — Investment Platform</title>
+    <!-- Brand -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Tailwind CSS CDN -->
+    <script src="js/tailwind.config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/polish.css" />
+    <link rel="stylesheet" href="css/glossy.css" />
+  </head>
+  <body
+    class="font-sans text-slate-100 antialiased min-h-screen"
+    style="
+      background:
+        radial-gradient(
+          1200px 800px at 85% -10%,
+          rgba(99, 102, 241, 0.16),
+          transparent 60%
+        ),
+        radial-gradient(
+          1000px 700px at -10% 110%,
+          rgba(16, 185, 129, 0.1),
+          transparent 60%
+        ),
+        radial-gradient(
+          900px 600px at 50% 130%,
+          rgba(139, 92, 246, 0.1),
+          transparent 60%
+        ),
+        #070a13;
+    "
+  >
+    <!-- ===================== NAV ===================== -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-[#070a13]/70 border-b border-white/5">
+      <div class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+        <a href="index.html" class="flex items-center gap-3">
+          <img
+            src="/logo.png"
+            alt="NovaBlock.io"
+            class="w-10 h-10 rounded-xl shadow-[0_10px_28px_-8px_rgba(99,102,241,0.7)]"
+          />
+          <span class="font-display font-extrabold text-lg leading-none tracking-tight text-white">
+            Nova<span class="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent">Block</span>.io
+          </span>
+        </a>
+        <nav class="flex items-center gap-2 sm:gap-3 text-sm">
+          <a
+            href="signup.html"
+            class="hidden sm:inline-block px-4 py-2 rounded-xl text-slate-300 hover:text-white hover:bg-white/5 transition font-medium"
+          >
+            Create account
+          </a>
+          <a
+            href="dashboard.html"
+            class="px-4 py-2 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white font-semibold shadow-[0_8px_24px_-10px_rgba(99,102,241,0.8)] transition"
+          >
+            Sign in
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- ===================== HERO ===================== -->
+    <main>
+      <section class="max-w-6xl mx-auto px-5 pt-20 pb-16 text-center">
+        <div
+          class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/25 text-xs text-indigo-200 font-medium mb-6"
+        >
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          Live markets · 24/7 platform
+        </div>
+
+        <h1 class="font-display text-4xl md:text-6xl font-extrabold tracking-tight text-white leading-tight">
+          Invest in stocks
+          <span class="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent">and crypto</span>
+          with confidence
+        </h1>
+        <p class="mt-5 text-slate-400 text-base md:text-lg max-w-2xl mx-auto leading-relaxed">
+          Deposit, trade, swap and track your entire portfolio in one place. Fast
+          transactions, clear reporting and a full admin-managed experience.
+        </p>
+
+        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+          <a
+            href="dashboard.html"
+            class="w-full sm:w-auto px-8 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white font-semibold shadow-[0_10px_32px_-10px_rgba(99,102,241,0.9)] transition"
+          >
+            Get started <i class="fa-solid fa-arrow-right ml-1.5 text-sm"></i>
+          </a>
+          <a
+            href="signup.html"
+            class="w-full sm:w-auto px-8 py-3.5 rounded-xl border border-white/10 text-slate-200 hover:bg-white/5 font-semibold transition"
+          >
+            Create an account
+          </a>
+        </div>
+
+        <div class="mt-6 text-xs text-slate-500 fig">
+          No hidden fees · Secure account · Support available
+        </div>
+      </section>
+
+      <!-- ===================== STATS ===================== -->
+      <section class="max-w-6xl mx-auto px-5 pb-16">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="glass rounded-2xl p-5 text-center rise">
+            <p class="text-2xl font-display font-bold text-white fig">$2.4B+</p>
+            <p class="text-[11px] text-slate-500 mt-1">Assets on platform</p>
+          </div>
+          <div class="glass rounded-2xl p-5 text-center rise">
+            <p class="text-2xl font-display font-bold text-white fig">48K+</p>
+            <p class="text-[11px] text-slate-500 mt-1">Active traders</p>
+          </div>
+          <div class="glass rounded-2xl p-5 text-center rise">
+            <p class="text-2xl font-display font-bold text-white fig">12+</p>
+            <p class="text-[11px] text-slate-500 mt-1">Markets & assets</p>
+          </div>
+          <div class="glass rounded-2xl p-5 text-center rise">
+            <p class="text-2xl font-display font-bold text-white fig">24/7</p>
+            <p class="text-[11px] text-slate-500 mt-1">Platform availability</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== FEATURES ===================== -->
+      <section class="max-w-6xl mx-auto px-5 pb-20">
+        <h2 class="font-display text-2xl md:text-3xl font-bold text-white text-center mb-2">
+          Everything you need to grow
+        </h2>
+        <p class="text-slate-400 text-sm text-center mb-10">
+          A single dashboard for your whole portfolio.
+        </p>
+
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="glass rounded-2xl p-6 rise">
+            <div class="w-10 h-10 rounded-xl bg-indigo-500/15 text-indigo-300 flex items-center justify-center mb-4">
+              <i class="fa-solid fa-wallet text-sm"></i>
+            </div>
+            <h3 class="font-display font-bold text-white text-base mb-1.5">Instant deposits</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Fund your account with Bitcoin, Ethereum or USDT. Approved quickly
+              by our team.
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-6 rise">
+            <div class="w-10 h-10 rounded-xl bg-emerald-500/15 text-emerald-300 flex items-center justify-center mb-4">
+              <i class="fa-solid fa-chart-line text-sm"></i>
+            </div>
+            <h3 class="font-display font-bold text-white text-base mb-1.5">Trade stocks & crypto</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Buy, sell and track positions with live charting and clean reporting.
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-6 rise">
+            <div class="w-10 h-10 rounded-xl bg-violet-500/15 text-violet-300 flex items-center justify-center mb-4">
+              <i class="fa-solid fa-right-left text-sm"></i>
+            </div>
+            <h3 class="font-display font-bold text-white text-base mb-1.5">One-click swaps</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Swap between assets with live rates and see every transaction in
+              your history.
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-6 rise">
+            <div class="w-10 h-10 rounded-xl bg-sky-500/15 text-sky-300 flex items-center justify-center mb-4">
+              <i class="fa-solid fa-shield-halved text-sm"></i>
+            </div>
+            <h3 class="font-display font-bold text-white text-base mb-1.5">Verified & secure</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Three-level KYC keeps your account protected and unlocks the full
+              platform.
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-6 rise">
+            <div class="w-10 h-10 rounded-xl bg-amber-500/15 text-amber-300 flex items-center justify-center mb-4">
+              <i class="fa-solid fa-users text-sm"></i>
+            </div>
+            <h3 class="font-display font-bold text-white text-base mb-1.5">Referral rewards</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Share your referral link and earn as your network grows.
+            </p>
+          </div>
+
+          <div class="glass rounded-2xl p-6 rise">
+            <div class="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-300 flex items-center justify-center mb-4">
+              <i class="fa-solid fa-headset text-sm"></i>
+            </div>
+            <h3 class="font-display font-bold text-white text-base mb-1.5">Dedicated support</h3>
+            <p class="text-xs text-slate-400 leading-relaxed">
+              Reach us any time with questions about deposits, withdrawals or
+              your portfolio.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===================== CTA ===================== -->
+      <section class="max-w-6xl mx-auto px-5 pb-20">
+        <div
+          class="glass rounded-3xl p-8 md:p-12 text-center rise"
+          style="box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9)"
+        >
+          <h2 class="font-display text-2xl md:text-3xl font-bold text-white">
+            Ready to start investing?
+          </h2>
+          <p class="text-slate-400 text-sm mt-2 mb-7">
+            Join NovaBlock.io and take control of your portfolio today.
+          </p>
+          <a
+            href="dashboard.html"
+            class="inline-block px-8 py-3.5 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-white font-semibold shadow-[0_10px_32px_-10px_rgba(99,102,241,0.9)] transition"
+          >
+            Open your account
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <!-- ===================== FOOTER ===================== -->
+    <footer class="border-t border-white/5 py-10">
+      <div class="max-w-6xl mx-auto px-5 flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="flex items-center gap-2.5">
+          <img src="/logo.png" alt="NovaBlock.io" class="w-7 h-7 rounded-lg" />
+          <span class="font-display font-bold text-sm text-white">
+            Nova<span class="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent">Block</span>.io
+          </span>
+        </div>
+        <div class="flex items-center gap-5 text-[11px] text-slate-500">
+          <a href="legal.html#terms" class="hover:text-slate-300 transition">Terms of Service</a>
+          <a href="legal.html#privacy" class="hover:text-slate-300 transition">Privacy Policy</a>
+          <a href="legal.html#risk" class="hover:text-slate-300 transition">Risk Disclosure</a>
+        </div>
+        <p class="text-[11px] text-slate-600">© 2026 NovaBlock.io — All rights reserved.</p>
+      </div>
+    </footer>
+  </body>
+</html>

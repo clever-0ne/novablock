@@ -1,0 +1,16 @@
+# Dependencies
+node_modules/
+
+# Secrets — NEVER commit backend/.env (contains admin password, KYC secret, SMTP key)
+backend/.env
+
+# Runtime data (SQLite DB, KYC uploads, logs) — generated on the server
+backend/data/
+backend/uploads/
+backend/logs/
+*.log
+
+# Misc
+.DS_Store
+Thumbs.db
+*.local

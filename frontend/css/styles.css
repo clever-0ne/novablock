@@ -1,0 +1,88 @@
+/* ---- Page background: layered aurora glows ---- */
+        body {
+            background:
+                radial-gradient(1200px 800px at 85% -10%, rgba(99,102,241,0.16), transparent 60%),
+                radial-gradient(1000px 700px at -10% 110%, rgba(16,185,129,0.10), transparent 60%),
+                radial-gradient(900px 600px at 50% 130%, rgba(139,92,246,0.10), transparent 60%),
+                #070a13;
+            min-height: 100vh;
+        }
+        .grid-overlay {
+            background-image:
+                linear-gradient(rgba(255,255,255,0.022) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.022) 1px, transparent 1px);
+            background-size: 46px 46px;
+            -webkit-mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 35%, transparent 100%);
+            mask-image: radial-gradient(ellipse 90% 70% at 50% 0%, #000 35%, transparent 100%);
+        }
+
+        /* ---- Glass surface ---- */
+        .glass {
+            background: linear-gradient(160deg, rgba(148,163,184,0.07), rgba(148,163,184,0.02));
+            border: 1px solid rgba(148,163,184,0.11);
+            backdrop-filter: blur(18px);
+        }
+        .glass-hover { transition: transform .35s cubic-bezier(.22,1,.36,1), border-color .35s, box-shadow .35s; }
+        .glass-hover:hover {
+            transform: translateY(-3px);
+            border-color: rgba(148,163,184,0.22);
+            box-shadow: 0 24px 60px -28px rgba(0,0,0,0.85), 0 0 0 1px rgba(99,102,241,0.08);
+        }
+
+        /* ---- Scrollbar ---- */
+        ::-webkit-scrollbar { width: 9px; height: 9px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: rgba(148,163,184,0.18); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(148,163,184,0.3); }
+
+        /* ---- Entrance animation ---- */
+        @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+        .rise { animation: rise .65s cubic-bezier(.22,1,.36,1) both; }
+
+        @keyframes pulseGlow { 0%,100% { box-shadow: 0 0 0 0 rgba(16,185,129,0.5);} 50% { box-shadow: 0 0 0 6px rgba(16,185,129,0);} }
+        .live-dot { animation: pulseGlow 2s ease-in-out infinite; }
+
+        /* ---- Chart tooltip ---- */
+        .chart-tip {
+            position: absolute; pointer-events: none; z-index: 30;
+            background: rgba(10,14,25,0.95); border: 1px solid rgba(148,163,184,0.18);
+            border-radius: 10px; padding: 7px 11px; font-size: 11px; line-height: 1.4;
+            box-shadow: 0 16px 40px -12px rgba(0,0,0,0.8); white-space: nowrap;
+            transform: translateY(-50%); opacity: 0; transition: opacity .12s;
+        }
+        .chart-tip b { color: #fff; font-weight: 600; }
+        .chart-tip span { color: rgba(148,163,184,0.85); }
+
+        .fig { font-variant-numeric: tabular-nums; }
+
+        .inp {
+            width: 100%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.10);
+            border-radius: 12px; padding: 10px 14px; font-size: 14px; color: #fff; outline: none;
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .inp::placeholder { color: #475569; }
+        .inp:focus { border-color: rgba(99,102,241,0.6); box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+
+        /* ---- Admin mobile bottom taskbar ---- */
+        .admin-taskbar {
+            position: fixed; left: 0; right: 0; bottom: 0; z-index: 80;
+            display: flex; align-items: stretch; justify-content: space-around; gap: 2px;
+            padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+            background: rgba(10, 14, 25, 0.92);
+            backdrop-filter: blur(18px);
+            border-top: 1px solid rgba(148, 163, 184, 0.12);
+            box-shadow: 0 -10px 30px -18px rgba(0, 0, 0, 0.9);
+        }
+        .admin-taskbar a {
+            flex: 1; min-width: 0;
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+            padding: 6px 4px; border-radius: 10px;
+            color: #94a3b8; font-size: 10px; font-weight: 600; line-height: 1;
+            transition: color .2s, background .2s, transform .2s;
+        }
+        .admin-taskbar a i { font-size: 15px; transition: color .2s; }
+        .admin-taskbar a:active { transform: scale(0.96); }
+        .admin-taskbar a.active { color: #c7d2fe; background: rgba(99, 102, 241, 0.16); }
+        .admin-taskbar a.active i { color: #818cf8; }
+        .admin-taskbar a.bnav-user { color: #fda4af; }
+        .admin-taskbar a.bnav-user i { color: #fb7185; }

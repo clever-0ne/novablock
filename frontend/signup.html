@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Create Account — NovaBlock.io</title>
+    <!-- Brand -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/logo.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <script src="js/tailwind.config.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="css/polish.css" />
+    <link rel="stylesheet" href="css/glossy.css" />
+  </head>
+
+  <body
+    class="min-h-screen"
+    style="
+      background:
+        radial-gradient(
+          1200px 800px at 85% -10%,
+          rgba(99, 102, 241, 0.16),
+          transparent 60%
+        ),
+        radial-gradient(
+          1000px 700px at -10% 110%,
+          rgba(16, 185, 129, 0.1),
+          transparent 60%
+        ),
+        radial-gradient(
+          900px 600px at 50% 130%,
+          rgba(139, 92, 246, 0.1),
+          transparent 60%
+        ),
+        #070a13;
+    "
+  >
+    <!-- Theme toggle (fixed, top-right) -->
+    <button
+      data-theme-toggle
+      title="Switch to light mode"
+      aria-label="Toggle light/dark theme"
+      class="fixed top-4 right-4 z-50 w-10 h-10 rounded-xl glass flex items-center justify-center text-slate-300"
+    >
+      <i class="fa-regular fa-sun icon-sun"></i>
+      <i class="fa-solid fa-moon icon-moon hidden"></i>
+    </button>
+
+    <div id="main" class="min-h-screen flex items-center justify-center p-4 overflow-y-auto py-10">
+      <div class="w-full max-w-lg">
+        <!-- brand -->
+        <div class="flex items-center justify-center gap-3 mb-6">
+          <img
+            src="/logo.png"
+            alt="NovaBlock.io"
+            class="w-12 h-12 rounded-2xl shadow-[0_10px_28px_-8px_rgba(99,102,241,0.7)]"
+          />
+          <div>
+            <p
+              class="font-display font-extrabold text-xl leading-none tracking-tight text-white"
+            >
+              Nova<span
+                class="bg-gradient-to-r from-cyan-300 to-violet-400 bg-clip-text text-transparent"
+                >Block</span
+              >.io
+            </p>
+            <p class="text-[10px] text-slate-500 mt-1 tracking-wide">
+              INVESTMENT PLATFORM
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="glass rounded-3xl p-6 md:p-7 rise"
+          style="box-shadow: 0 40px 90px -30px rgba(0, 0, 0, 0.9)"
+        >
+          <h1 class="font-display text-xl font-bold text-white">
+            Create your account
+          </h1>
+          <p class="text-xs text-slate-500 mt-1 mb-5">
+            Set your name, address and details to create your account.
+          </p>
+
+          <form onsubmit="signupSubmit(event)" class="space-y-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-slate-300 mb-1.5" for="suName"
+                  >Full name</label
+                >
+                <input
+                  id="suName"
+                  type="text"
+                  required
+                  autocomplete="name"
+                  placeholder="Your full name"
+                  class="inp w-full"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-300 mb-1.5" for="suUsername"
+                  >Username</label
+                >
+                <input
+                  id="suUsername"
+                  type="text"
+                  autocomplete="username"
+                  placeholder="e.g. janedoe"
+                  class="inp w-full"
+                />
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-xs text-slate-300 mb-1.5" for="suEmail"
+                  >Email</label
+                >
+                <input
+                  id="suEmail"
+                  type="email"
+                  required
+                  autocomplete="email"
+                  placeholder="you@example.com"
+                  class="inp w-full"
+                />
+              </div>
+              <div>
+                <label class="block text-xs text-slate-300 mb-1.5" for="suPhone"
+                  >Phone</label
+                >
+                <input
+                  id="suPhone"
+                  type="tel"
+                  required
+                  autocomplete="tel"
+                  placeholder="+1 (555) 000-0000"
+                  class="inp w-full"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs text-slate-300 mb-1.5" for="suPass"
+                >Password</label
+              >
+              <input
+                id="suPass"
+                type="password"
+                required
+                autocomplete="new-password"
+                placeholder="6+ characters"
+                class="inp w-full"
+              />
+            </div>
+
+            <div>
+              <label class="block text-xs text-slate-300 mb-1.5" for="suDob"
+                >Date of birth</label
+              >
+              <input
+                id="suDob"
+                type="date"
+                autocomplete="bday"
+                class="inp w-full"
+              />
+            </div>
+
+            <div>
+              <p class="text-[10px] text-slate-500 uppercase tracking-wider mb-2 font-semibold">
+                Address
+              </p>
+              <div class="space-y-4">
+                <div>
+                  <label class="block text-xs text-slate-300 mb-1.5" for="suStreet"
+                    >Street address</label
+                  >
+                  <input
+                    id="suStreet"
+                    type="text"
+                    autocomplete="street-address"
+                    placeholder="Street and number"
+                    class="inp w-full"
+                  />
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs text-slate-300 mb-1.5" for="suCity"
+                      >City</label
+                    >
+                    <input
+                      id="suCity"
+                      type="text"
+                      autocomplete="address-level2"
+                      placeholder="City"
+                      class="inp w-full"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-300 mb-1.5" for="suState"
+                      >State / Province</label
+                    >
+                    <input
+                      id="suState"
+                      type="text"
+                      autocomplete="address-level1"
+                      placeholder="State"
+                      class="inp w-full"
+                    />
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs text-slate-300 mb-1.5" for="suPostal"
+                      >Postal code</label
+                    >
+                    <input
+                      id="suPostal"
+                      type="text"
+                      autocomplete="postal-code"
+                      placeholder="Postal code"
+                      class="inp w-full"
+                    />
+                  </div>
+                  <div>
+                    <label class="block text-xs text-slate-300 mb-1.5" for="suCountry"
+                      >Country</label
+                    >
+                    <input
+                      id="suCountry"
+                      type="text"
+                      autocomplete="country-name"
+                      placeholder="Country"
+                      class="inp w-full"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <p
+              id="suError"
+              class="hidden text-xs text-rose-400 bg-rose-500/10 border border-rose-500/20 rounded-lg px-3 py-2"
+            ></p>
+
+            <button
+              id="suSubmit"
+              type="submit"
+              class="w-full py-3 rounded-xl bg-gradient-to-r from-indigo-500 to-violet-500 hover:from-indigo-400 hover:to-violet-400 text-sm font-semibold text-white shadow-accent transition"
+            >
+              Create account
+            </button>
+          </form>
+
+          <p class="text-center text-xs text-slate-500 mt-4">
+            Already have an account?
+            <a href="dashboard.html" class="text-indigo-300 hover:text-indigo-200 font-medium transition"
+              >Log in</a
+            >
+          </p>
+        </div>
+
+        <div class="mt-6 text-center">
+          <p class="text-[11px] text-slate-500 mb-2">
+            By creating an account you agree to our
+            <a href="legal.html#terms" class="text-indigo-300 hover:text-indigo-200 font-medium transition"
+              >Terms of Service</a
+            >,
+            <a href="legal.html#privacy" class="text-indigo-300 hover:text-indigo-200 font-medium transition"
+              >Privacy Policy</a
+            >
+            and
+            <a href="legal.html#risk" class="text-indigo-300 hover:text-indigo-200 font-medium transition"
+              >Risk Disclosure</a
+            >.
+          </p>
+          <p class="text-[10px] text-slate-600">
+            © 2026 NovaBlock.io Markets Ltd. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div
+      id="toast"
+      class="fixed bottom-6 left-1/2 -translate-x-1/2 z-[130] flex items-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-white opacity-0 pointer-events-none transition-all duration-300"
+      style="
+        background: rgba(13, 18, 32, 0.95);
+        border: 1px solid rgba(16, 185, 129, 0.35);
+        box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(12px);
+      "
+    >
+      <i class="fa-solid fa-circle-check text-emerald-400"></i
+      ><span id="toastText">Saved</span>
+    </div>
+
+    <script src="js/app.js"></script>
+    <script src="js/store.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/signup.js"></script>
+    <script src="js/polish.js"></script>
+  </body>
+</html>

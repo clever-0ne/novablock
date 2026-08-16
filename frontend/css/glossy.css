@@ -1,0 +1,284 @@
+/* ================================================================
+   NovaBlock.io — Glossy look + Apple-clean light mode
+   Loaded AFTER styles.css + polish.css. Works in dark AND light.
+   ================================================================ */
+
+/* ---------- Glossy glass surfaces (dark) ---------- */
+/* Frosted glass with a soft specular highlight on the top edge.
+   Layered backgrounds avoid ::before so absolutely-positioned children
+   (badges, dropdowns) keep their positioning context. */
+.glass {
+  background:
+    radial-gradient(120% 90% at 18% 0%, rgba(255,255,255,0.07), transparent 55%),
+    linear-gradient(155deg, rgba(148,163,184,0.09), rgba(148,163,184,0.02) 62%);
+  border-color: rgba(148,163,184,0.16);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.12),   /* glossy edge highlight */
+    0 18px 44px -30px rgba(0,0,0,0.85);
+}
+
+/* Lift + brighten on hover (cards that already carry .glass-hover) */
+.glass-hover:hover {
+  background:
+    radial-gradient(120% 90% at 18% 0%, rgba(255,255,255,0.13), transparent 55%),
+    linear-gradient(155deg, rgba(148,163,184,0.13), rgba(148,163,184,0.04) 62%);
+  border-color: rgba(148,163,184,0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.20),
+    0 28px 60px -26px rgba(0,0,0,0.9),
+    0 0 0 1px rgba(99,102,241,0.20);
+}
+
+/* ---------- Glossy inputs (dark) ---------- */
+.inp {
+  background: linear-gradient(180deg, rgba(148,163,184,0.07), rgba(148,163,184,0.02));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+}
+.inp:focus {
+  border-color: rgba(99,102,241,0.60);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.10),
+    0 0 0 3px rgba(99,102,241,0.15);
+}
+.inp::placeholder { color: rgba(148,163,184,0.75); }
+
+/* ---------- Glossy shine sweep on gradient elements ---------- */
+/* Every bg-gradient-to-* element (CTA buttons, logo badge, progress fills)
+   gets a specular streak that sweeps across on hover. */
+[class*="bg-gradient-to"] {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+[class*="bg-gradient-to"]::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 46%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.40), transparent);
+  transform: translateX(-130%) skewX(-22deg);
+}
+[class*="bg-gradient-to"]:hover::after,
+[class*="bg-gradient-to"]:focus-visible::after {
+  opacity: 1;
+  animation: glossy-shine 0.85s ease;
+}
+@keyframes glossy-shine {
+  to { transform: translateX(240%) skewX(-22deg); }
+}
+
+/* ================================================================
+   LIGHT MODE — Apple-clean: grey page, flat white cards,
+   visible hairlines, soft shadows. No glowing sheen.
+   ================================================================ */
+
+/* Page background — muted cool grey, not white. */
+html.light body {
+  background:
+    radial-gradient(1100px 700px at 85% -10%, rgba(99,102,241,0.08), transparent 60%),
+    radial-gradient(900px 600px at -10% 110%, rgba(16,185,129,0.05), transparent 60%),
+    radial-gradient(800px 500px at 50% 130%, rgba(139,92,246,0.06), transparent 60%),
+    #e8ecf3 !important;
+  color: #14181f;
+}
+
+/* Cards — flat white, defined by a hairline + soft shadow, not brightness. */
+html.light .glass {
+  background: rgba(255,255,255,0.93);
+  border-color: rgba(15,23,42,0.12);
+  box-shadow:
+    inset 0 1px 1px rgba(15,23,42,0.03),
+    0 1px 2px rgba(15,23,42,0.05),
+    0 16px 40px -28px rgba(15,23,42,0.20);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+html.light .glass-hover:hover {
+  background: #ffffff;
+  border-color: rgba(99,102,241,0.40);
+  box-shadow:
+    0 2px 6px rgba(15,23,42,0.06),
+    0 18px 42px -22px rgba(15,23,42,0.22);
+}
+
+/* Inputs — clean white field with a visible border */
+html.light .inp {
+  background: #ffffff;
+  border-color: rgba(15,23,42,0.16);
+  box-shadow: inset 0 1px 2px rgba(15,23,42,0.05);
+}
+html.light .inp:focus {
+  border-color: rgba(99,102,241,0.60);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+html.light .inp::placeholder { color: #94a3b8; }
+
+/* ---------- Hairlines: make every divider/layout line visible ---------- */
+html.light .border-white\/5  { border-color: rgba(15,23,42,0.12) !important; }
+html.light .border-white\/10 { border-color: rgba(15,23,42,0.15) !important; }
+html.light .border-white\/15 { border-color: rgba(15,23,42,0.18) !important; }
+html.light .border-white\/20 { border-color: rgba(15,23,42,0.22) !important; }
+
+/* ---------- Fills: muted ink tints with enough definition to read ---------- */
+html.light .bg-white\/5  { background-color: rgba(15,23,42,0.06) !important; }
+html.light .bg-white\/10 { background-color: rgba(15,23,42,0.10) !important; }
+html.light .bg-white\/\[0\.03\] { background-color: rgba(15,23,42,0.05) !important; }
+html.light .bg-white\/\[0\.06\] { background-color: rgba(15,23,42,0.08) !important; }
+html.light .hover\:bg-white\/5:hover   { background-color: rgba(15,23,42,0.09) !important; }
+html.light .hover\:bg-white\/10:hover  { background-color: rgba(15,23,42,0.13) !important; }
+html.light .hover\:bg-white\/15:hover  { background-color: rgba(15,23,42,0.16) !important; }
+html.light .hover\:bg-white\/\[0\.06\]:hover { background-color: rgba(15,23,42,0.11) !important; }
+html.light .hover\:bg-indigo-500\/5:hover { background-color: rgba(99,102,241,0.09) !important; }
+
+/* ---------- Text: white flips to ink, accents keep white ---------- */
+html.light .text-white { color: #14181f !important; }
+
+/* Same-element solid accent fills keep white (gradient CTAs, badges). */
+html.light .text-white[class*="bg-gradient-to"]:not([class*="/20"]):not([class*="/10"]):not([class*="/5"]),
+html.light .text-white.bg-indigo-400, html.light .text-white.bg-indigo-500, html.light .text-white.bg-indigo-600,
+html.light .text-white.bg-violet-400, html.light .text-white.bg-violet-500, html.light .text-white.bg-violet-600,
+html.light .text-white.bg-emerald-400, html.light .text-white.bg-emerald-500, html.light .text-white.bg-emerald-600,
+html.light .text-white.bg-rose-400,    html.light .text-white.bg-rose-500,    html.light .text-white.bg-rose-600,
+html.light .text-white.bg-amber-400,   html.light .text-white.bg-amber-500,
+html.light .text-white.bg-sky-400,     html.light .text-white.bg-sky-500,
+html.light .text-white.bg-cyan-400,    html.light .text-white.bg-cyan-500,
+html.light .text-white.bg-red-500 {
+  color: #ffffff !important;
+}
+
+/* White text INSIDE opaque gradient containers (logo svg, button icons). */
+html.light [class*="bg-gradient-to"]:not([class*="/20"]):not([class*="/10"]):not([class*="/5"]) .text-white {
+  color: #ffffff !important;
+}
+
+/* The same rules scoped to .glass, so they beat polish.css's
+   ".glass .text-white → dark" (keeps gradient CTAs inside cards looking
+   like CTAs instead of dark-on-gradient). */
+html.light .glass .text-white[class*="bg-gradient-to"]:not([class*="/20"]):not([class*="/10"]):not([class*="/5"]),
+html.light .glass .text-white.bg-indigo-500, html.light .glass .text-white.bg-indigo-600,
+html.light .glass .text-white.bg-violet-500, html.light .glass .text-white.bg-violet-600,
+html.light .glass .text-white.bg-emerald-500, html.light .glass .text-white.bg-emerald-600,
+html.light .glass .text-white.bg-rose-500,    html.light .glass .text-white.bg-rose-600,
+html.light .glass .text-white.bg-amber-500,   html.light .glass .text-white.bg-sky-500,
+html.light .glass .text-white.bg-cyan-500 {
+  color: #ffffff !important;
+}
+html.light .glass [class*="bg-gradient-to"]:not([class*="/20"]):not([class*="/10"]):not([class*="/5"]) .text-white {
+  color: #ffffff !important;
+}
+
+/* Sidebar + topbar always dark ink (covers translucent NAV_ACTIVE tints too). */
+html.light aside .text-white,
+html.light header .text-white {
+  color: #14181f !important;
+}
+
+/* ---------- Login screens keep their dark glamour in light mode ---------- */
+html.light #loginScreen,
+html.light #adminLoginScreen {
+  background-color: #070a13 !important;
+}
+html.light #loginScreen .text-white,
+html.light #adminLoginScreen .text-white { color: #ffffff !important; }
+html.light #loginScreen .glass .text-white:not([class*="bg-gradient-to"]),
+html.light #adminLoginScreen .glass .text-white:not([class*="bg-gradient-to"]) { color: #14181f !important; }
+
+/* ---------- Sidebar: its inner wrapper carries an inline dark gradient +
+   blur(24px), so in light mode nav text was dark-on-dark and blurred.
+   Make it a clean white panel with a defined hairline. ---------- */
+html.light #sidebar > div {
+  background: rgba(255,255,255,0.95) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-right-color: rgba(15,23,42,0.12) !important;
+  box-shadow: 1px 0 0 rgba(15,23,42,0.04), 10px 0 28px -18px rgba(15,23,42,0.18) !important;
+}
+
+/* Any remaining inline backdrop-filter (headers, dropdowns, toasts) is killed
+   in light mode so text is always razor sharp. */
+html.light [style*="backdrop-filter"] { backdrop-filter: none !important; }
+
+/* ---------- Topbars & admin shell ---------- */
+html.light header.sticky {
+  background: rgba(255,255,255,0.90) !important;
+  border-bottom-color: rgba(15,23,42,0.12) !important;
+  box-shadow: 0 10px 30px -22px rgba(15,23,42,0.18) !important;
+}
+html.light aside,
+html.light .bg-plane {
+  background: rgba(255,255,255,0.96) !important;
+  border-right-color: rgba(15,23,42,0.12) !important;
+}
+html.light #adminApp { background: #e8ecf3 !important; }
+
+/* Notification ring on the topbar matches the light header */
+html.light .ring-ink {
+  --tw-ring-color: rgba(255,255,255,0.9) !important;
+}
+
+/* Chart grid lines get enough contrast to define the axes */
+html.light .grid-overlay {
+  background-image:
+    linear-gradient(rgba(15,23,42,0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(15,23,42,0.05) 1px, transparent 1px);
+}
+
+/* Dark slate fills the theme leaves alone → lighten so ink text works */
+html.light .bg-slate-700 { background-color: #e2e8f0 !important; }
+html.light .bg-slate-800 { background-color: #e6eaf2 !important; }
+
+/* ---------- Primary/secondary text: real Apple-style contrast ----------
+   polish.css left these a bit grey; deepen them so copy reads sharp. */
+html.light .text-slate-100,
+html.light .text-slate-200,
+html.light .text-slate-300 { color: #1c2230 !important; }
+html.light .text-slate-400 { color: #556077 !important; }
+html.light .text-slate-500 { color: #6b7488 !important; }
+html.light .text-slate-300\/80 { color: rgba(28,34,48,0.8) !important; }
+
+/* ---------- Hue remap: pastel 200/300/400 text → deep readable tones -------
+   These tints were designed for the dark UI; on white cards they wash out
+   to near-invisible. Shift them to their 600/700 siblings (keeps the hue). */
+html.light .text-emerald-200 { color:#047857 !important; }
+html.light .text-emerald-300, html.light .text-emerald-400 { color:#059669 !important; }
+html.light .text-rose-200 { color:#be123c !important; }
+html.light .text-rose-300, html.light .text-rose-400 { color:#e11d48 !important; }
+html.light .text-amber-200 { color:#b45309 !important; }
+html.light .text-amber-300, html.light .text-amber-400 { color:#d97706 !important; }
+html.light .text-indigo-200 { color:#4338ca !important; }
+html.light .text-indigo-300, html.light .text-indigo-400 { color:#4f46e5 !important; }
+html.light .text-violet-200 { color:#6d28d9 !important; }
+html.light .text-violet-300, html.light .text-violet-400 { color:#7c3aed !important; }
+html.light .text-cyan-200 { color:#0e7490 !important; }
+html.light .text-cyan-300, html.light .text-cyan-400 { color:#0891b2 !important; }
+html.light .text-sky-200 { color:#0369a1 !important; }
+html.light .text-sky-300, html.light .text-sky-400 { color:#0284c7 !important; }
+html.light .text-green-300, html.light .text-green-400 { color:#16a34a !important; }
+html.light .text-red-300,   html.light .text-red-400   { color:#dc2626 !important; }
+html.light .text-yellow-300, html.light .text-yellow-400 { color:#ca8a04 !important; }
+html.light .text-orange-300, html.light .text-orange-400 { color:#ea580c !important; }
+html.light .text-blue-300,  html.light .text-blue-400  { color:#2563eb !important; }
+html.light .text-pink-300,  html.light .text-pink-400  { color:#db2777 !important; }
+html.light .text-purple-300, html.light .text-purple-400 { color:#9333ea !important; }
+html.light .text-teal-300,  html.light .text-teal-400  { color:#0d9488 !important; }
+html.light .text-fuchsia-300, html.light .text-fuchsia-400 { color:#c026d3 !important; }
+html.light .text-lime-300,  html.light .text-lime-400  { color:#65a30d !important; }
+
+/* ---------- Big figures & headings pop ---------- */
+html.light .fig { color: #0d1117 !important; }
+html.light .font-display { letter-spacing: -0.01em; }
+
+/* ---------- Print (light, always clean) ---------- */
+@media print {
+  html.light body {
+    background: #ffffff !important;
+    color: #000000 !important;
+  }
+}
