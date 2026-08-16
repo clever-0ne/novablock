@@ -54,7 +54,7 @@ function doTransfer() {
     const fee = transferType === 'external' ? amt * 0.005 : 0;
     const asset = $('transferAsset').value;
     setTimeout(() => {
-        TX_DATA.unshift({ type: 'transfer', asset, amount: -(amt + fee), date: todayStr(), time: nowStr(), status: 'completed' });
+        TX_DATA.unshift({ id: txId(), type: 'transfer', asset, amount: -(amt + fee), date: todayStr(), time: nowStr(), status: 'completed' });
         saveApp();
         renderTransactions();
         renderTransfer();

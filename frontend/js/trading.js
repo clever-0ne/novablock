@@ -77,7 +77,7 @@ function doTrade() {
         const qty = amt / a.price;
         STOCK_POSITIONS[a.sym] = (STOCK_POSITIONS[a.sym] || 0) + qty;
         setBalances({ amount: getBalance() - amt });
-        const tx = { type: 'trade', asset: a.name, amount: -amt, date: todayStr(), time: nowStr(), status: 'completed' };
+        const tx = { id: txId(), type: 'trade', asset: a.name, amount: -amt, date: todayStr(), time: nowStr(), status: 'completed' };
         TX_DATA.unshift(tx);
         saveApp();
         if (typeof notifyTransaction === 'function') notifyTransaction(tx);
@@ -89,7 +89,7 @@ function doTrade() {
         STOCK_POSITIONS[a.sym] = held - qty;
         if (STOCK_POSITIONS[a.sym] <= 0.000001) delete STOCK_POSITIONS[a.sym];
         setBalances({ amount: getBalance() + amt * TRADE_SELL_MULTIPLIER });
-        const tx = { type: 'trade', asset: a.name, amount: amt * TRADE_SELL_MULTIPLIER, date: todayStr(), time: nowStr(), status: 'completed' };
+        const tx = { id: txId(), type: 'trade', asset: a.name, amount: amt * TRADE_SELL_MULTIPLIER, date: todayStr(), time: nowStr(), status: 'completed' };
         TX_DATA.unshift(tx);
         saveApp();
         if (typeof notifyTransaction === 'function') notifyTransaction(tx);

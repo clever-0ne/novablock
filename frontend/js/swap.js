@@ -142,7 +142,7 @@ function doSwap() {
         from.bal -= amt;                 /* $ value leaves the source coin */
         to.bal += amt - SWAP_FEE_USD;    /* $ value enters the destination coin, net of fee */
         const received = (amt - SWAP_FEE_USD) / to.rate;   /* destination coin quantity */
-        const tx = { type: 'swap', asset: from.name, to: to.name, amount: -amt, date: todayStr(), time: nowStr(), status: 'completed' };
+        const tx = { id: txId(), type: 'swap', asset: from.name, to: to.name, amount: -amt, date: todayStr(), time: nowStr(), status: 'completed' };
         TX_DATA.unshift(tx);
         saveHoldings();
         if (typeof notifyTransaction === 'function') notifyTransaction(tx);

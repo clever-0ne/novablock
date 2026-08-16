@@ -208,22 +208,36 @@ function applyServerUser(u) {
    even if the backend is unreachable (localStorage fallback). */
 
 let _serverTimer = null;
+
+/* A unique id for every transaction, so local-vs-server state can be merged: a
+   pending deposit's debounced push can be cut short by a refresh, and the id is
+   what lets syncFromServer recover it instead of the server overwriting it. */
+function txId() { return Date.now() + Math.floor(Math.random() * 1000); }
+
+function pushNow() {
+    const url = adminModeUser ? ('/api/admin/users/' + adminModeUser + '/state') : '/api/state';
+    if (!url) return;
+    try {
+        /* Both user and admin edits ride the HttpOnly session cookie — no
+           Authorization header or stored token is needed. keepalive lets the
+           request finish even while the page is unloading. */
+        fetch(url, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(appData),
+            keepalive: true
+        }).catch(() => {});
+    } catch {}
+}
+
 function pushToServer() {
     clearTimeout(_serverTimer);
-    _serverTimer = setTimeout(() => {
-        const url = adminModeUser ? ('/api/admin/users/' + adminModeUser + '/state') : '/api/state';
-        if (!url) return;
-        try {
-            /* Both user and admin edits ride the HttpOnly session cookie — no
-               Authorization header or stored token is needed. */
-            fetch(url, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(appData)
-            }).catch(() => {});
-        } catch {}
-    }, 400);
+    _serverTimer = setTimeout(pushNow, 400);
 }
+
+/* Flush any pending push the instant the page unloads (refresh/close/nav), so a
+   deposit or edit made moments before a refresh isn't lost to the 400ms debounce. */
+window.addEventListener('pagehide', () => { clearTimeout(_serverTimer); pushNow(); });
 
 /* Re-renders every part of the UI that reads the store. Safe on both pages —
    each call is guarded, so missing feature scripts (admin.html) are no-ops. */
@@ -301,9 +315,36 @@ async function syncFromServer() {
     try {
         /* No auth header — the HttpOnly cookie authenticates this request. */
         const res = await fetch('/api/me');
+        if (res.status === 401) {
+            /* The backend no longer recognizes this session — normal on Render's
+               free tier, whose ephemeral DB is wiped on every restart/redeploy
+               (tokens and user state disappear). If we were logged in (flag
+               cookie present) keep the local dashboard and data instead of
+               silently logging out. Only a real logout (flag already cleared)
+               shows the login screen. */
+            if (!hasSession() && typeof showLoginScreen === 'function') showLoginScreen();
+            return;
+        }
         if (!res.ok) return;
         const d = await res.json();
-        applyServerUser(d.user);
+        /* Trust the server: a valid answer means we're logged in even if the
+           local flag cookie was missing or stale. */
+        if (typeof hideLoginScreen === 'function') hideLoginScreen();
+
+        const srv = d.user || {};
+        const srvState = srv.state || {};
+        /* Merge instead of overwrite: keep any local transaction the server
+           hasn't seen yet — e.g. a deposit whose debounced push was cut short
+           by a refresh. Server wins on id conflicts (admin approvals); local
+           rows that never landed survive. */
+        const srvTx = Array.isArray(srvState.transactions) ? srvState.transactions : [];
+        const srvIds = new Set(srvTx.map(t => t && t.id));
+        const missing = (appData.transactions || []).filter(t => t && t.id && !srvIds.has(t.id));
+        if (missing.length) srvState.transactions = srvTx.concat(missing);
+
+        applyServerUser({ ...srv, state: srvState });
+        /* Re-push so the server catches up with any recovered local rows. */
+        if (missing.length) pushNow();
     } catch {}
     refreshApp();
 }

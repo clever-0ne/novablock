@@ -126,7 +126,7 @@ function handleDeposit(e) {
     const to = (DEPOSIT_ADDRESSES || {})[method] || '';
 
     // Pending until admin approves — approval credits the coin's holding.
-    TX_DATA.unshift({ type: 'deposit', asset, amount: amt, date: todayStr(), time: nowStr(), status: 'pending', to });
+    TX_DATA.unshift({ id: txId(), type: 'deposit', asset, amount: amt, date: todayStr(), time: nowStr(), status: 'pending', to });
     saveApp();
     renderTransactions();
     renderDashboardRecent();
@@ -154,7 +154,7 @@ function handleWithdraw(e) {
     const dest = $('withdrawDestination').value.trim();
     if (!dest) { showToast('Enter a wallet destination'); return; }
     // Pending until admin approves — approval deducts the coin's holding.
-    TX_DATA.unshift({ type: 'withdrawal', asset: coin, amount: -amt, date: todayStr(), time: nowStr(), status: 'pending' });
+    TX_DATA.unshift({ id: txId(), type: 'withdrawal', asset: coin, amount: -amt, date: todayStr(), time: nowStr(), status: 'pending' });
     saveApp();
     renderTransactions();
     renderDashboardRecent();

@@ -572,6 +572,7 @@ function adminAddTx() {
     const amount = parseFloat($('adminTxAmount').value) || 0;
     if (!amount) { showToast('Enter a transaction amount'); return; }
     const tx = {
+        id: txId(),
         type: $('adminTxType').value,
         asset: $('adminTxAsset').value,
         amount,
