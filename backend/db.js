@@ -51,6 +51,13 @@ try {
   if (!cols.includes('html_body')) db.exec('ALTER TABLE emails ADD COLUMN html_body TEXT');
 } catch {}
 
+/* Migration: store the SMTP failure reason so the admin log shows why a send
+   failed instead of a bare "failed" status. */
+try {
+  const cols = db.prepare('PRAGMA table_info(emails)').all().map(c => c.name);
+  if (!cols.includes('failure')) db.exec('ALTER TABLE emails ADD COLUMN failure TEXT');
+} catch {}
+
 /* Migration: token sessions expire (adds the expires_at column). */
 try {
   const cols = db.prepare('PRAGMA table_info(tokens)').all().map(c => c.name);
@@ -320,9 +327,9 @@ function revokeToken(token) {
 }
 
 /* ---------- emails ---------- */
-function logEmail({ userId, toEmail, template, subject, text, html, status }) {
-  db.prepare('INSERT INTO emails (user_id, to_email, template, subject, body, html_body, status, created_at) VALUES (?,?,?,?,?,?,?,?)')
-    .run(userId || null, toEmail || '', template || '', subject || '', text || '', html || '', status || 'logged', new Date().toISOString());
+function logEmail({ userId, toEmail, template, subject, text, html, status, failure }) {
+  db.prepare('INSERT INTO emails (user_id, to_email, template, subject, body, html_body, status, failure, created_at) VALUES (?,?,?,?,?,?,?,?,?)')
+    .run(userId || null, toEmail || '', template || '', subject || '', text || '', html || '', status || 'logged', failure || '', new Date().toISOString());
 }
 function allEmails() {
   return db.prepare('SELECT * FROM emails ORDER BY id DESC').all().map(e => ({
@@ -334,6 +341,7 @@ function allEmails() {
     body: e.body,
     html: e.html_body,
     status: e.status,
+    failure: e.failure,
     createdAt: e.created_at
   }));
 }

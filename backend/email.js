@@ -18,7 +18,9 @@ const db = require('./db');
 const config = require('./email-config');
 
 function emailConfigured() {
-  return !!(config.smtp.host && config.smtp.user);
+  /* All three must be present — an empty SMTP_PASS makes the transport fail
+     auth on every send while still claiming the feature is configured. */
+  return !!(config.smtp.host && config.smtp.user && config.smtp.pass);
 }
 
 let _transport = null;
@@ -291,8 +293,12 @@ async function sendEmail({ userId, to, template, subject, text, html }) {
     db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'sent' });
     return { ok: true, status: 'sent', id: info.messageId };
   } catch (err) {
-    db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'failed' });
-    return { ok: false, status: 'failed', error: String((err && err.message) || err) };
+    /* Record the transport's error message so the admin log can show exactly
+       why delivery failed (bad SMTP_PASS, unverified from-domain, recipient
+       rejection, etc.) instead of a bare "failed". */
+    const failure = String((err && err.message) || err);
+    db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'failed', failure });
+    return { ok: false, status: 'failed', error: failure };
   }
 }
 

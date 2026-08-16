@@ -306,7 +306,9 @@ function adminRenderEmailLog() {
                     <td class="px-4 py-3 text-slate-300">${esc(e.toEmail)}</td>
                     <td class="px-4 py-3"><span class="px-2 py-0.5 text-[10px] font-semibold bg-white/5 text-slate-300 border border-white/10 rounded-md">${esc(e.template)}</span></td>
                     <td class="px-4 py-3 text-slate-200 max-w-[220px] truncate" title="${esc(e.subject)}">${esc(e.subject)}</td>
-                    <td class="px-4 py-3"><span class="px-2 py-0.5 text-[10px] font-semibold ${st[1]} border rounded-md">${st[0]}</span></td>
+                    <td class="px-4 py-3">${e.failure
+                        ? `<span class="px-2 py-0.5 text-[10px] font-semibold ${st[1]} border rounded-md cursor-help" title="${esc(e.failure)}"><i class="fa-solid fa-circle-exclamation mr-1"></i>${st[0]}</span>`
+                        : `<span class="px-2 py-0.5 text-[10px] font-semibold ${st[1]} border rounded-md">${st[0]}</span>`}</td>
                     <td class="px-4 py-3 text-slate-500 hidden md:table-cell">${time}</td>
                     <td class="px-4 py-3 text-right"><button onclick="adminToggleMailBody(${e.id})" class="px-2.5 py-1.5 rounded-lg text-xs text-indigo-300/80 hover:bg-indigo-500/10 hover:text-indigo-300 transition" title="Preview"><i class="fa-solid fa-eye"></i></button></td>
                 </tr>
