@@ -41,6 +41,37 @@ function transport() {
   return _transport;
 }
 
+/* Render's free tier blocks ALL outbound SMTP (ports 25/465/587) since
+   Sept 26 2025 — connections just hang and time out. HTTPS (port 443) is never
+   blocked, so for Resend we deliver over its REST API instead of SMTP. The API
+   key is the same re_… key as SMTP_PASS and the same verified from-domain.
+   Non-Resend providers (Gmail/Brevo/Mailgun) still use nodemailer via SMTP. */
+const IS_RESEND = /(^|\.)resend\.com$/i.test(config.smtp.host || '');
+
+async function deliverViaResendApi({ from, to, subject, text, html }) {
+  const res = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      'Authorization': 'Bearer ' + config.smtp.pass,
+      'Content-Type': 'application/json'
+    },
+    signal: AbortSignal.timeout(20000),
+    body: JSON.stringify({
+      from,
+      to,
+      subject,
+      text: text || '',
+      html: html || '',
+      attachments: LOGO_B64
+        ? [{ filename: 'logo.png', content: LOGO_B64, content_type: 'image/png', content_id: LOGO_CID }]
+        : undefined
+    })
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) throw new Error(data.message || ('Resend API returned HTTP ' + res.status));
+  return data.id;
+}
+
 /* ---------- helpers ---------- */
 function esc(s) {
   return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -70,8 +101,14 @@ function genCode(len) {
    email. Falls back to the text-only header if favicon.png is missing. */
 let LOGO_PATH = path.join(__dirname, '..', 'frontend', 'favicon.png');
 let LOGO_CID = null;
+let LOGO_B64 = null;
 let logoImg = '';
-try { if (fs.existsSync(LOGO_PATH)) LOGO_CID = 'novablock-logo'; } catch {}
+try {
+  if (fs.existsSync(LOGO_PATH)) {
+    LOGO_CID = 'novablock-logo';
+    LOGO_B64 = fs.readFileSync(LOGO_PATH).toString('base64');
+  }
+} catch {}
 if (LOGO_CID) {
   logoImg = '<div style="margin:0 0 14px;">'
     + '<img src="cid:' + LOGO_CID + '" width="56" height="56" alt="NovaBlock.io" '
@@ -287,16 +324,18 @@ async function sendEmail({ userId, to, template, subject, text, html }) {
       db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'logged' });
       return { ok: true, status: 'logged' };
     }
-    const info = await transport().sendMail({
-      from: config.from,
-      to,
-      subject: subject || '',
-      text: text || '',
-      html: html || '',
-      attachments: LOGO_CID ? [{ filename: 'logo.png', path: LOGO_PATH, cid: LOGO_CID }] : undefined
-    });
+    const delivered = IS_RESEND
+      ? await deliverViaResendApi({ from: config.from, to, subject: subject || '', text: text || '', html: html || '' })
+      : await transport().sendMail({
+          from: config.from,
+          to,
+          subject: subject || '',
+          text: text || '',
+          html: html || '',
+          attachments: LOGO_CID ? [{ filename: 'logo.png', path: LOGO_PATH, cid: LOGO_CID }] : undefined
+        });
     db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'sent' });
-    return { ok: true, status: 'sent', id: info.messageId };
+    return { ok: true, status: 'sent', id: typeof delivered === 'string' ? delivered : delivered.messageId };
   } catch (err) {
     /* Record the transport's error message so the admin log can show exactly
        why delivery failed (bad SMTP_PASS, unverified from-domain, recipient
