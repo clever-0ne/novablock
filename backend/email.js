@@ -17,6 +17,11 @@ const path = require('path');
 const db = require('./db');
 const config = require('./email-config');
 
+/* Dashboard URL used for every email CTA — derived from SITE_URL so the link
+   works on the live host (localhost in dev, your Render URL in production)
+   instead of pointing at a dead localhost. */
+const DASHBOARD_URL = (config.siteUrl || '').replace(/\/+$/, '') + '/dashboard.html';
+
 function emailConfigured() {
   /* All three must be present — an empty SMTP_PASS makes the transport fail
      auth on every send while still claiming the feature is configured. */
@@ -165,7 +170,7 @@ function welcomeInner(u) {
     + '<li>Complete <strong style="color:#e2e8f0;">KYC verification</strong> to unlock deposits and withdrawals.</li>'
     + '<li>Make a deposit and start trading stocks and crypto.</li>'
     + '</ol>'
-    + ctaButton(config.siteUrl, 'Go to your dashboard')
+    + ctaButton(DASHBOARD_URL, 'Go to your dashboard')
     + p('<span style="font-size:12px;color:#475569;">Need help? Reply to this email and our team will assist you.</span>', 'margin-bottom:0;');
 }
 
@@ -192,7 +197,7 @@ function kycInner(u, level) {
     + p(all
         ? 'You are now fully verified. Deposits, withdrawals and external transfers are unlocked.'
         : 'Continue with the remaining levels to unlock withdrawals and higher limits.')
-    + ctaButton(config.siteUrl, 'View your account');
+    + ctaButton(DASHBOARD_URL, 'View your account');
 }
 
 function customInner(subject, message, u) {
@@ -220,7 +225,7 @@ const TEMPLATES = {
   welcome: {
     subject: () => 'Welcome to NovaBlock.io — your account is ready',
     build: u => ({
-      text: 'Hi {{name}},\n\nWelcome to NovaBlock.io — your account has been created successfully.\n\nAccount ID: {{accountId}}\n\nNext steps:\n1. Complete your email & phone verification in the KYC section\n2. Make a deposit to fund your account\n3. Start trading stocks and crypto\n\nIf you have any questions, just reply to this email.\n\n— The NovaBlock.io Team',
+      text: 'Hi {{name}},\n\nWelcome to NovaBlock.io — your account has been created successfully.\n\nAccount ID: {{accountId}}\n\nNext steps:\n1. Open your dashboard: ' + DASHBOARD_URL + '\n2. Complete your email & phone verification in the KYC section\n3. Make a deposit to fund your account\n4. Start trading stocks and crypto\n\nIf you have any questions, just reply to this email.\n\n— The NovaBlock.io Team',
       html: welcomeInner(u)
     })
   },
