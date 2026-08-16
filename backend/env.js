@@ -19,12 +19,14 @@ const isProd = NODE_ENV === 'production';
 function required(name, devDefault) {
   const v = process.env[name];
   if (v !== undefined && v !== '') return v;
+  /* A provided fallback applies in every environment — only SECRETS (which are
+     passed without a default) hard-fail in production. */
+  if (devDefault !== undefined) {
+    console.warn('[env] WARNING: ' + name + ' is not set — using the fallback. Put a real value in backend/.env or your host before going live.');
+    return devDefault;
+  }
   if (isProd) {
     throw new Error('Missing required environment variable: ' + name + ' (set it in backend/.env or your host)');
-  }
-  if (devDefault !== undefined) {
-    console.warn('[env] WARNING: ' + name + ' is not set — using the development fallback. Put a real value in backend/.env before going live.');
-    return devDefault;
   }
   return '';
 }
