@@ -15,6 +15,9 @@ function seedState() {
   return {
     balances: { amount: 0, bonus: 0, deposit: 0, withdrawal: 0 },
     profile: { fullName: '', username: '', email: '', phone: '', dob: '', street: '', city: '', state: '', postal: '', country: '', joined: '', accountId: '', referral: '' },
+    /* The referring user's id — set when this account was created via a
+       ?ref=CODE link. Drives the referrer's first-deposit bonus. */
+    referrer: '',
     transactions: [],
     referrals: [],
     refStats: { pending: 0 },
@@ -99,6 +102,8 @@ function normalizeState(s) {
   };
 
   out.positions = out.positions && typeof out.positions === 'object' && !Array.isArray(out.positions) ? out.positions : {};
+
+  out.referrer = out.referrer === undefined || out.referrer === null ? '' : String(out.referrer);
 
   return out;
 }

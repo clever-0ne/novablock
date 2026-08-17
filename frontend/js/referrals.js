@@ -22,7 +22,9 @@ function tierBadge(tier) {
 
 function renderReferrals() {
     const link = $('refLink');
-    if (link) link.value = 'https://novablock.io/ref/' + profile.referral;
+    /* Live referral link — built from the current origin so it works in prod
+       (novablock.onrender.com) and in local dev without hardcoding a domain. */
+    if (link) link.value = location.origin + '/signup.html?ref=' + encodeURIComponent(profile.referral);
 
     const active = REF_DATA.filter(r => r.status === 'active').length;
     const earned = REF_DATA.reduce((a, r) => a + r.earned, 0);

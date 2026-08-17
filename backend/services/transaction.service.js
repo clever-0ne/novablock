@@ -10,6 +10,9 @@ const crypto = require('crypto');
 const { pool } = require('../db/pool');
 const { normalizeState } = require('../utils/state');
 
+/* Referrer payout: 10% of the referred user's first approved deposit. */
+const REFERRAL_BONUS_RATE = 0.10;
+
 function todayStr() {
   return new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
 }
@@ -73,6 +76,34 @@ async function setTxStatus(userId, txId, action) {
       if (tx.type === 'deposit') {
         state.balances.amount += amt;       /* cash only — no holdings double-credit */
         state.balances.deposit += amt;
+
+        /* First approved deposit pays the referrer a bonus, all inside this
+           same DB transaction (referrer row locked with FOR UPDATE, so no
+           double-payout even with concurrent approvals). */
+        if (state.referrer) {
+          const rr = await client.query('SELECT state FROM users WHERE id = $1 FOR UPDATE', [state.referrer]);
+          if (rr.rows.length) {
+            const refState = normalizeState(rr.rows[0].state);
+            const entry = (refState.referrals || []).find(x => String(x.id) === String(userId));
+            if (entry && entry.status !== 'active') {
+              const bonus = Math.round(amt * REFERRAL_BONUS_RATE * 100) / 100;
+              refState.balances.amount += bonus;
+              refState.balances.bonus += bonus;
+              entry.status = 'active';
+              entry.earned = bonus;
+              refState.transactions.unshift({
+                id: 'srv-' + crypto.randomUUID(), type: 'bonus', asset: 'Referral',
+                amount: bonus, date: todayStr(), time: nowStr(), status: 'completed'
+              });
+              refState.notifications.unshift({
+                id: Date.now(), title: 'Referral bonus earned',
+                body: 'You earned $' + bonus.toFixed(2) + ' from ' + (state.profile.fullName || 'a referred user') + "'s first deposit",
+                time: nowStr() + ' · ' + todayStr(), read: false
+              });
+              await client.query('UPDATE users SET state = $1 WHERE id = $2', [JSON.stringify(refState), state.referrer]);
+            }
+          }
+        }
       } else if (tx.type === 'withdrawal') {
         state.balances.amount = Math.max(0, state.balances.amount - amt);
         state.balances.withdrawal += amt;

@@ -58,7 +58,7 @@ function rowToUser(r) {
 function rand4() { return String(Math.floor(Math.random() * 9000) + 1000); }
 
 /* ---------- users ---------- */
-async function createUser({ email, password, name, phone }) {
+async function createUser({ email, password, name, phone, referrerId }) {
   const state = seedState();
   const base = String(email).split('@')[0].replace(/[^a-z0-9]/gi, '').slice(0, 12) || String(email).split('@')[0];
   state.profile.fullName = name || '';
@@ -67,12 +67,39 @@ async function createUser({ email, password, name, phone }) {
   state.profile.phone = phone || '';
   state.profile.joined = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
   state.profile.accountId = 'PD-' + rand4() + '-' + rand4();
-  state.profile.referral = (base + '-' + new Date().getFullYear()).toUpperCase();
+  /* Unique referral code: email-prefix + year + 4-digit suffix, so two users
+     with the same prefix can't share a code (which would misattribute bonuses). */
+  state.profile.referral = (base + '-' + new Date().getFullYear() + '-' + rand4()).toUpperCase();
+  if (referrerId) state.referrer = String(referrerId);
   const r = await query(
     'INSERT INTO users (email, password, name, phone, state, kyc) VALUES ($1,$2,$3,$4,$5,$6) RETURNING id',
     [String(email).toLowerCase().trim(), hashPassword(password), name || '', phone || '', JSON.stringify(normalizeState(state)), '{}']
   );
   return getUser(Number(r.rows[0].id));
+}
+
+/* Finds the user who owns a given referral code (state.profile.referral). */
+async function getUserByReferral(code) {
+  const r = await query("SELECT * FROM users WHERE lower(state->'profile'->>'referral') = lower($1) LIMIT 1", [String(code || '').trim()]);
+  return r.rows.length ? rowToUser(r.rows[0]) : null;
+}
+
+/* Adds a newly-signed-up user to their referrer's referrals list (inactive —
+   it flips to active and pays out when the referred user's first deposit is
+   approved, see services/transaction.service.js). */
+async function recordReferral(referrerId, referred) {
+  const r = await query('SELECT state FROM users WHERE id = $1', [referrerId]);
+  if (!r.rows.length) return;
+  const state = normalizeState(r.rows[0].state);
+  const exists = state.referrals.some(x => String(x.id) === String(referred.id));
+  if (exists) return;
+  state.referrals.push({
+    id: Number(referred.id),
+    name: referred.name || String(referred.email).split('@')[0],
+    joined: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    status: 'inactive', volume: 0, earned: 0, tier: 'Silver'
+  });
+  await query('UPDATE users SET state = $1 WHERE id = $2', [JSON.stringify(state), referrerId]);
 }
 
 async function getUser(id) {
@@ -312,7 +339,7 @@ async function resetAll() {
 module.exports = {
   hashPassword, verifyPassword, isLegacyHash, setPassword,
   seedState, normalizeState, num,
-  createUser, getUser, getUserByEmail, emailExists,
+  createUser, getUser, getUserByEmail, getUserByReferral, recordReferral, emailExists,
   saveUserState, saveUserKyc, listUsers, deleteUser,
   setEmailVerified, setVerifyCode,
   setResetToken, clearResetToken, resetCodeUserByEmail, bumpResetAttempts, revokeAllUserTokens,

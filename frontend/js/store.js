@@ -74,6 +74,7 @@ function seedApp() {
     return {
         balances: { ...DEFAULT_BALANCES },
         profile: { ...DEFAULT_PROFILE },
+        referrer: '',
         transactions: DEFAULT_TRANSACTIONS.map(t => ({ ...t })),
         referrals: DEFAULT_REFERRALS.map(r => ({ ...r })),
         refStats: { ...DEFAULT_REF_STATS },
@@ -138,7 +139,8 @@ function loadApp() {
         notifications: Array.isArray(saved.notifications) ? saved.notifications : d.notifications,
         depositAddresses: { ...d.depositAddresses, ...(saved.depositAddresses || {}) },
         holdings: { ...d.holdings, ...(saved.holdings || {}) },
-        positions: { ...(saved.positions || {}) }
+        positions: { ...(saved.positions || {}) },
+        referrer: saved.referrer || ''
     };
 }
 
@@ -225,7 +227,8 @@ function reloadApp() {
         notifications: Array.isArray(saved.notifications) ? saved.notifications : d.notifications,
         depositAddresses: { ...d.depositAddresses, ...(saved.depositAddresses || {}) },
         holdings: { ...d.holdings, ...(saved.holdings || {}) },
-        positions: { ...(saved.positions || {}) }
+        positions: { ...(saved.positions || {}) },
+        referrer: saved.referrer || ''
     };
     Object.assign(appData, fresh);
     profile = appData.profile;

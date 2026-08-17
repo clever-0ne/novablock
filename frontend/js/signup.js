@@ -8,6 +8,9 @@ function signupSubmit(e) {
     const email = $('suEmail').value.trim();
     const phone = $('suPhone').value.trim();
     const pass = $('suPass').value;
+    /* Referral capture: signup.html?ref=CODE — stored server-side so the
+       referrer gets their bonus when this user's first deposit is approved. */
+    const refCode = new URLSearchParams(location.search).get('ref') || '';
 
     const err = $('suError');
     const showErr = msg => {
@@ -26,7 +29,7 @@ function signupSubmit(e) {
     fetch('/api/auth/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, phone, password: pass })
+        body: JSON.stringify({ name, email, phone, password: pass, refCode })
     }).then(r => r.json()).then(d => {
         if (!d.token) { showErr(d.error || 'Could not create account — try again.'); if (btn) { btn.disabled = false; btn.textContent = 'Create account'; } return; }
         /* New accounts must confirm the emailed code before entering the app. */

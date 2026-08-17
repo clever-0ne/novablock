@@ -30,7 +30,9 @@ const schemas = {
     name: z.string().trim().max(100, 'Name is too long').optional().default(''),
     email: EMAIL,
     phone: z.string().trim().max(30, 'Phone is too long').optional().default(''),
-    password: PASSWORD
+    password: PASSWORD,
+    /* Optional referral code from a ?ref=CODE signup link. */
+    refCode: z.string().trim().max(40).optional().default('')
   }),
   login: z.object({
     email: EMAIL,

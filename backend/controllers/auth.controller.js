@@ -18,9 +18,17 @@ function issueVerifyCode(user) {
 }
 
 async function register(req, res) {
-  const { name, email, phone, password } = req.valid;
+  const { name, email, phone, password, refCode } = req.valid;
   if (await db.emailExists(email)) return res.status(409).json({ error: 'An account with this email already exists' });
-  const user = await db.createUser({ email, password, name, phone });
+  /* Signed up through a referral link? Resolve the code to the referrer so their
+     first approved deposit triggers the referrer's bonus. A bad code is ignored. */
+  let referrerId = null;
+  if (refCode) {
+    const ref = await db.getUserByReferral(refCode);
+    if (ref) referrerId = ref.id;
+  }
+  const user = await db.createUser({ email, password, name, phone, referrerId });
+  if (referrerId) await db.recordReferral(referrerId, user);
   const token = await db.createToken(user.id);
   sec.setSessionCookie(res, token);
   /* New accounts are unverified: email a 6-digit code they must confirm before
