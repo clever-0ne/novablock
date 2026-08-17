@@ -47,8 +47,19 @@ function bearer(req) {
 
 function auth(req, res, next) {
   const c = req.cookies || {};
-  const token = bearer(req) || c[USER_SESSION_COOKIE] || c[ADMIN_SESSION_COOKIE] || '';
-  const uid = db.tokenUserId(token);
+  let token = bearer(req) || c[USER_SESSION_COOKIE] || c[ADMIN_SESSION_COOKIE] || '';
+  let uid = db.tokenUserId(token);
+  /* Admin routes must be able to use the ADMIN cookie even when the same
+     browser also holds a user session — the user cookie shadows the admin
+     cookie in the fallback chain above, so every /api/admin call would 401
+     (`adminOnly`) and the panel would bounce straight back to its login
+     screen right after signing in. Re-resolve with the admin cookie when the
+     route is admin and the first resolution isn't already an admin token. */
+  if (req.path.startsWith('/api/admin') && uid !== null) {
+    const adminToken = c[ADMIN_SESSION_COOKIE] || '';
+    const adminUid = adminToken ? db.tokenUserId(adminToken) : undefined;
+    if (adminUid === null) { token = adminToken; uid = adminUid; }
+  }
   if (uid === undefined) {
     log('warn', 'unauthorized access attempt -> ' + req.method + ' ' + req.path + ' from ' + req.ip);
     return res.status(401).json({ error: 'Unauthorized' });
