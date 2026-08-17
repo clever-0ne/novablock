@@ -8,7 +8,7 @@
 
     var CONFIG = {
         /* Announcement banner text. Set to '' to disable. */
-        announce: 'Trade stocks & crypto with confidence — new users get a welcome bonus.',
+        announce: 'Trade stocks & crypto with confidence — deposits are reviewed by our team within hours.',
         announceLink: null,                 /* e.g. 'signup.html' */
         contactHref: 'mailto:support@novablock.io',
         contactLabel: 'Contact support',

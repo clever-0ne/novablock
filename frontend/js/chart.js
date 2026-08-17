@@ -15,8 +15,9 @@
         }
 
         /* Series are rebuilt from the current balance (js/store.js getBalance()) so the
-           chart follows admin changes. The curve shape is preserved, offset to the new end. */
-        const CHART_START = { '1D': 1286000, '1W': 1238000, '1M': 1185000, '1Y': 1012000, 'ALL': 615000 };
+           chart follows admin changes. Each period starts at a fraction of the balance
+           and climbs to it, so the curve reflects the account's own value. */
+        const CHART_START = { '1D': 0.985, '1W': 0.96, '1M': 0.92, '1Y': 0.8, 'ALL': 0.55 };
         const PERIODS = {};
 
         function resyncChartSeries() {
@@ -26,8 +27,7 @@
                 Object.keys(CHART_START).forEach(k => { PERIODS[k] = Array(26).fill(0); });
                 return;
             }
-            const delta = end - 1298980;
-            Object.keys(CHART_START).forEach(k => { PERIODS[k] = genSeries(CHART_START[k] + delta, end, 26); });
+            Object.keys(CHART_START).forEach(k => { PERIODS[k] = genSeries(end * CHART_START[k], end, 26); });
         }
         resyncChartSeries();
 

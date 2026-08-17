@@ -87,13 +87,9 @@ function kycDoneCount() {
     return [1, 2, 3].filter(l => (s[l] && s[l].done) || (l === 1 && emailVerified())).length;
 }
 
-function setBtnLoading(btn, label) {
-    btn.disabled = true;
-    btn.classList.add('opacity-60');
-    btn.textContent = label;
-}
-
 /* ---------- Submissions (simulated review, saved locally) ---------- */
+/* Note: setBtnLoading/btnDone come from auth.js (loaded after this file on
+   dashboard.html) — this file intentionally does not redefine them. */
 function submitKYCLevel(level) {
     if (kycLevelStatus(level) === 'locked') return;
 

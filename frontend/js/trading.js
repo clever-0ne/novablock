@@ -27,7 +27,6 @@ let tradeAssetSym = TRADE_ASSETS[0].sym;
 
 const TRADE_BTN_ACTIVE = 'py-2.5 rounded-lg text-sm font-semibold bg-gradient-to-r from-indigo-500 to-violet-500 text-white shadow-accent';
 const TRADE_BTN_INACTIVE = 'py-2.5 rounded-lg text-sm font-semibold bg-white/5 text-slate-400 hover:text-white';
-const TRADE_SELL_MULTIPLIER = 5;   /* selling pays out 5× the entered amount — always a profit */
 
 function tradeAsset() { return TRADE_ASSETS.find(a => a.sym === tradeAssetSym) || TRADE_ASSETS[0]; }
 
@@ -64,7 +63,7 @@ function updateTradeEstimate() {
     set('tradeEstimate', amt > 0
         ? tradeSide === 'buy'
             ? '≈ ' + (amt / a.price).toFixed(4) + ' shares'
-            : '≈ $' + fmt(amt * TRADE_SELL_MULTIPLIER) + ' payout for ' + (amt / a.price).toFixed(4) + ' shares'
+            : '≈ $' + fmt(amt) + ' payout for ' + (amt / a.price).toFixed(4) + ' shares'
         : '—');
 }
 
@@ -88,12 +87,12 @@ function doTrade() {
         if (qty > held) { showToast('You only hold ' + held.toFixed(4) + ' shares of ' + a.sym); return; }
         STOCK_POSITIONS[a.sym] = held - qty;
         if (STOCK_POSITIONS[a.sym] <= 0.000001) delete STOCK_POSITIONS[a.sym];
-        setBalances({ amount: getBalance() + amt * TRADE_SELL_MULTIPLIER });
-        const tx = { id: txId(), type: 'trade', asset: a.name, amount: amt * TRADE_SELL_MULTIPLIER, date: todayStr(), time: nowStr(), status: 'completed' };
+        setBalances({ amount: getBalance() + amt });
+        const tx = { id: txId(), type: 'trade', asset: a.name, amount: amt, date: todayStr(), time: nowStr(), status: 'completed' };
         TX_DATA.unshift(tx);
         saveApp();
         if (typeof notifyTransaction === 'function') notifyTransaction(tx);
-        showToast('Sold ' + qty.toFixed(4) + ' ' + a.sym + ' for $' + fmt(amt * TRADE_SELL_MULTIPLIER));
+        showToast('Sold ' + qty.toFixed(4) + ' ' + a.sym + ' for $' + fmt(amt));
     }
     renderTrade();
     renderTransactions();
