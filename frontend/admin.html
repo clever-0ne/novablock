@@ -103,8 +103,9 @@
 
                 <nav class="space-y-1.5 flex-1">
                     <a href="#" data-anav="users" onclick="adminShowView('users'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-users w-4 text-center"></i> Users</a>
+                    <a href="#" data-anav="pending" onclick="adminShowView('pending'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-clock w-4 text-center"></i> Pending Approvals <span id="adminPendingCount" class="hidden ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">0</span></a>
                     <a href="#" data-anav="overview" onclick="adminShowView('overview'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-gauge-high w-4 text-center"></i> Overview</a>
-                    <a href="#" data-anav="transactions" onclick="adminShowView('transactions'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-list-check w-4 text-center"></i> Transactions <span id="adminPendingCount" class="hidden ml-auto text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-amber-500/20 text-amber-300 border border-amber-500/30">0</span></a>
+                    <a href="#" data-anav="transactions" onclick="adminShowView('transactions'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-list-check w-4 text-center"></i> Transactions</a>
                     <a href="#" data-anav="kyc" onclick="adminShowView('kyc'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-user-check w-4 text-center"></i> KYC</a>
                     <a href="#" data-anav="profile" onclick="adminShowView('profile'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-user-pen w-4 text-center"></i> Profile</a>
                     <a href="#" data-anav="referrals" onclick="adminShowView('referrals'); return false;" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition"><i class="fa-solid fa-share-nodes w-4 text-center"></i> Referrals</a>
@@ -149,7 +150,7 @@
                     <!-- ===== Pending-approval notification bar ===== -->
                     <div id="adminPendingBar" class="hidden items-center justify-between gap-3 px-4 py-3 rounded-xl border border-amber-500/25 bg-amber-500/10 text-sm">
                         <span class="text-amber-200"><i class="fa-solid fa-clock mr-2"></i><span id="adminPendingText"></span></span>
-                        <button onclick="adminShowView('transactions')" class="shrink-0 px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-xs font-semibold text-amber-200 transition">Review</button>
+                        <button onclick="adminShowView('pending')" class="shrink-0 px-3 py-1.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-xs font-semibold text-amber-200 transition">Review</button>
                     </div>
 
                     <!-- ===== Overview ===== -->
@@ -292,6 +293,13 @@
                                 </table>
                             </div>
                             <p id="adUsersEmpty" class="hidden text-center text-sm text-slate-500 py-10">No users yet. Create an account from the user app or click "Add user".</p>
+                            <div class="mt-4 flex flex-wrap items-center justify-between gap-3">
+                                <span id="adUsersPageInfo" class="text-xs text-slate-500"></span>
+                                <div class="flex gap-2">
+                                    <button id="adUsersPrev" onclick="adminGotoPage(ADMIN_PAGE - 1)" class="px-3 h-9 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white hover:border-white/20 transition disabled:opacity-40 disabled:cursor-not-allowed">Prev</button>
+                                    <button id="adUsersNext" onclick="adminGotoPage(ADMIN_PAGE + 1)" class="px-3 h-9 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-slate-300 hover:text-white hover:border-white/20 transition disabled:opacity-40 disabled:cursor-not-allowed">Next</button>
+                                </div>
+                            </div>
                         </div>
 
                         <div class="flex flex-wrap items-center justify-between gap-3 glass rounded-2xl p-4">
@@ -300,6 +308,30 @@
                                 <p class="text-xs text-slate-500 mt-0.5">Reset the platform — deletes every user, transaction and email.</p>
                             </div>
                             <button onclick="adminResetPlatform()" class="px-4 h-10 rounded-xl bg-rose-500/10 text-rose-300 border border-rose-500/25 hover:bg-rose-500/20 text-xs font-semibold transition">Reset platform</button>
+                        </div>
+                    </div>
+
+                    <!-- ===== Pending Approvals (server queue, all users) ===== -->
+                    <div id="adminview-pending" class="hidden space-y-5">
+                        <div class="rise glass rounded-2xl p-4 sm:p-5">
+                            <h2 class="font-display text-lg font-bold text-white mb-1">Pending Approvals <span class="text-xs font-normal text-slate-500" id="adPendingCount"></span></h2>
+                            <p class="text-xs text-slate-400 mb-4">Deposit and withdrawal requests awaiting review — approving books the user's unified cash balance server-side.</p>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm min-w-[640px]">
+                                    <thead>
+                                        <tr class="text-left text-[11px] uppercase tracking-wider text-slate-500 border-b border-white/5">
+                                            <th class="px-4 py-3">User</th>
+                                            <th class="px-4 py-3">Email</th>
+                                            <th class="px-4 py-3">Type</th>
+                                            <th class="px-4 py-3">Asset</th>
+                                            <th class="px-4 py-3 text-right">Amount</th>
+                                            <th class="px-4 py-3">Requested</th>
+                                            <th class="px-4 py-3 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="adPendingBody"></tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
 
@@ -560,6 +592,7 @@
             <a href="#" data-bnav="users" onclick="adminShowView('users'); return false;"><i class="fa-solid fa-users"></i><span>Users</span></a>
             <a href="#" data-bnav="overview" onclick="adminShowView('overview'); return false;"><i class="fa-solid fa-gauge-high"></i><span>Overview</span></a>
             <a href="#" data-bnav="transactions" onclick="adminShowView('transactions'); return false;"><i class="fa-solid fa-list-check"></i><span>Transactions</span></a>
+            <a href="#" data-bnav="pending" onclick="adminShowView('pending'); return false;"><i class="fa-solid fa-clock"></i><span>Pending</span></a>
             <a href="#" data-bnav="email" onclick="adminShowView('email'); return false;"><i class="fa-solid fa-envelope"></i><span>Email</span></a>
             <a href="#" data-bnav="profile" onclick="adminShowView('profile'); return false;"><i class="fa-solid fa-user-pen"></i><span>Profile</span></a>
             <a href="../dashboard.html" class="bnav-user"><i class="fa-solid fa-right-from-bracket"></i><span>User app</span></a>

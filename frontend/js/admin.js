@@ -1,27 +1,12 @@
 /* ---------- Super-admin panel ---------- */
 /* Manages every registered user. Users live server-side; opening a user loads
    their data into the shared store (js/store.js) and every edit is pushed back
-   to /api/admin/users/:id/state, so records are stored on the server. */
-
-/* ---------- Local helpers (profile.js is not loaded on admin.html) ---------- */
-const NAV_ACTIVE = 'flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500/20 to-violet-500/10 text-white font-medium border border-indigo-500/25 shadow-[0_8px_24px_-12px_rgba(99,102,241,0.5)]';
-const NAV_INACTIVE = 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition';
+   to /api/admin/users/:id/state, so records are stored on the server.
+   Shared helpers (initials / showToast / NAV_ACTIVE / NAV_INACTIVE) come from
+   js/store.js, which loads before this file on admin.html. */
 
 function esc(s) {
     return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-}
-
-function initials(name) {
-    return name.trim().split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase();
-}
-
-function showToast(msg) {
-    const t = $('toast');
-    if (!t) return;
-    $('toastText').textContent = msg;
-    t.classList.remove('opacity-0', 'pointer-events-none');
-    clearTimeout(showToast._t);
-    showToast._t = setTimeout(() => t.classList.add('opacity-0', 'pointer-events-none'), 2400);
 }
 
 /* ---------- Admin auth (password-only login → server admin cookie) ---------- */
@@ -30,7 +15,7 @@ function showToast(msg) {
    never stores a token; hasAdminSession() reads its non-HttpOnly companion
    flag. The admin cookie is SEPARATE from the user's sb_session, so logging
    into the panel never kicks the user app's session in the same browser. */
-const ADMIN_VIEWS = ['users', 'overview', 'transactions', 'kyc', 'profile', 'referrals', 'email'];
+const ADMIN_VIEWS = ['users', 'pending', 'overview', 'transactions', 'kyc', 'profile', 'referrals', 'email'];
 
 function getAdminToken() { return ''; }
 function setAdminToken(t) { /* no-op — session is the HttpOnly cookie */ }
@@ -65,6 +50,7 @@ function handleAdminLogin(e) {
         showAdminApp();
         adminShowView('users');
         adminLoadUsers();
+        adminLoadPending();
         showToast('Welcome, Administrator');
     }).catch(() => { $('adminLoginError').classList.remove('hidden'); })
     .finally(() => { if (btn) { btn.disabled = false; btn.textContent = orig; } });
@@ -94,7 +80,7 @@ function adminSessionExpired() {
 }
 
 /* Pull-to-refresh hook: re-pull every data set instead of a full page reload. */
-window.__pullRefresh = function () { adminLoadUsers(); adminRenderEmailLog(); };
+window.__pullRefresh = function () { adminLoadUsers(); adminLoadPending(); adminRenderEmailLog(); };
 
 /* ---------- Admin view switching (mirrors showView, uses [data-anav]) ---------- */
 function adminShowView(name) {
@@ -124,16 +110,44 @@ function adminShowView(name) {
 let ADMIN_USERS = [];
 let ADMIN_STATS = null;
 let EMAIL_LOG = [];
+/* Server-side pagination/search state (GET /api/admin/users?page&pageSize&q). */
+let ADMIN_PAGE = 1;
+let ADMIN_PAGE_SIZE = 25;
+let ADMIN_TOTAL_PAGES = 1;
+let ADMIN_TOTAL = 0;
+let ADMIN_Q = '';
 
 function adminLoadUsers() {
-    const q = $('adUserSearch') ? $('adUserSearch').value.trim().toLowerCase() : '';
-    fetch('/api/admin/users', { headers: { 'Authorization': 'Bearer ' + getAdminToken() } })
+    const q = $('adUserSearch') ? $('adUserSearch').value.trim() : '';
+    if (q !== ADMIN_Q) { ADMIN_Q = q; ADMIN_PAGE = 1; }
+    fetch('/api/admin/users?page=' + ADMIN_PAGE + '&pageSize=' + ADMIN_PAGE_SIZE + '&q=' + encodeURIComponent(ADMIN_Q),
+        { headers: { 'Authorization': 'Bearer ' + getAdminToken() } })
         .then(r => r.json()).then(d => {
             if (!d || d.error === 'Unauthorized') { adminSessionExpired(); return; }
-            ADMIN_USERS = (d.users || []).filter(u => !q || (u.name + ' ' + u.email + ' ' + u.phone).toLowerCase().includes(q));
+            ADMIN_USERS = d.users || [];
+            ADMIN_TOTAL = d.total || 0;
+            ADMIN_TOTAL_PAGES = d.totalPages || 1;
+            ADMIN_PAGE = d.page || 1;
             renderAdminUsers();
+            renderAdminPagination();
             if (!q) renderAdminStats();
         }).catch(() => showToast('Could not load users'));
+}
+
+function adminGotoPage(p) {
+    const np = Math.min(Math.max(p || 1, 1), ADMIN_TOTAL_PAGES);
+    if (np === ADMIN_PAGE) return;
+    ADMIN_PAGE = np;
+    adminLoadUsers();
+}
+
+function renderAdminPagination() {
+    const info = $('adUsersPageInfo');
+    if (info) info.textContent = 'Page ' + ADMIN_PAGE + ' of ' + ADMIN_TOTAL_PAGES;
+    const prev = $('adUsersPrev');
+    if (prev) prev.disabled = ADMIN_PAGE <= 1;
+    const next = $('adUsersNext');
+    if (next) next.disabled = ADMIN_PAGE >= ADMIN_TOTAL_PAGES;
 }
 
 function renderAdminStats() {
@@ -181,7 +195,7 @@ function renderAdminUsers() {
             </tr>`;
         }).join('');
         const count = $('adUsersCount');
-        if (count) count.textContent = ADMIN_USERS.length + (ADMIN_USERS.length === 1 ? ' account' : ' accounts');
+        if (count) count.textContent = ADMIN_TOTAL + ' account' + (ADMIN_TOTAL === 1 ? '' : 's');
         const empty = $('adUsersEmpty');
         if (empty) empty.classList.toggle('hidden', ADMIN_USERS.length > 0);
     }
@@ -452,12 +466,16 @@ function adminSaveDepositAddresses() {
 }
 
 /* ---------- Pending approvals (deposit / withdrawal submitted by the user) ---------- */
+/* The queue is server-authoritative — GET /api/admin/pending spans ALL users
+   (previously only the open user's pending txs were visible). */
+let ADMIN_PENDING = [];
+
 function pendingTxCount() {
     return TX_DATA.filter(t => t.status === 'pending' && (t.type === 'deposit' || t.type === 'withdrawal')).length;
 }
 
 function updateAdminPendingBar() {
-    const n = pendingTxCount();
+    const n = ADMIN_PENDING.length;
     const bar = $('adminPendingBar'), text = $('adminPendingText');
     if (bar && text) {
         const nouns = n === 1 ? 'approval' : 'approvals';
@@ -477,16 +495,65 @@ function updateAdminPendingBar() {
     }
 }
 
-/* Applies a completed deposit/withdrawal's effect on holdings + fiat balances. */
+function adminLoadPending() {
+    fetch('/api/admin/pending', { headers: { 'Authorization': 'Bearer ' + getAdminToken() } })
+        .then(r => r.json()).then(d => {
+            if (!d || d.error === 'Unauthorized') { adminSessionExpired(); return; }
+            ADMIN_PENDING = d.pending || [];
+            renderAdminPending();
+            updateAdminPendingBar();
+        }).catch(() => {});
+}
+
+function renderAdminPending() {
+    const body = $('adPendingBody');
+    if (!body) return;
+    body.innerHTML = ADMIN_PENDING.map((row, i) => {
+        const t = row.tx;
+        const sign = t.amount > 0 ? '+' : '-';
+        const amtCls = t.amount > 0 ? 'text-emerald-300' : 'text-rose-300';
+        return `<tr class="hover:bg-white/[0.03] transition border-b border-white/5">
+            <td class="px-4 py-3"><span class="text-slate-200 font-semibold">${esc(row.name) || '—'}</span></td>
+            <td class="px-4 py-3 text-slate-400">${esc(row.email)}</td>
+            <td class="px-4 py-3"><span class="px-2 py-0.5 text-[10px] font-semibold ${t.type === 'deposit' ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20' : 'bg-rose-500/15 text-rose-300 border-rose-500/20'} border rounded-md">${t.type === 'deposit' ? 'Deposit' : 'Withdrawal'}</span></td>
+            <td class="px-4 py-3 text-slate-300">${esc(t.asset)}</td>
+            <td class="px-4 py-3 text-right font-semibold fig ${amtCls}">${sign}$${fmt(Math.abs(t.amount))}</td>
+            <td class="px-4 py-3 text-slate-400 hidden md:table-cell">${esc(t.date)} · ${esc(t.time)}</td>
+            <td class="px-4 py-3 text-right whitespace-nowrap">
+                <button onclick="adminPendingAction(${i},'approve')" class="px-2.5 py-1.5 rounded-lg text-xs text-emerald-300/80 hover:bg-emerald-500/10 hover:text-emerald-300 transition" title="Approve"><i class="fa-solid fa-check"></i></button>
+                <button onclick="adminPendingAction(${i},'decline')" class="px-2.5 py-1.5 rounded-lg text-xs text-rose-300/80 hover:bg-rose-500/10 hover:text-rose-300 transition" title="Decline"><i class="fa-solid fa-xmark"></i></button>
+                <button onclick="adminSelectUser(${row.userId},'overview')" class="px-2.5 py-1.5 rounded-lg text-xs text-indigo-300/80 hover:bg-indigo-500/10 hover:text-indigo-300 transition" title="Open user"><i class="fa-solid fa-arrow-right"></i></button>
+            </td>
+        </tr>`;
+    }).join('') || '<tr><td colspan="7" class="text-center text-slate-500 py-10">No pending deposit or withdrawal requests.</td></tr>';
+    const c = $('adPendingCount');
+    if (c) c.textContent = ADMIN_PENDING.length + (ADMIN_PENDING.length === 1 ? ' request' : ' requests');
+}
+
+function adminPendingAction(i, action) {
+    const row = ADMIN_PENDING[i];
+    if (!row) return;
+    fetch('/api/admin/users/' + row.userId + '/tx/' + encodeURIComponent(row.tx.id) + '/' + action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getAdminToken() }
+    }).then(r => r.json()).then(d => {
+        if (d.error) { showToast(d.error || 'Could not process'); return; }
+        showToast('Request ' + (action === 'approve' ? 'approved' : 'declined'));
+        adminLoadPending();
+        adminLoadUsers();
+        if (getAdminMode()) adminReloadManagedUser();
+    }).catch(() => showToast('Could not reach the server'));
+}
+
+/* Applies a completed deposit/withdrawal's effect on the SINGLE unified cash
+   balance. Deposits credit cash only — no more cash + holdings double-credit.
+   HOLDINGS is the coin wallet, funded by swaps, not by deposits. */
 function applyTxFunds(t) {
     const amt = Math.abs(t.amount);
-    const key = assetToKey(t.asset);
     if (t.type === 'deposit') {
-        if (key && HOLDINGS[key] !== undefined) HOLDINGS[key] += amt;
         BALANCE.amount += amt;
         BALANCE.deposit += amt;
     } else if (t.type === 'withdrawal') {
-        if (key && HOLDINGS[key] !== undefined) HOLDINGS[key] = Math.max(0, HOLDINGS[key] - amt);
         BALANCE.amount = Math.max(0, BALANCE.amount - amt);
         BALANCE.withdrawal += amt;
     }
@@ -495,41 +562,52 @@ function applyTxFunds(t) {
 /* Reverses applyTxFunds — used when deleting a completed deposit/withdrawal. */
 function reverseTxFunds(t) {
     const amt = Math.abs(t.amount);
-    const key = assetToKey(t.asset);
     if (t.type === 'deposit') {
-        if (key && HOLDINGS[key] !== undefined) HOLDINGS[key] = Math.max(0, HOLDINGS[key] - amt);
         BALANCE.amount = Math.max(0, BALANCE.amount - amt);
         BALANCE.deposit = Math.max(0, BALANCE.deposit - amt);
     } else if (t.type === 'withdrawal') {
-        if (key && HOLDINGS[key] !== undefined) HOLDINGS[key] += amt;
         BALANCE.amount += amt;
         BALANCE.withdrawal = Math.max(0, BALANCE.withdrawal - amt);
     }
 }
 
+/* Server-authoritative approval: the backend books the unified balance inside
+   one DB transaction, then we re-pull the user so the panel reflects it. */
 function adminApproveTx(i) {
     const t = TX_DATA[i];
     if (!t) return;
-    t.status = 'completed';
-    applyTxFunds(t);
-    saveApp();
-    if (typeof notifyTransaction === 'function') notifyTransaction(t);
-    renderBalance();
-    adminRenderBalance();
-    adminRenderHoldings();
-    adminRenderTxTable();
-    updateAdminPendingBar();
-    showToast('Transaction approved — user balance & holdings updated');
+    adminTxServerAction(t, getAdminMode(), 'approve');
 }
 
 function adminDeclineTx(i) {
     const t = TX_DATA[i];
     if (!t) return;
-    t.status = 'failed';
-    saveApp();
-    adminRenderTxTable();
-    updateAdminPendingBar();
-    showToast('Transaction declined');
+    adminTxServerAction(t, getAdminMode(), 'decline');
+}
+
+function adminTxServerAction(t, userId, action) {
+    if (!userId) { showToast('Open a user from the Users tab first'); return; }
+    fetch('/api/admin/users/' + userId + '/tx/' + encodeURIComponent(t.id) + '/' + action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + getAdminToken() }
+    }).then(r => r.json()).then(d => {
+        if (d.error) { showToast(d.error || 'Could not process'); return; }
+        adminReloadManagedUser();
+        adminLoadPending();
+        showToast(action === 'decline' ? 'Transaction declined' : 'Transaction approved — cash balance updated');
+    }).catch(() => showToast('Could not reach the server'));
+}
+
+/* Re-pulls the currently-managed user into the shared store and re-renders. */
+function adminReloadManagedUser() {
+    const id = getAdminMode();
+    if (!id) return;
+    fetch('/api/admin/users/' + id, { headers: { 'Authorization': 'Bearer ' + getAdminToken() } })
+        .then(r => r.json()).then(d => {
+            if (!d.user) { showToast('User not found'); return; }
+            if (typeof applyServerUser === 'function') applyServerUser(d.user);
+            adminRenderAll();
+        }).catch(() => {});
 }
 
 /* Live two-tab sync: when the managed user edits in this browser, re-render. */
@@ -870,6 +948,7 @@ async function adminBoot() {
         showAdminApp();
         adminShowView('users');
         adminLoadUsers();
+        adminLoadPending();
     } catch {
         adminSessionExpired();
     }

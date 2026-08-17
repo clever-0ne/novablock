@@ -2,25 +2,9 @@
 /* Stocks + crypto bought/sold with the account balance (BALANCE). Positions are
    stored as share counts in the shared store (STOCK_POSITIONS) and persist. */
 
-const TRADE_ASSETS = [
-    { sym: 'AAPL', name: 'Apple',       price: 212.40,  change:  1.8, icon: 'fa-brands fa-apple',           cls: 'text-slate-200' },
-    { sym: 'TSLA', name: 'Tesla',       price: 248.10,  change: -2.3, icon: 'fa-solid fa-car',             cls: 'text-rose-500' },
-    { sym: 'GOOG', name: 'Alphabet',    price: 176.85,  change:  0.9, icon: 'fa-brands fa-google',         cls: 'text-indigo-300' },
-    { sym: 'MSFT', name: 'Microsoft',   price: 428.60,  change:  1.2, icon: 'fa-brands fa-microsoft',      cls: 'text-blue-400' },
-    { sym: 'AMZN', name: 'Amazon',      price: 183.90,  change:  0.4, icon: 'fa-brands fa-amazon',         cls: 'text-amber-300' },
-    { sym: 'NVDA', name: 'Nvidia',      price: 1041.25, change:  3.6, icon: 'fa-solid fa-gamepad',         cls: 'text-emerald-400' },
-    { sym: 'META', name: 'Meta',        price: 512.70,  change:  2.6, icon: 'fa-brands fa-infinity',       cls: 'text-sky-400' },
-    { sym: 'NFLX', name: 'Netflix',     price: 634.15,  change: -1.1, icon: 'fa-solid fa-clapperboard',    cls: 'text-rose-400' },
-    { sym: 'AMD',  name: 'AMD',         price: 158.92,  change:  0.7, icon: 'fa-solid fa-microchip',       cls: 'text-orange-400' },
-    { sym: 'BTC',  name: 'Bitcoin',     price: 60274.00, change:  2.1, icon: 'fa-brands fa-bitcoin',       cls: 'text-amber-500' },
-    { sym: 'ETH',  name: 'Ethereum',    price: 1617.82,  change: -0.8, icon: 'fa-brands fa-ethereum',      cls: 'text-indigo-400' },
-    { sym: 'SOL',  name: 'Solana',      price: 144.28,  change:  3.2, icon: 'fa-solid fa-gem',             cls: 'text-violet-300' },
-    { sym: 'ADA',  name: 'Cardano',     price: 0.4521,   change: -1.4, icon: 'fa-solid fa-layer-group',     cls: 'text-sky-300' },
-    { sym: 'XRP',  name: 'XRP',         price: 0.5230,   change:  0.5, icon: 'fa-solid fa-wave-square',     cls: 'text-slate-300' },
-    { sym: 'DOGE', name: 'Dogecoin',    price: 0.1523,   change:  4.1, icon: 'fa-solid fa-dog',            cls: 'text-amber-300' },
-    { sym: 'LINK', name: 'Chainlink',   price: 14.62,    change: -0.3, icon: 'fa-solid fa-link',           cls: 'text-indigo-300' },
-    { sym: 'BNB',  name: 'BNB',         price: 552.21,   change:  1.1, icon: 'fa-solid fa-coins',          cls: 'text-amber-400' }
-];
+/* Trade universe comes from MARKET_ASSETS (js/market-data.js, loaded before
+   this file) — single source of truth for every price/icon/change in the app. */
+const TRADE_ASSETS = marketList();
 
 let tradeSide = 'buy';
 let tradeAssetSym = TRADE_ASSETS[0].sym;

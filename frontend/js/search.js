@@ -11,14 +11,14 @@ const SEARCH_PAGES = [
     { key: 'kyc',          label: 'Verification Center',  sub: 'KYC status',             icon: 'fa-shield-halved' }
 ];
 
-const SEARCH_CHANGE = { BTC: '+2.99%', ETH: '+3.26%', USDT: '+0.03%', BNB: '+1.12%' };
-
 let searchIndex = -1;
 
+/* Coins come from MARKET_ASSETS (js/market-data.js) — every asset in the app is
+   searchable, priced and iconed from the single source of truth. */
 function searchCoins(q) {
-    return Object.entries(SWAP_ASSETS).filter(([sym, a]) =>
-        !q || a.name.toLowerCase().includes(q) || sym.toLowerCase().includes(q)
-    ).map(([sym, a]) => ({ sym, name: a.name, price: a.rate, icon: a.icon, cls: a.cls }));
+    return marketList().filter(a =>
+        !q || a.name.toLowerCase().includes(q) || a.sym.toLowerCase().includes(q)
+    ).map(a => ({ sym: a.sym, name: a.name, price: a.price, icon: a.icon, cls: a.cls }));
 }
 
 function searchTx(q) {
@@ -63,7 +63,7 @@ function coinRow(c) {
                 <span class="block text-xs font-semibold text-white">${c.name} <span class="text-slate-500 font-normal">${c.sym}</span></span>
                 <span class="block text-[10px] text-slate-500">$${fmt(c.price)}</span>
             </span>
-            <span class="text-[10px] font-semibold ${SEARCH_CHANGE[c.sym] && SEARCH_CHANGE[c.sym].startsWith('+') ? 'text-emerald-300' : 'text-rose-300'}">${SEARCH_CHANGE[c.sym] || ''}</span>
+            <span class="text-[10px] font-semibold ${marketChange(c.sym).startsWith('+') ? 'text-emerald-300' : 'text-rose-300'}">${marketChange(c.sym)}</span>
         </button>`;
 }
 

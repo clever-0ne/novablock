@@ -55,6 +55,16 @@ const env = {
   /* Password hashing cost — bcrypt rounds. 12 is the OWASP floor for 2026. */
   bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '12', 10),
 
+  /* Persistent storage — Postgres via Neon/Supabase free tier. Required in
+     EVERY environment (including dev): the old SQLite file lived on Render's
+     ephemeral disk and was wiped on every restart, which is what made users,
+     sessions and deposits "disappear". No DB URL → the app refuses to boot. */
+  databaseUrl: required('DATABASE_URL'),
+  /* SSL is on for hosted providers and when the connection string asks for it.
+     Set PGSSL=1 to force it locally against a TLS-terminating tunnel. */
+  pgSsl: process.env.PGSSL === '1'
+    || /(sslmode=(require|verify-ca|verify-full)|ssl=true|neon\.tech|supabase\.co)/i.test(process.env.DATABASE_URL || ''),
+
 
   /* Secrets — no dev fallbacks. A missing value refuses to boot (an empty or
      hardcoded default password would let anyone into the admin panel). */
@@ -77,5 +87,6 @@ const env = {
    admin login pass for an empty password. */
 if (!env.adminPass) throw new Error('Missing ADMIN_PASS — set it in backend/.env (try `node -e "require(\'crypto\').randomBytes(24).toString(\'base64url\')"` to generate one)');
 if (!env.kycUrlSecret) throw new Error('Missing KYC_URL_SECRET — set it in backend/.env');
+if (!env.databaseUrl) throw new Error('Missing DATABASE_URL — set your Postgres connection string in backend/.env (Neon/Supabase free tier) and in the Render environment before booting');
 
 module.exports = env;

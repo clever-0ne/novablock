@@ -321,7 +321,7 @@ function render(templateName, user, opts) {
 async function sendEmail({ userId, to, template, subject, text, html }) {
   try {
     if (!emailConfigured()) {
-      db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'logged' });
+      await db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'logged' });
       return { ok: true, status: 'logged' };
     }
     const delivered = IS_RESEND
@@ -334,14 +334,14 @@ async function sendEmail({ userId, to, template, subject, text, html }) {
           html: html || '',
           attachments: LOGO_CID ? [{ filename: 'logo.png', path: LOGO_PATH, cid: LOGO_CID }] : undefined
         });
-    db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'sent' });
+    await db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'sent' });
     return { ok: true, status: 'sent', id: typeof delivered === 'string' ? delivered : delivered.messageId };
   } catch (err) {
     /* Record the transport's error message so the admin log can show exactly
        why delivery failed (bad SMTP_PASS, unverified from-domain, recipient
        rejection, etc.) instead of a bare "failed". */
     const failure = String((err && err.message) || err);
-    db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'failed', failure });
+    await db.logEmail({ userId, toEmail: to, template, subject, text, html, status: 'failed', failure });
     return { ok: false, status: 'failed', error: failure };
   }
 }

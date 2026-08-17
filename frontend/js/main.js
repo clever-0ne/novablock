@@ -12,6 +12,7 @@ renderSwap();
 renderTrade();
 renderTransfer();
 renderBalance();
+if (typeof renderTicker === 'function') renderTicker();
 if (typeof renderNotifications === 'function') renderNotifications();
 const initialView = location.hash.replace('#', '');
 if (isLoggedIn()) showView(['dashboard', 'profile', 'transactions', 'kyc', 'swap', 'trade', 'referrals', 'transfer'].includes(initialView) ? initialView : 'dashboard');

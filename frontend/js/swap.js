@@ -1,26 +1,41 @@
 /* ---------- Swap Crypto view ---------- */
+/* Asset universe derives from MARKET_ASSETS (js/market-data.js, loaded before
+   this file) — BTC / ETH / USDT / BNB — plus a USD cash leg. Coin holdings live
+   in the shared store (HOLDINGS) as dollar values; the USD leg is the unified
+   cash balance (BALANCE.amount). Swap only ever moves these around — nothing
+   is created or destroyed except the flat network fee, which debits cash. */
 
-const SWAP_ASSETS = {
-    BTC:  { name: 'Bitcoin',  rate: 60274.00, icon: 'fa-brands fa-bitcoin',    cls: 'text-amber-500',   bal: 0 },
-    ETH:  { name: 'Ethereum', rate: 1617.82,  icon: 'fa-brands fa-ethereum',   cls: 'text-indigo-400',  bal: 0 },
-    USDT: { name: 'Tether',   rate: 1,        icon: 'fa-solid fa-dollar-sign', cls: 'text-emerald-400', bal: 0 },
-    BNB:  { name: 'BNB',      rate: 552.21,   icon: 'fa-solid fa-coins',       cls: 'text-amber-400',   bal: 0 }
-};
+const SWAP_ASSETS = (() => {
+    const out = {};
+    ['BTC', 'ETH', 'USDT', 'BNB'].forEach(k => {
+        const a = MARKET_ASSETS[k];
+        out[k] = { name: a.name, rate: a.price, icon: a.icon, cls: a.cls, bal: 0 };
+    });
+    out.USD = { name: 'US Dollar', rate: 1, icon: 'fa-solid fa-dollar-sign', cls: 'text-emerald-400', bal: 0 };
+    return out;
+})();
 
-/* Flat network fee (in USD), deducted from the source coin before conversion. */
+/* Flat network fee (in USD) charged on coin→coin swaps. It debits the cash
+   balance (USD leg), not the source coin. USD⇄coin swaps are fee-free — they
+   just move cash to/from holdings. */
 const SWAP_FEE_USD = 2.50;
 
-/* Per-asset balances live in the shared store (HOLDINGS) — zeroed whenever a
-   transaction is initiated. Sync SWAP_ASSETS to it before every render. */
+/* Sync SWAP_ASSETS to the store before every render/check: coins from HOLDINGS,
+   USD from the unified cash balance. */
 function syncHoldings() {
     Object.keys(SWAP_ASSETS).forEach(k => {
-        if (HOLDINGS[k] !== undefined) SWAP_ASSETS[k].bal = HOLDINGS[k];
+        if (k === 'USD') SWAP_ASSETS.USD.bal = getBalance();
+        else if (HOLDINGS[k] !== undefined) SWAP_ASSETS[k].bal = HOLDINGS[k];
     });
 }
 
-function saveHoldings() {
-    Object.keys(SWAP_ASSETS).forEach(k => { if (HOLDINGS[k] !== undefined) HOLDINGS[k] = SWAP_ASSETS[k].bal; });
-    saveApp();
+/* Commit the SWAP_ASSETS ledger back to the store (coins → HOLDINGS, USD → cash)
+   in one persist + re-render. */
+function commitSwapBalances() {
+    Object.keys(SWAP_ASSETS).forEach(k => {
+        if (k !== 'USD' && HOLDINGS[k] !== undefined) HOLDINGS[k] = SWAP_ASSETS[k].bal;
+    });
+    setBalances({ amount: SWAP_ASSETS.USD.bal });
 }
 
 let swapFrom = 'BTC', swapTo = 'ETH';
@@ -57,15 +72,16 @@ function resetSwap() {
 function updateSwapEstimate() {
     const amt = parseFloat($('swapFromAmount').value) || 0;
     const from = SWAP_ASSETS[swapFrom], to = SWAP_ASSETS[swapTo];
-    const feeInFrom = SWAP_FEE_USD / from.rate;
+    const fee = (swapFrom !== 'USD' && swapTo !== 'USD') ? SWAP_FEE_USD : 0;
+    const feeInFrom = fee / from.rate;
     /* Amount is in USD (holdings are dollar-based). Received is in destination coins. */
-    const received = amt > SWAP_FEE_USD ? (amt - SWAP_FEE_USD) / to.rate : 0;
+    const received = amt > fee ? (amt - fee) / to.rate : 0;
     $('swapToAmount').value = received ? received.toFixed(6) : '';
     $('swapRate').textContent = '1 ' + swapFrom + ' = ' + (from.rate / to.rate).toFixed(4) + ' ' + swapTo;
     $('swapFromBal').textContent = '$' + fmt(from.bal);
     $('swapToBal').textContent = '$' + fmt(to.bal);
-    const fee = $('swapFee');
-    if (fee) fee.textContent = '$' + SWAP_FEE_USD.toFixed(2) + ' (' + feeInFrom.toFixed(6) + ' ' + swapFrom + ')';
+    const feeEl = $('swapFee');
+    if (feeEl) feeEl.textContent = fee ? '$' + fee.toFixed(2) + ' (' + feeInFrom.toFixed(6) + ' ' + swapFrom + ')' : 'Free';
 }
 
 function renderSwapBalances() {
@@ -100,13 +116,15 @@ function renderSwap() {
     renderAllocation();
 }
 
-/* Asset Allocation card on the dashboard — driven by the same holdings. */
+/* Asset Allocation card on the dashboard — driven by the same holdings.
+   Cash (USD) is excluded: the allocation is about the coin wallet. */
 function renderAllocation() {
     const list = $('allocationList');
     if (!list) return;
-    const total = Object.values(SWAP_ASSETS).reduce((a, x) => a + x.bal, 0);
+    const coins = Object.keys(SWAP_ASSETS).filter(k => k !== 'USD');
+    const total = coins.reduce((a, k) => a + SWAP_ASSETS[k].bal, 0);
     const pct = k => total > 0 ? Math.round(SWAP_ASSETS[k].bal / total * 100) : 0;
-    Object.keys(SWAP_ASSETS).forEach(k => {
+    coins.forEach(k => {
         const p = pct(k);
         const bar = $('allocBar' + k);
         if (bar) bar.style.width = (p ? p : 0) + '%';
@@ -119,7 +137,7 @@ function renderAllocation() {
     });
     const count = $('allocCount');
     if (count) {
-        const n = Object.keys(SWAP_ASSETS).filter(k => SWAP_ASSETS[k].bal > 0).length;
+        const n = coins.filter(k => SWAP_ASSETS[k].bal > 0).length;
         count.textContent = n === 1 ? '1 Asset' : n + (n === 0 ? ' Assets' : ' Assets');
     }
 }
@@ -135,16 +153,34 @@ function doSwap() {
             : 'No ' + from.name + ' holdings yet — deposit ' + from.name + ' and get it approved before swapping');
         return;
     }
-    if (amt <= SWAP_FEE_USD) { showToast('Amount too small — must cover the $' + SWAP_FEE_USD.toFixed(2) + ' network fee'); return; }
+    /* Coin→coin swaps pay the network fee from cash; USD legs are fee-free. */
+    const fee = (swapFrom !== 'USD' && swapTo !== 'USD') ? SWAP_FEE_USD : 0;
+    if (fee && getBalance() < fee) {
+        showToast('Insufficient cash to cover the $' + SWAP_FEE_USD.toFixed(2) + ' network fee');
+        return;
+    }
     const btn = $('swapBtn');
     btn.disabled = true; btn.textContent = 'Processing…'; btn.classList.add('opacity-60');
     setTimeout(() => {
-        from.bal -= amt;                 /* $ value leaves the source coin */
-        to.bal += amt - SWAP_FEE_USD;    /* $ value enters the destination coin, net of fee */
-        const received = (amt - SWAP_FEE_USD) / to.rate;   /* destination coin quantity */
-        const tx = { id: txId(), type: 'swap', asset: from.name, to: to.name, amount: -amt, date: todayStr(), time: nowStr(), status: 'completed' };
+        if (swapFrom === 'USD') {
+            /* USD → coin: cash leaves, coin enters at par (no fee). */
+            SWAP_ASSETS.USD.bal -= amt;
+            to.bal += amt;
+        } else if (swapTo === 'USD') {
+            /* coin → USD: coin leaves, cash enters (no fee). */
+            from.bal -= amt;
+            SWAP_ASSETS.USD.bal += amt;
+        } else {
+            /* coin → coin: source coin leaves, destination enters net of the
+               cash fee — the fee is neither created nor destroyed. */
+            from.bal -= amt;
+            SWAP_ASSETS.USD.bal -= fee;
+            to.bal += amt - fee;
+        }
+        const received = (amt - fee) / to.rate;   /* destination coin quantity */
+        const tx = { id: txId(), type: 'swap', asset: from.name, to: to.name, amount: -amt, fee, date: todayStr(), time: nowStr(), status: 'completed' };
         TX_DATA.unshift(tx);
-        saveHoldings();
+        commitSwapBalances();
         if (typeof notifyTransaction === 'function') notifyTransaction(tx);
         renderSwap();
         renderTransactions();
@@ -152,7 +188,7 @@ function doSwap() {
         $('swapFromAmount').value = '';
         updateSwapEstimate();
         btn.disabled = false; btn.textContent = 'Swap Now'; btn.classList.remove('opacity-60');
-        showToast('Swapped $' + fmt(amt) + ' of ' + from.name + ' → ' + received.toFixed(6) + ' ' + to.name + ' · fee $' + SWAP_FEE_USD.toFixed(2));
+        showToast('Swapped $' + fmt(amt) + ' of ' + from.name + ' → ' + received.toFixed(6) + ' ' + to.name + (fee ? ' · fee $' + fee.toFixed(2) : ''));
     }, 1100);
 }
 
@@ -161,6 +197,8 @@ function openSwapWith(sym) {
         if (sym === swapTo) flipSwap();
         else { swapFrom = sym; fillSwapSelects(); }
         updateSwapEstimate();
+        showView('swap');
+    } else if (typeof openTrade === 'function') {
+        openTrade(sym);
     }
-    showView('swap');
 }

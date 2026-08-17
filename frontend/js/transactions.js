@@ -117,6 +117,32 @@ function copyDepositWallet() {
     showToast('Deposit address copied');
 }
 
+/* Submits a deposit/withdrawal request to the server FIRST — the durable record
+   lives in Postgres and feeds the admin approval queue (GET /api/admin/pending).
+   Falls back to a local pending row when the network is unreachable (offline);
+   syncFromServer reconciles it against the server later. */
+async function submitTxPayload(payload) {
+    const id = String(txId());
+    const local = {
+        id, type: payload.type, asset: payload.asset,
+        amount: payload.type === 'deposit' ? Math.abs(payload.amount) : -Math.abs(payload.amount),
+        to: payload.to || '', date: todayStr(), time: nowStr(), status: 'pending'
+    };
+    try {
+        const res = await fetch('/api/transactions', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ ...payload, clientId: id })
+        });
+        if (res.ok) {
+            const d = await res.json();
+            if (d && d.tx && !TX_DATA.some(t => t && String(t.id) === String(d.tx.id))) TX_DATA.unshift(d.tx);
+            return;
+        }
+    } catch {}
+    if (!TX_DATA.some(t => t && String(t.id) === String(id))) TX_DATA.unshift(local);
+}
+
 function handleDeposit(e) {
     e.preventDefault();
     const amt = parseFloat($('depositAmount').value);
@@ -125,8 +151,8 @@ function handleDeposit(e) {
     const asset = method === 'Bitcoin' ? 'Bitcoin' : method === 'Ethereum' ? 'Ethereum' : 'USDT';
     const to = (DEPOSIT_ADDRESSES || {})[method] || '';
 
-    // Pending until admin approves — approval credits the coin's holding.
-    TX_DATA.unshift({ id: txId(), type: 'deposit', asset, amount: amt, date: todayStr(), time: nowStr(), status: 'pending', to });
+    // Pending until admin approves — approval credits the unified cash balance.
+    submitTxPayload({ type: 'deposit', asset, amount: amt, to });
     saveApp();
     renderTransactions();
     renderDashboardRecent();
@@ -153,8 +179,8 @@ function handleWithdraw(e) {
     if (amt > held) { showToast('Insufficient ' + coin + ' balance'); return; }
     const dest = $('withdrawDestination').value.trim();
     if (!dest) { showToast('Enter a wallet destination'); return; }
-    // Pending until admin approves — approval deducts the coin's holding.
-    TX_DATA.unshift({ id: txId(), type: 'withdrawal', asset: coin, amount: -amt, date: todayStr(), time: nowStr(), status: 'pending' });
+    // Pending until admin approves — approval deducts the unified cash balance.
+    submitTxPayload({ type: 'withdrawal', asset: coin, amount: amt, to: dest });
     saveApp();
     renderTransactions();
     renderDashboardRecent();

@@ -47,15 +47,17 @@ function doTransfer() {
     const amt = parseFloat($('transferAmount').value);
     if (!to) { showToast('Enter a recipient username or wallet address'); return; }
     if (!amt || amt <= 0) { showToast('Enter an amount to transfer'); return; }
-    if (amt > getBalance()) { showToast('Insufficient balance'); return; }
     if (transferType === 'external' && kycDoneCount() !== 3) { showToast('KYC verification is required for external transfers'); return; }
+    const fee = transferType === 'external' ? amt * 0.005 : 0;
+    const total = amt + fee;
+    if (total > getBalance()) { showToast('Insufficient balance — transfer plus fee totals $' + fmt(total)); return; }
     const btn = $('transferBtn');
     btn.disabled = true; btn.textContent = 'Sending…'; btn.classList.add('opacity-60');
-    const fee = transferType === 'external' ? amt * 0.005 : 0;
     const asset = $('transferAsset').value;
     setTimeout(() => {
-        TX_DATA.unshift({ id: txId(), type: 'transfer', asset, amount: -(amt + fee), date: todayStr(), time: nowStr(), status: 'completed' });
-        saveApp();
+        TX_DATA.unshift({ id: txId(), type: 'transfer', asset, amount: -total, fee, date: todayStr(), time: nowStr(), status: 'completed' });
+        /* Debit the unified cash balance — the transfer is real money leaving. */
+        setBalances({ amount: getBalance() - total });
         renderTransactions();
         renderTransfer();
         $('transferTo').value = '';

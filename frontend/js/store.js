@@ -84,6 +84,42 @@ function seedApp() {
     };
 }
 
+/* Client-side deep merge (mirrors backend/utils/state.js) — used when applying
+   a server state so keys the server normalizes away never come back undefined. */
+function deepMerge(base, override) {
+    const out = { ...base };
+    if (!override || typeof override !== 'object') return out;
+    for (const k of Object.keys(override)) {
+        const v = override[k];
+        if (v === undefined || v === null) continue;
+        if (out[k] && typeof out[k] === 'object' && !Array.isArray(out[k])
+            && v && typeof v === 'object' && !Array.isArray(v)) {
+            out[k] = deepMerge(out[k], v);
+        } else {
+            out[k] = v;
+        }
+    }
+    return out;
+}
+
+/* Shared by profile.js and admin.js — both pages (and signup.html) load this
+   file first, so these are the single definitions. */
+const NAV_ACTIVE = 'flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500/20 to-violet-500/10 text-white font-medium border border-indigo-500/25 shadow-[0_8px_24px_-12px_rgba(99,102,241,0.5)]';
+const NAV_INACTIVE = 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition';
+
+function initials(name) {
+    return name.trim().split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase();
+}
+
+function showToast(msg) {
+    const t = $('toast');
+    if (!t) return;
+    $('toastText').textContent = msg;
+    t.classList.remove('opacity-0', 'pointer-events-none');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => t.classList.add('opacity-0', 'pointer-events-none'), 2400);
+}
+
 function loadApp() {
     let saved = null;
     try { saved = JSON.parse(localStorage.getItem(APP_KEY)); } catch {}
@@ -125,6 +161,20 @@ function saveApp() {
 }
 
 function getBalance() { return BALANCE.amount; }
+
+/* The headline figure: cash + coin wallet + open trade positions (marked to
+   market). Positions use MARKET_ASSETS prices when loaded (dashboard). */
+function totalEquity() {
+    let t = BALANCE.amount;
+    Object.keys(HOLDINGS).forEach(k => { t += (HOLDINGS[k] || 0); });
+    if (typeof MARKET_ASSETS !== 'undefined') {
+        Object.keys(STOCK_POSITIONS).forEach(sym => {
+            const a = MARKET_ASSETS[sym];
+            if (a) t += a.price * (STOCK_POSITIONS[sym] || 0);
+        });
+    }
+    return t;
+}
 
 function setBalances({ amount, bonus, deposit, withdrawal }) {
     if (amount !== undefined) BALANCE.amount = amount;
@@ -196,7 +246,9 @@ function applyServerUser(u) {
     try { localStorage.setItem('proderiv_email_verified', u.emailVerified ? '1' : '0'); } catch {}
     try {
         const state = u.state || {};
-        localStorage.setItem(APP_KEY, JSON.stringify({ ...seedApp(), ...state }));
+        /* Deep-merge onto the canonical seed so a server blob that normalizes
+           away a key (e.g. balances.bonus) can never leave it undefined. */
+        localStorage.setItem(APP_KEY, JSON.stringify(deepMerge(seedApp(), state)));
     } catch {}
     try { localStorage.setItem('proderiv_kyc_v1', JSON.stringify(u.kyc || {})); } catch {}
     reloadApp();
@@ -214,8 +266,14 @@ let _serverTimer = null;
    what lets syncFromServer recover it instead of the server overwriting it. */
 function txId() { return Date.now() + Math.floor(Math.random() * 1000); }
 
+/* The routing target is snapshotted when a push is SCHEDULED, not when it
+   fires — so an admin editing user 5 who then clicks "Back to users" can
+   never have the debounced write land on the wrong record. */
+let _pushTarget = null;
+
 function pushNow() {
-    const url = adminModeUser ? ('/api/admin/users/' + adminModeUser + '/state') : '/api/state';
+    const url = _pushTarget || (adminModeUser ? ('/api/admin/users/' + adminModeUser + '/state') : '/api/state');
+    _pushTarget = null;
     if (!url) return;
     try {
         /* Both user and admin edits ride the HttpOnly session cookie — no
@@ -232,6 +290,7 @@ function pushNow() {
 
 function pushToServer() {
     clearTimeout(_serverTimer);
+    _pushTarget = adminModeUser ? ('/api/admin/users/' + adminModeUser + '/state') : '/api/state';
     _serverTimer = setTimeout(pushNow, 400);
 }
 
@@ -243,6 +302,7 @@ window.addEventListener('pagehide', () => { clearTimeout(_serverTimer); pushNow(
    each call is guarded, so missing feature scripts (admin.html) are no-ops. */
 function refreshApp() {
     if (typeof renderBalance === 'function') renderBalance();
+    if (typeof renderTicker === 'function') renderTicker();
     if (typeof renderProfile === 'function') renderProfile();
     if (typeof renderTransactions === 'function') renderTransactions();
     if (typeof renderDashboardRecent === 'function') renderDashboardRecent();

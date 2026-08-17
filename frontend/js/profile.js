@@ -1,9 +1,7 @@
 /* ---------- Profile data & view switching ---------- */
-        /* NOTE: `profile` is provided by js/store.js (shared persisted data layer). */
-
-        function initials(name) {
-            return name.trim().split(/\s+/).map(s => s[0]).join('').slice(0, 2).toUpperCase();
-        }
+        /* NOTE: `profile` is provided by js/store.js (shared persisted data layer).
+           Shared helpers initials()/showToast()/NAV_ACTIVE/NAV_INACTIVE live in
+           js/store.js, which loads before this file. */
 
         function renderProfile() {
             const p = profile;
@@ -27,9 +25,6 @@
             document.querySelectorAll('[data-avatar]').forEach(el => el.textContent = initials(p.fullName));
             document.querySelectorAll('[data-username]').forEach(el => el.textContent = p.fullName);
         }
-
-        const NAV_ACTIVE = 'flex items-center gap-3 px-3 py-2.5 rounded-xl bg-gradient-to-r from-indigo-500/20 to-violet-500/10 text-white font-medium border border-indigo-500/25 shadow-[0_8px_24px_-12px_rgba(99,102,241,0.5)]';
-        const NAV_INACTIVE = 'flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:bg-white/5 hover:text-slate-100 transition';
 
         const VIEWS = ['dashboard', 'profile', 'transactions', 'kyc', 'swap', 'trade', 'referrals', 'transfer'];
         const VIEW_CRUMB = { dashboard: 'Dashboard', profile: 'Profile', transactions: 'Transactions', kyc: 'Verification', swap: 'Swap Crypto', trade: 'Trade', referrals: 'Referrals', transfer: 'Transfer Funds' };
@@ -74,12 +69,4 @@
             renderProfile();
             toggleModal('editProfileModal');
             showToast('Profile updated successfully');
-        }
-
-        function showToast(msg) {
-            const t = $('toast');
-            $('toastText').textContent = msg;
-            t.classList.remove('opacity-0', 'pointer-events-none');
-            clearTimeout(showToast._t);
-            showToast._t = setTimeout(() => t.classList.add('opacity-0', 'pointer-events-none'), 2400);
         }
