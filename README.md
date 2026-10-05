@@ -2,14 +2,18 @@
 
 NovaBlock.io is an investment platform for trading stocks and cryptocurrencies, with
 deposits, withdrawals, swaps, portfolio tracking, KYC verification, referrals and a
-full admin control panel. It runs as a static single-page app backed by an Express +
-SQLite server for durable storage.
+full admin control panel. It is a Next.js project built for Vercel: the static
+front-end lives in `public/`, and the Express + Postgres API in `backend/` runs inside a
+single Next.js API route.
 
 ## Structure
 
 ```
 broker/
-├── frontend/               → all front-end code + assets (served at the site root)
+├── package.json            → Next.js project (`npm run dev` / `build` / `start`)
+├── next.config.js          → `/` → index.html, `/admin` → admin.html, security headers (CSP…)
+├── pages/api/[...path].js  → hands every /api/* request to the Express app in backend/
+├── public/                 → all front-end code + assets (served at the site root)
 │   ├── index.html          → public landing page (marketing / entry to the app)
 │   ├── dashboard.html      → user app: sidebar, topbar, views, modals, login screen
 │   ├── signup.html         → standalone signup page (create your account)
@@ -38,16 +42,13 @@ broker/
 │       ├── search.js           → topbar live search (coins, transactions, pages)
 │       ├── admin.js            → admin panel logic
 │       └── main.js             → startup (auth check, draw chart, fill profile, route by #hash)
-└── backend/                → Node/Express backend (never served over HTTP)
-    ├── server.js           → Express server + JSON API (serves the frontend/)
-    ├── db.js               → SQLite persistence layer (users, tokens, emails)
+└── backend/                → Express API (never served over HTTP; bundled into the API route)
+    ├── app.js              → Express app: middleware + /api/* route mounts
+    ├── env.js              → central config (Vercel env vars, or backend/.env locally)
+    ├── db/                 → Postgres pool, schema migrations, queries
+    ├── routes/ controllers/ services/ middleware/ utils/
     ├── email.js            → nodemailer wrapper + branded email templates
-    ├── email-config.js     → SMTP credentials (Gmail app password or Brevo/Resend/SendGrid)
-    ├── env.js              → central config (reads backend/.env)
-    ├── security.js         → auth middleware, validation, rate limits, headers
-    ├── package.json        → `npm start` → http://localhost:3000
-    ├── data/app.db         → SQLite database (created on first run)
-    └── uploads/            → KYC documents stored on disk, one folder per user
+    └── email-config.js     → SMTP settings (from env)
 ```
 
 ## Views
@@ -154,18 +155,31 @@ reachable from the login screen, signup page and the footer. Company identity:
 **NovaBlock.io Markets Ltd.** — update the placeholders with your real legal details before
 going live.
 
-## How to run
+## How to run locally
 
 ```bash
-cd backend
 npm install
-npm start        # → http://localhost:3000  (user app at /, admin at /admin)
+npm run dev      # → http://localhost:3000  (user app at /, admin at /admin)
 ```
 
-The server serves the whole project from one origin. All user data is written to SQLite
-(each account's own row), KYC documents are stored as files in `backend/uploads/<userId>/`,
-and every outgoing email is logged. On a fresh start the database is created automatically —
-delete `backend/data/app.db` to start over.
+Settings are read from `backend/.env` (copy `backend/.env.example`). A Postgres database
+is required — the schema is created automatically on the first API request.
+
+## Deploy to Vercel
+
+1. Push the repo to GitHub and import it in Vercel (framework preset: **Next.js**, root
+   directory: the repo root — no build settings to change).
+2. Under **Settings → Environment Variables** add everything from `backend/.env.example`:
+   at minimum `DATABASE_URL` (Neon / Supabase), `ADMIN_PASS`, `KYC_URL_SECRET`, and the
+   `SMTP_*` / `MAIL_FROM` values. Set `SITE_URL` and `APP_ORIGIN` to your Vercel domain.
+   `NODE_ENV` and `TRUST_PROXY` are handled automatically.
+3. Deploy. For Supabase use the **transaction pooler** connection string (port 6543) —
+   serverless functions open many short-lived connections.
+
+Vercel limits: request bodies are capped at **4.5 MB**, so very large KYC PDFs will be
+rejected (photos are downscaled in the browser and are fine). Rate limits are kept in
+memory per serverless instance, so they are looser than on a single server. Logs appear
+in the Vercel dashboard instead of `backend/logs/`.
 
 ## Notes
 

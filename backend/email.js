@@ -99,7 +99,10 @@ function genCode(len) {
 /* Brand logo, embedded as an inline attachment (Content-ID) so it renders in
    Gmail, Outlook and Apple Mail — the most reliable way to show an image in
    email. Falls back to the text-only header if favicon.png is missing. */
-let LOGO_PATH = path.join(__dirname, '..', 'frontend', 'favicon.png');
+/* Resolved from the project root too — Next.js bundles this file, so __dirname
+   may not be backend/. */
+let LOGO_PATH = [path.join(__dirname, '..', 'public', 'favicon.png'), path.join(process.cwd(), 'public', 'favicon.png')]
+  .find(f => fs.existsSync(f)) || '';
 let LOGO_CID = null;
 let LOGO_B64 = null;
 let logoImg = '';

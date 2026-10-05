@@ -1,10 +1,9 @@
 /* ---------- Express app factory ---------- */
-/* Middleware chain + router mounts. No listen() here — server.js boots the app
-   after migrations/health pass, so the process fails fast on a bad database
-   instead of serving 500s against a wiped/empty store. */
+/* Middleware chain + router mounts. No listen() here — pages/api/[...path].js
+   hands every /api/* request from Next.js (Vercel) to this app after
+   migrations/health have passed once per cold start. */
 
 const express = require('express');
-const path = require('path');
 const cookieParser = require('cookie-parser');
 
 const env = require('./env');
@@ -14,8 +13,6 @@ const authRoutes = require('./routes/auth.routes');
 const adminRoutes = require('./routes/admin.routes');
 const userRoutes = require('./routes/user.routes');
 const uploadsRoutes = require('./routes/uploads.routes');
-
-const FRONTEND = path.join(__dirname, '..', 'frontend');
 
 function createApp() {
   const app = express();
@@ -36,14 +33,10 @@ function createApp() {
   app.use('/api/auth', authRoutes);
   app.use('/api/admin', adminRoutes);
   app.use('/api', userRoutes);
-  app.use('/api', uploadsRoutes);
+  app.use('/api/uploads', uploadsRoutes);  /* signed links are /api/uploads/<uid>/<file> */
 
-  /* Convenience: /admin redirects to the admin page (served from frontend/). */
-  app.get('/admin', (req, res) => res.redirect('/admin.html'));
-
-  /* Frontend only — served statically from frontend/. The backend code, data,
-     uploads and .env are no longer reachable over HTTP. */
-  app.use(express.static(FRONTEND));
+  /* The static frontend (public/) and the /admin redirect are served by
+     Next.js — see next.config.js. This app only handles /api/*. */
 
   /* ---------- 404 + central error handling ---------- */
   app.use('/api', sec.notFound);

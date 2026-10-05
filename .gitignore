@@ -14,3 +14,9 @@ backend/logs/
 .DS_Store
 Thumbs.db
 *.local
+
+# Next.js / Vercel
+.next/
+.vercel/
+.env
+next-env.d.ts

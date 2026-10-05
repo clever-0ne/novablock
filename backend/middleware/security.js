@@ -22,11 +22,13 @@ const env = require('../env');
 const { asyncHandler } = require('../utils/async');
 
 /* ---------- logging ---------- */
-const LOG_DIR = path.join(__dirname, '..', 'logs');
-if (!fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true });
+/* Vercel's filesystem is read-only — there logs go to stdout only (visible in
+   the Vercel dashboard). Locally they are also appended to backend/logs/app.log. */
+const LOG_DIR = process.env.VERCEL ? null : path.join(__dirname, '..', 'logs');
+try { if (LOG_DIR && !fs.existsSync(LOG_DIR)) fs.mkdirSync(LOG_DIR, { recursive: true }); } catch {}
 function log(level, msg) {
   const line = '[' + new Date().toISOString() + '] [' + level.toUpperCase() + '] ' + msg;
-  try { fs.appendFileSync(path.join(LOG_DIR, 'app.log'), line + '\n'); } catch {}
+  if (LOG_DIR) try { fs.appendFileSync(path.join(LOG_DIR, 'app.log'), line + '\n'); } catch {}
   if (level === 'error') console.error(line); else if (level === 'warn') console.warn(line); else console.log(line);
 }
 

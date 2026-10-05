@@ -10,8 +10,11 @@ const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
 
-const envFile = path.join(__dirname, '.env');
-if (fs.existsSync(envFile)) dotenv.config({ path: envFile });
+/* Next.js bundles this file, so __dirname may not be backend/ — also look it up
+   from the project root. On Vercel the values come from the project's
+   Environment Variables instead (no .env file is deployed). */
+const envFile = [path.join(__dirname, '.env'), path.join(process.cwd(), 'backend', '.env')].find(f => fs.existsSync(f));
+if (envFile) dotenv.config({ path: envFile });
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
 const isProd = NODE_ENV === 'production';
@@ -44,7 +47,7 @@ const env = {
 
   /* Set TRUST_PROXY=1 when running behind a reverse proxy (Nginx, Caddy,
      Render, Fly.io) so rate-limiters and req.ip see the real client IP. */
-  trustProxy: process.env.TRUST_PROXY ? parseInt(process.env.TRUST_PROXY, 10) : false,
+  trustProxy: process.env.TRUST_PROXY ? parseInt(process.env.TRUST_PROXY, 10) : (process.env.VERCEL ? 1 : false),
 
   /* HttpOnly session cookie: Secure is forced on in production (HTTPS only),
      and can be enabled manually in dev with COOKIE_SECURE=1. */
@@ -87,6 +90,6 @@ const env = {
    admin login pass for an empty password. */
 if (!env.adminPass) throw new Error('Missing ADMIN_PASS — set it in backend/.env (try `node -e "require(\'crypto\').randomBytes(24).toString(\'base64url\')"` to generate one)');
 if (!env.kycUrlSecret) throw new Error('Missing KYC_URL_SECRET — set it in backend/.env');
-if (!env.databaseUrl) throw new Error('Missing DATABASE_URL — set your Postgres connection string in backend/.env (Neon/Supabase free tier) and in the Render environment before booting');
+if (!env.databaseUrl) throw new Error('Missing DATABASE_URL — set your Postgres connection string in backend/.env (Neon/Supabase free tier) and in the Vercel project environment variables');
 
 module.exports = env;
