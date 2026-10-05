@@ -5,12 +5,16 @@ const { asyncHandler } = require('../utils/async');
 const sec = require('../middleware/security');
 const { validate, schemas } = require('../middleware/schemas');
 const ctl = require('../controllers/user.controller');
+const authCtl = require('../controllers/auth.controller');
 
 const router = express.Router();
 const { auth, userOnly } = sec;
 
 router.get('/me', auth, userOnly, asyncHandler(ctl.me));
-router.post('/logout', asyncHandler(ctl.logout));
+/* logout lives in the auth controller — pointing at user.controller (where it
+   does not exist) crashed every logout, so the session was never revoked and
+   reopening the site logged you straight back in. */
+router.post('/logout', asyncHandler(authCtl.logout));
 router.get('/state', auth, userOnly, asyncHandler(ctl.getState));
 router.put('/state', auth, userOnly, asyncHandler(ctl.putState));
 router.get('/kyc', auth, userOnly, asyncHandler(ctl.getKyc));

@@ -378,14 +378,12 @@ async function syncFromServer() {
     try {
         /* No auth header — the HttpOnly cookie authenticates this request. */
         const res = await fetch('/api/me');
-        if (res.status === 401) {
-            /* The backend no longer recognizes this session — normal on Render's
-               free tier, whose ephemeral DB is wiped on every restart/redeploy
-               (tokens and user state disappear). If we were logged in (flag
-               cookie present) keep the local dashboard and data instead of
-               silently logging out. Only a real logout (flag already cleared)
-               shows the login screen. */
-            if (!hasSession() && typeof showLoginScreen === 'function') showLoginScreen();
+        if (res.status === 401 || res.status === 403) {
+            /* The server does not accept this session (expired, logged out
+               elsewhere, or email not verified). Drop the local flag and show
+               the login screen — never keep showing the dashboard. */
+            clearSessionFlag();
+            if (typeof showLoginScreen === 'function') showLoginScreen();
             return;
         }
         if (!res.ok) return;

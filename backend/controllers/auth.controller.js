@@ -30,10 +30,11 @@ async function register(req, res) {
   }
   const user = await db.createUser({ email, password, name, phone, referrerId });
   if (referrerId) await db.recordReferral(referrerId, user);
-  const token = await db.createToken(user.id);
-  sec.setSessionCookie(res, token);
   /* New accounts are unverified: email a 6-digit code they must confirm before
-     they can use the app. The welcome email goes out after verification. */
+     they can use the app. No session cookie yet — the returned token is only
+     accepted by /verify and /resend-verification (see userOnly) until then.
+     The welcome email goes out after verification. */
+  const token = await db.createToken(user.id);
   issueVerifyCode(user);
   res.json({ token, user: publicUser(user) });
 }
@@ -50,6 +51,8 @@ async function verify(req, res) {
   if (user.verifyCode !== code) return res.status(400).json({ error: 'Incorrect code — check your email and try again' });
   await db.setEmailVerified(user.id, true);
   await db.setVerifyCode(user.id, '', '');
+  /* Verified — only now does the token become a real browser session. */
+  sec.setSessionCookie(res, req.token);
   /* Confirming the sign-up email also completes KYC Level 1 ("email & phone"). */
   try {
     const kyc = { ...(user.kyc || {}) };
@@ -77,7 +80,9 @@ async function login(req, res) {
     try { await db.setPassword(user.id, password); } catch {}
   }
   const token = await db.createToken(user.id);
-  sec.setSessionCookie(res, token);
+  /* Unverified accounts get a verify-only token and no session cookie — the
+     client shows the code screen, and /verify sets the cookie on success. */
+  if (user.emailVerified) sec.setSessionCookie(res, token);
   res.json({ token, user: publicUser(user) });
 }
 

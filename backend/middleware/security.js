@@ -18,6 +18,7 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 
 const db = require('../db');
+const { query } = require('../db/pool');
 const env = require('../env');
 const { asyncHandler } = require('../utils/async');
 
@@ -65,10 +66,21 @@ const auth = asyncHandler(async function auth(req, res, next) {
   next();
 });
 
-function userOnly(req, res, next) {
+/* User routes also require a VERIFIED email. Registration/login hand an
+   unverified account a token that is only good for confirming the emailed code
+   (or requesting a new one) — without this check, that token (or a reload of
+   the page) let people into the app without ever verifying. */
+const UNVERIFIED_ALLOWED = ['/api/auth/verify', '/api/auth/resend-verification'];
+const userOnly = asyncHandler(async function userOnly(req, res, next) {
   if (req.isAdmin) return res.status(401).json({ error: 'Unauthorized' });
+  const route = req.originalUrl.split('?')[0];
+  if (!UNVERIFIED_ALLOWED.includes(route)) {
+    const r = await query('SELECT email_verified FROM users WHERE id = $1', [req.userId]);
+    if (!r.rows.length) return res.status(401).json({ error: 'Unauthorized' });
+    if (!r.rows[0].email_verified) return res.status(403).json({ error: 'Please verify your email first', unverified: true });
+  }
   next();
-}
+});
 
 function adminOnly(req, res, next) {
   if (!req.isAdmin) return res.status(401).json({ error: 'Unauthorized' });
