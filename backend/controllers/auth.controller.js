@@ -3,6 +3,7 @@
 const crypto = require('crypto');
 const db = require('../db');
 const mail = require('../email');
+const { background } = require('../utils/background');
 const sec = require('../middleware/security');
 const { publicUser } = require('../utils/public');
 
@@ -13,7 +14,7 @@ const RESET_TTL_MS = 15 * 60 * 1000;  /* password-reset codes: 15 minutes */
 function issueVerifyCode(user) {
   const code = String(crypto.randomInt(0, 1000000)).padStart(6, '0');
   db.setVerifyCode(user.id, code, new Date(Date.now() + VERIFY_TTL_MS).toISOString());
-  mail.verifyCode(user, code).catch(() => {});
+  background(mail.verifyCode(user, code));
   return code;
 }
 
@@ -55,7 +56,7 @@ async function verify(req, res) {
     kyc[1] = { ...(kyc[1] || {}), done: true, ts: Date.now() };
     await db.saveUserKyc(user.id, kyc);
   } catch {}
-  mail.welcome(user).catch(() => {});
+  background(mail.welcome(user));
   res.json({ ok: true, verified: true, user: publicUser(await db.getUser(user.id)) });
 }
 
@@ -86,7 +87,7 @@ async function forgot(req, res) {
   if (user) {
     const code = String(crypto.randomInt(0, 1000000)).padStart(6, '0');
     await db.setResetToken(user.id, code, new Date(Date.now() + RESET_TTL_MS).toISOString());
-    mail.passwordReset(user, code).catch(() => {});
+    background(mail.passwordReset(user, code));
   }
   res.json({ ok: true });
 }

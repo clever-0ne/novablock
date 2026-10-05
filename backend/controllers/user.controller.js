@@ -5,6 +5,7 @@
 
 const db = require('../db');
 const mail = require('../email');
+const { background } = require('../utils/background');
 const sec = require('../middleware/security');
 const txService = require('../services/transaction.service');
 const { signDocUrl } = require('../utils/docurl');
@@ -42,8 +43,8 @@ async function kycLevel(req, res) {
   }
   await db.saveUserKyc(req.userId, kyc);
   if (req.valid.verified) {
-    if (level === 1) mail.verifyCode(user).catch(() => {});
-    else mail.kycVerified(user, level).catch(() => {});
+    if (level === 1) background(mail.verifyCode(user));
+    else background(mail.kycVerified(user, level));
   }
   res.json({ ok: true, kyc });
 }
@@ -66,7 +67,7 @@ async function kycUpload(req, res) {
   kyc[level] = { done: true, ts: Date.now(), docType, fileName, fileSize, docUrl: signDocUrl(req.userId, fname) };
   for (let i = 1; i < level; i++) if (!(kyc[i] && kyc[i].done)) kyc[i] = { ...(kyc[i] || {}), done: true, ts: Date.now() };
   await db.saveUserKyc(req.userId, kyc);
-  mail.kycVerified(user, level).catch(() => {});
+  background(mail.kycVerified(user, level));
 
   res.json({ ok: true, docUrl: kyc[level].docUrl, docType, fileName, fileSize });
 }

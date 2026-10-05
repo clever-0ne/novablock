@@ -4,6 +4,7 @@
 
 const db = require('../db');
 const mail = require('../email');
+const { background } = require('../utils/background');
 const sec = require('../middleware/security');
 const txService = require('../services/transaction.service');
 const { publicUser } = require('../utils/public');
@@ -56,7 +57,7 @@ async function createUser(req, res) {
   const user = await db.createUser({ email, password, name, phone });
   /* Admin-created accounts are treated as vetted — no verification gate. */
   await db.setEmailVerified(user.id, true);
-  mail.welcome(user).catch(() => {});
+  background(mail.welcome(user));
   res.json({ ok: true, user: publicUser(user) });
 }
 
@@ -79,8 +80,8 @@ async function kycLevel(req, res) {
   }
   await db.saveUserKyc(id, kyc);
   if (req.valid.verified) {
-    if (level === 1) mail.verifyCode(user).catch(() => {});
-    else mail.kycVerified(user, level).catch(() => {});
+    if (level === 1) background(mail.verifyCode(user));
+    else background(mail.kycVerified(user, level));
   }
   res.json({ ok: true, kyc });
 }
