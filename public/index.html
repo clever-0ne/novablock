@@ -78,12 +78,114 @@
         }
       }
 
-      /* Scroll reveal — content is visible by default; JS opts in. */
-      .js .reveal { opacity: 0; transform: translateY(14px); transition: opacity .6s ease, transform .6s ease; }
-      .js .reveal.in { opacity: 1; transform: none; }
+      /* Scroll reveal — content is visible by default; JS opts in. Uses the
+         individual `translate`/`scale` properties so it never fights the
+         hover tilt, which owns `transform`. --d staggers siblings. */
+      .js .reveal {
+        opacity: 0; translate: 0 24px; scale: .97;
+        transition: opacity .7s ease var(--d, 0ms), translate .7s cubic-bezier(.2,.8,.2,1) var(--d, 0ms), scale .7s cubic-bezier(.2,.8,.2,1) var(--d, 0ms);
+      }
+      .js .reveal.in { opacity: 1; translate: 0 0; scale: 1; }
+
+      /* ---------- Feature cards ---------- */
+      @property --angle { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
+      @keyframes spin-border { to { --angle: 360deg; } }
+      .fcard {
+        position: relative; border-radius: 22px; padding: 1px;
+        background: linear-gradient(180deg, #ede9fe, #f5f3ff);
+        box-shadow: 0 1px 2px rgba(26,16,51,.04), 0 14px 34px -18px rgba(76,29,149,.18);
+        transform-style: preserve-3d; will-change: transform;
+      }
+      .js .fcard.reveal {
+        transition: opacity .7s ease var(--d, 0ms), translate .7s cubic-bezier(.2,.8,.2,1) var(--d, 0ms), scale .7s cubic-bezier(.2,.8,.2,1) var(--d, 0ms),
+                    transform .35s ease-out, box-shadow .4s ease;
+      }
+      /* Rotating gradient border, shown on hover */
+      .fcard::before {
+        content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px;
+        background: conic-gradient(from var(--angle), transparent 0deg, #c4b5fd 50deg, #7c3aed 110deg, #a78bfa 160deg, transparent 220deg, transparent 360deg);
+        -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+        -webkit-mask-composite: xor; mask-composite: exclude;
+        opacity: 0; transition: opacity .4s ease;
+        animation: spin-border 3.5s linear infinite;
+        pointer-events: none;
+      }
+      .fcard:hover { box-shadow: 0 2px 4px rgba(26,16,51,.04), 0 34px 60px -24px rgba(76,29,149,.38); }
+      .fcard:hover::before { opacity: 1; }
+      .fcard-inner {
+        position: relative; height: 100%; border-radius: 21px; background: #fff;
+        padding: 28px; overflow: hidden; isolation: isolate;
+      }
+      /* Cursor spotlight */
+      .fcard-inner::after {
+        content: ''; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+        background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgba(139,92,246,.13), transparent 65%);
+        opacity: 0; transition: opacity .35s ease;
+      }
+      .fcard:hover .fcard-inner::after { opacity: 1; }
+      .fcard-icon {
+        width: 52px; height: 52px; border-radius: 16px;
+        display: flex; align-items: center; justify-content: center;
+        color: #fff; font-size: 20px;
+        background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 55%, #5b21b6 100%);
+        box-shadow: 0 12px 26px -10px rgba(124,58,237,.65), inset 0 1px 0 rgba(255,255,255,.35);
+        transition: transform .55s cubic-bezier(.34,1.56,.64,1);
+      }
+      .fcard:hover .fcard-icon { transform: translateY(-4px) rotate(-8deg) scale(1.08); }
+      /* Oversized faded icon in the corner */
+      .fcard-ghost {
+        position: absolute; right: -14px; bottom: -22px; z-index: -1;
+        font-size: 110px; line-height: 1; color: #f5f3ff;
+        transition: transform .7s cubic-bezier(.2,.8,.2,1), color .4s ease;
+      }
+      .fcard:hover .fcard-ghost { transform: rotate(-14deg) scale(1.12); color: #ede9fe; }
+      .fcard-tag {
+        display: inline-flex; align-items: center; gap: 6px;
+        font-size: 11px; font-weight: 600; letter-spacing: .02em;
+        color: #6d28d9; background: #f5f3ff; border: 1px solid #ede9fe;
+        padding: 4px 10px; border-radius: 999px;
+      }
+
+      /* ---------- How it works: animated timeline ---------- */
+      .steps-line { position: absolute; background: #e9e3fd; border-radius: 2px; overflow: hidden; }
+      .steps-line::after {
+        content: ''; position: absolute; inset: 0;
+        background: linear-gradient(90deg, #a78bfa, #7c3aed, #a78bfa);
+        transition: transform 1.4s cubic-bezier(.65,0,.35,1) .2s;
+      }
+      @media (min-width: 768px) {
+        .steps-line { top: 31px; left: 16.66%; right: 16.66%; height: 3px; }
+        .js .steps-line::after { transform: scaleX(0); transform-origin: left; }
+      }
+      @media (max-width: 767px) {
+        .steps-line { left: 31px; top: 32px; bottom: 32px; width: 3px; }
+        .js .steps-line::after { transform: scaleY(0); transform-origin: top; background: linear-gradient(180deg, #a78bfa, #7c3aed); }
+      }
+      .js .draw.in .steps-line::after { transform: none; }
+      .step-badge {
+        position: relative; width: 64px; height: 64px; flex: none; border-radius: 999px;
+        display: flex; align-items: center; justify-content: center;
+        font-family: 'Plus Jakarta Sans', Inter, sans-serif; font-weight: 800; font-size: 18px; color: #fff;
+        background: linear-gradient(135deg, #a78bfa, #6d28d9);
+        box-shadow: 0 0 0 6px #fff, 0 14px 30px -10px rgba(124,58,237,.6);
+      }
+      .step-badge::before {
+        content: ''; position: absolute; inset: 0; border-radius: inherit;
+        border: 2px solid #a78bfa; animation: ping 2.4s cubic-bezier(0,0,.2,1) infinite;
+        animation-delay: var(--d, 0ms);
+      }
+      @keyframes ping { 0% { transform: scale(1); opacity: .7; } 80%, 100% { transform: scale(1.6); opacity: 0; } }
+      .step-card { transition: transform .4s cubic-bezier(.2,.8,.2,1), box-shadow .4s ease, border-color .4s ease; }
+      .step:hover .step-card { transform: translateY(-6px); border-color: #c4b5fd; box-shadow: 0 30px 50px -24px rgba(76,29,149,.35); }
+      .step-icon { transition: transform .5s cubic-bezier(.34,1.56,.64,1); }
+      .step:hover .step-icon { transform: scale(1.15) rotate(8deg); }
+
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
-        .js .reveal { opacity: 1; transform: none; transition: none; }
+        .js .reveal { opacity: 1; translate: none; scale: none; transition: none; }
+        .fcard::before, .step-badge::before { animation: none; }
+        .js .steps-line::after { transform: none !important; transition: none; }
+        .fcard, .fcard-icon, .fcard-ghost, .step-card, .step-icon { transition: none !important; }
       }
 
       /* FAQ accordion */
@@ -229,65 +331,72 @@
           <p class="mt-3 text-slate-600">A single dashboard for your whole portfolio.</p>
         </div>
 
-        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <article class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition reveal">
-            <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center mb-5 transition">
-              <i class="fa-solid fa-wallet"></i>
+        <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 [perspective:1200px]">
+          <article class="fcard reveal" style="--d:0ms">
+            <div class="fcard-inner">
+              <i class="fcard-ghost fa-solid fa-wallet" aria-hidden="true"></i>
+              <div class="flex items-start justify-between gap-3 mb-6">
+                <div class="fcard-icon"><i class="fa-solid fa-wallet"></i></div>
+                <span class="fcard-tag">BTC · ETH · USDT</span>
+              </div>
+              <h3 class="font-display font-bold text-ink text-lg mb-2">Instant deposits</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">Fund your account with Bitcoin, Ethereum or USDT. Approved quickly by our team.</p>
             </div>
-            <h3 class="font-display font-bold text-ink text-lg mb-1.5">Instant deposits</h3>
-            <p class="text-sm text-slate-600 leading-relaxed">
-              Fund your account with Bitcoin, Ethereum or USDT. Approved quickly by our team.
-            </p>
           </article>
-
-          <article class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition reveal">
-            <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center mb-5 transition">
-              <i class="fa-solid fa-chart-line"></i>
+          <article class="fcard reveal" style="--d:90ms">
+            <div class="fcard-inner">
+              <i class="fcard-ghost fa-solid fa-chart-line" aria-hidden="true"></i>
+              <div class="flex items-start justify-between gap-3 mb-6">
+                <div class="fcard-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <span class="fcard-tag">Live charts</span>
+              </div>
+              <h3 class="font-display font-bold text-ink text-lg mb-2">Trade stocks &amp; crypto</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">Buy, sell and track positions with live charting and clean reporting.</p>
             </div>
-            <h3 class="font-display font-bold text-ink text-lg mb-1.5">Trade stocks &amp; crypto</h3>
-            <p class="text-sm text-slate-600 leading-relaxed">
-              Buy, sell and track positions with live charting and clean reporting.
-            </p>
           </article>
-
-          <article class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition reveal">
-            <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center mb-5 transition">
-              <i class="fa-solid fa-right-left"></i>
+          <article class="fcard reveal" style="--d:180ms">
+            <div class="fcard-inner">
+              <i class="fcard-ghost fa-solid fa-right-left" aria-hidden="true"></i>
+              <div class="flex items-start justify-between gap-3 mb-6">
+                <div class="fcard-icon"><i class="fa-solid fa-right-left"></i></div>
+                <span class="fcard-tag">Live rates</span>
+              </div>
+              <h3 class="font-display font-bold text-ink text-lg mb-2">One-click swaps</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">Swap between assets with live rates and see every transaction in your history.</p>
             </div>
-            <h3 class="font-display font-bold text-ink text-lg mb-1.5">One-click swaps</h3>
-            <p class="text-sm text-slate-600 leading-relaxed">
-              Swap between assets with live rates and see every transaction in your history.
-            </p>
           </article>
-
-          <article class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition reveal">
-            <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center mb-5 transition">
-              <i class="fa-solid fa-shield-halved"></i>
+          <article class="fcard reveal" style="--d:270ms">
+            <div class="fcard-inner">
+              <i class="fcard-ghost fa-solid fa-shield-halved" aria-hidden="true"></i>
+              <div class="flex items-start justify-between gap-3 mb-6">
+                <div class="fcard-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <span class="fcard-tag">3-level KYC</span>
+              </div>
+              <h3 class="font-display font-bold text-ink text-lg mb-2">Verified &amp; secure</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">Three-level KYC keeps your account protected and unlocks the full platform.</p>
             </div>
-            <h3 class="font-display font-bold text-ink text-lg mb-1.5">Verified &amp; secure</h3>
-            <p class="text-sm text-slate-600 leading-relaxed">
-              Three-level KYC keeps your account protected and unlocks the full platform.
-            </p>
           </article>
-
-          <article class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition reveal">
-            <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center mb-5 transition">
-              <i class="fa-solid fa-users"></i>
+          <article class="fcard reveal" style="--d:360ms">
+            <div class="fcard-inner">
+              <i class="fcard-ghost fa-solid fa-users" aria-hidden="true"></i>
+              <div class="flex items-start justify-between gap-3 mb-6">
+                <div class="fcard-icon"><i class="fa-solid fa-users"></i></div>
+                <span class="fcard-tag">Personal link</span>
+              </div>
+              <h3 class="font-display font-bold text-ink text-lg mb-2">Referral rewards</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">Share your referral link and earn as your network grows.</p>
             </div>
-            <h3 class="font-display font-bold text-ink text-lg mb-1.5">Referral rewards</h3>
-            <p class="text-sm text-slate-600 leading-relaxed">
-              Share your referral link and earn as your network grows.
-            </p>
           </article>
-
-          <article class="group bg-white rounded-2xl p-6 border border-slate-100 shadow-soft hover:shadow-lift hover:-translate-y-0.5 transition reveal">
-            <div class="w-11 h-11 rounded-xl bg-brand-50 text-brand-600 group-hover:bg-brand-600 group-hover:text-white flex items-center justify-center mb-5 transition">
-              <i class="fa-solid fa-headset"></i>
+          <article class="fcard reveal" style="--d:450ms">
+            <div class="fcard-inner">
+              <i class="fcard-ghost fa-solid fa-headset" aria-hidden="true"></i>
+              <div class="flex items-start justify-between gap-3 mb-6">
+                <div class="fcard-icon"><i class="fa-solid fa-headset"></i></div>
+                <span class="fcard-tag">Always on</span>
+              </div>
+              <h3 class="font-display font-bold text-ink text-lg mb-2">Dedicated support</h3>
+              <p class="text-sm text-slate-600 leading-relaxed">Reach us any time with questions about deposits, withdrawals or your portfolio.</p>
             </div>
-            <h3 class="font-display font-bold text-ink text-lg mb-1.5">Dedicated support</h3>
-            <p class="text-sm text-slate-600 leading-relaxed">
-              Reach us any time with questions about deposits, withdrawals or your portfolio.
-            </p>
           </article>
         </div>
       </section>
@@ -302,38 +411,41 @@
             </h2>
           </div>
 
-          <ol class="grid md:grid-cols-3 gap-5">
-            <li class="relative bg-white rounded-2xl p-7 border border-brand-100 shadow-soft reveal">
-              <span class="font-display text-5xl font-extrabold text-brand-100 absolute top-5 right-6 select-none" aria-hidden="true">01</span>
-              <div class="w-11 h-11 rounded-xl bg-brand-600 text-white flex items-center justify-center mb-5 shadow-brand">
-                <i class="fa-solid fa-user-plus"></i>
-              </div>
-              <h3 class="font-display font-bold text-ink text-lg mb-1.5">Create your account</h3>
-              <p class="text-sm text-slate-600 leading-relaxed">
-                Sign up with your email and confirm it with the code we send you.
-              </p>
-            </li>
-            <li class="relative bg-white rounded-2xl p-7 border border-brand-100 shadow-soft reveal">
-              <span class="font-display text-5xl font-extrabold text-brand-100 absolute top-5 right-6 select-none" aria-hidden="true">02</span>
-              <div class="w-11 h-11 rounded-xl bg-brand-600 text-white flex items-center justify-center mb-5 shadow-brand">
-                <i class="fa-solid fa-id-card"></i>
-              </div>
-              <h3 class="font-display font-bold text-ink text-lg mb-1.5">Verify &amp; deposit</h3>
-              <p class="text-sm text-slate-600 leading-relaxed">
-                Complete verification, then fund your account with Bitcoin, Ethereum or USDT.
-              </p>
-            </li>
-            <li class="relative bg-white rounded-2xl p-7 border border-brand-100 shadow-soft reveal">
-              <span class="font-display text-5xl font-extrabold text-brand-100 absolute top-5 right-6 select-none" aria-hidden="true">03</span>
-              <div class="w-11 h-11 rounded-xl bg-brand-600 text-white flex items-center justify-center mb-5 shadow-brand">
-                <i class="fa-solid fa-chart-pie"></i>
-              </div>
-              <h3 class="font-display font-bold text-ink text-lg mb-1.5">Trade &amp; track</h3>
-              <p class="text-sm text-slate-600 leading-relaxed">
-                Trade, swap and follow your whole portfolio from one dashboard.
-              </p>
-            </li>
-          </ol>
+          <div class="draw relative">
+            <div class="steps-line" aria-hidden="true"></div>
+            <ol class="relative grid md:grid-cols-3 gap-6">
+              <li class="step reveal relative flex md:flex-col md:items-center gap-5 md:gap-6" style="--d:0ms">
+                <div class="step-badge" style="--d:0ms">01</div>
+                <div class="step-card flex-1 w-full bg-white rounded-2xl p-6 border border-brand-100 shadow-soft md:text-center">
+                  <div class="step-icon w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center mb-4 md:mx-auto">
+                    <i class="fa-solid fa-user-plus"></i>
+                  </div>
+                  <h3 class="font-display font-bold text-ink text-lg mb-1.5">Create your account</h3>
+                  <p class="text-sm text-slate-600 leading-relaxed">Sign up with your email and confirm it with the code we send you.</p>
+                </div>
+              </li>
+              <li class="step reveal relative flex md:flex-col md:items-center gap-5 md:gap-6" style="--d:220ms">
+                <div class="step-badge" style="--d:800ms">02</div>
+                <div class="step-card flex-1 w-full bg-white rounded-2xl p-6 border border-brand-100 shadow-soft md:text-center">
+                  <div class="step-icon w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center mb-4 md:mx-auto">
+                    <i class="fa-solid fa-id-card"></i>
+                  </div>
+                  <h3 class="font-display font-bold text-ink text-lg mb-1.5">Verify &amp; deposit</h3>
+                  <p class="text-sm text-slate-600 leading-relaxed">Complete verification, then fund your account with Bitcoin, Ethereum or USDT.</p>
+                </div>
+              </li>
+              <li class="step reveal relative flex md:flex-col md:items-center gap-5 md:gap-6" style="--d:440ms">
+                <div class="step-badge" style="--d:1600ms">03</div>
+                <div class="step-card flex-1 w-full bg-white rounded-2xl p-6 border border-brand-100 shadow-soft md:text-center">
+                  <div class="step-icon w-11 h-11 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center mb-4 md:mx-auto">
+                    <i class="fa-solid fa-chart-pie"></i>
+                  </div>
+                  <h3 class="font-display font-bold text-ink text-lg mb-1.5">Trade &amp; track</h3>
+                  <p class="text-sm text-slate-600 leading-relaxed">Trade, swap and follow your whole portfolio from one dashboard.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
         </div>
       </section>
 
@@ -496,7 +608,23 @@
           el.textContent = (0).toFixed(dec);
           requestAnimationFrame(step);
         }
-        var items = document.querySelectorAll('.reveal');
+        /* Feature cards: cursor spotlight + gentle 3D tilt (mouse only). */
+        var canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+        if (canHover && !reduce) {
+          document.querySelectorAll('.fcard').forEach(function (card) {
+            var inner = card.querySelector('.fcard-inner');
+            card.addEventListener('mousemove', function (e) {
+              var r = card.getBoundingClientRect();
+              var x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+              inner.style.setProperty('--mx', (x * 100) + '%');
+              inner.style.setProperty('--my', (y * 100) + '%');
+              card.style.transform = 'rotateX(' + ((0.5 - y) * 7).toFixed(2) + 'deg) rotateY(' + ((x - 0.5) * 9).toFixed(2) + 'deg) translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', function () { card.style.transform = ''; });
+          });
+        }
+
+        var items = document.querySelectorAll('.reveal, .draw');
         if (!('IntersectionObserver' in window)) {
           items.forEach(function (el) { el.classList.add('in'); });
           return;
