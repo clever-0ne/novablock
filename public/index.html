@@ -180,12 +180,81 @@
       .step-icon { transition: transform .5s cubic-bezier(.34,1.56,.64,1); }
       .step:hover .step-icon { transform: scale(1.15) rotate(8deg); }
 
+
+      /* ---------- Feature showcase (photo rows) ---------- */
+      .show-media {
+        position: relative; border-radius: 28px; overflow: hidden; aspect-ratio: 4 / 3;
+        box-shadow: 0 40px 80px -36px rgba(76,29,149,.45);
+        transition: clip-path 1.25s cubic-bezier(.77,0,.18,1);
+      }
+      .js .show-row .show-media { clip-path: inset(0 100% 0 0 round 28px); }
+      .js .show-row.flip .show-media { clip-path: inset(0 0 0 100% round 28px); }
+      .js .show-row.in .show-media { clip-path: inset(0 0 0 0 round 28px); }
+      .show-media img {
+        position: absolute; left: 0; width: 100%; height: 115%; top: -7.5%; object-fit: cover;
+        transform: translate3d(0, var(--py, 0px), 0) scale(var(--s, 1));
+        transition: transform 1.6s cubic-bezier(.2,.8,.2,1);
+      }
+      .js .show-row .show-media img { --s: 1.25; }
+      .js .show-row.in .show-media img { --s: 1.04; }
+      .js .show-row.in .show-media:hover img { --s: 1.1; transition-duration: .8s; }
+      /* Purple grade over every photo so they sit in the palette */
+      .show-media::after {
+        content: ''; position: absolute; inset: 0; pointer-events: none;
+        background: linear-gradient(140deg, rgba(124,58,237,.38) 0%, rgba(124,58,237,0) 45%),
+                    linear-gradient(0deg, rgba(26,16,51,.35) 0%, rgba(26,16,51,0) 40%);
+      }
+      /* The trading-desk photo is green — shift it into violet */
+      .show-media.grade img { filter: hue-rotate(115deg) saturate(.9); }
+      /* Morphing glow behind the photo */
+      .show-blob {
+        position: absolute; inset: -8% -6%; z-index: -1; filter: blur(48px); opacity: .55;
+        background: radial-gradient(closest-side, #a78bfa, transparent), radial-gradient(closest-side at 70% 70%, #c4b5fd, transparent);
+        border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%;
+        animation: morph 14s ease-in-out infinite alternate;
+      }
+      @keyframes morph {
+        0%   { border-radius: 42% 58% 63% 37% / 41% 44% 56% 59%; transform: rotate(0deg) scale(1); }
+        50%  { border-radius: 63% 37% 41% 59% / 55% 62% 38% 45%; transform: rotate(18deg) scale(1.06); }
+        100% { border-radius: 37% 63% 52% 48% / 48% 35% 65% 52%; transform: rotate(-12deg) scale(.97); }
+      }
+      /* Floating glass chips over the photo */
+      .chip {
+        position: absolute; z-index: 2; display: flex; align-items: center; gap: 10px;
+        padding: 10px 14px; border-radius: 16px; background: rgba(255,255,255,.88);
+        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 18px 40px -16px rgba(26,16,51,.45); border: 1px solid rgba(255,255,255,.9);
+        font-size: 13px; font-weight: 600; color: #1a1033; white-space: nowrap; line-height: 1.25;
+        animation: float 6s ease-in-out infinite; animation-delay: var(--fd, 0s);
+      }
+      .chip .chip-dot {
+        width: 30px; height: 30px; border-radius: 10px; flex: none;
+        display: flex; align-items: center; justify-content: center; color: #fff; font-size: 13px;
+        background: linear-gradient(135deg, #a78bfa, #6d28d9);
+      }
+      .chip small { display: block; font-size: 11px; font-weight: 500; color: #64748b; }
+      .js .show-row .chip { opacity: 0; translate: 0 18px; transition: opacity .7s ease var(--cd, 1s), translate .7s cubic-bezier(.2,.8,.2,1) var(--cd, 1s); }
+      .js .show-row.in .chip { opacity: 1; translate: 0 0; }
+      @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+      .show-num {
+        font-family: 'Plus Jakarta Sans', Inter, sans-serif; font-weight: 800; font-size: 13px;
+        letter-spacing: .18em; color: #7c3aed;
+      }
+      .js .show-row .show-list li { opacity: 0; translate: -14px 0; transition: opacity .6s ease var(--d, 0ms), translate .6s cubic-bezier(.2,.8,.2,1) var(--d, 0ms); }
+      .js .show-row.in .show-list li { opacity: 1; translate: 0 0; }
+      .js .show-row .reveal-x { opacity: 0; translate: 0 18px; transition: opacity .7s ease var(--d, 0ms), translate .7s cubic-bezier(.2,.8,.2,1) var(--d, 0ms); }
+      .js .show-row.in .reveal-x { opacity: 1; translate: 0 0; }
+
       @media (prefers-reduced-motion: reduce) {
         html { scroll-behavior: auto; }
         .js .reveal { opacity: 1; translate: none; scale: none; transition: none; }
         .fcard::before, .step-badge::before { animation: none; }
         .js .steps-line::after { transform: none !important; transition: none; }
         .fcard, .fcard-icon, .fcard-ghost, .step-card, .step-icon { transition: none !important; }
+        .js .show-row .show-media, .js .show-row.flip .show-media { clip-path: none; transition: none; }
+        .show-media img { --s: 1 !important; --py: 0px !important; transition: none; }
+        .show-blob, .chip { animation: none; }
+        .js .show-row .chip, .js .show-row .show-list li, .js .show-row .reveal-x { opacity: 1; translate: none; transition: none; }
       }
 
       /* FAQ accordion */
@@ -516,24 +585,126 @@
         </div>
       </section>
 
-      <!-- ===================== CTA ===================== -->
-      <section class="max-w-6xl mx-auto px-4 sm:px-5 pb-24">
-        <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-brand-600 via-brand-700 to-brand-900 px-6 py-14 md:p-16 text-center shadow-lift reveal">
-          <div class="absolute -top-24 -right-16 w-72 h-72 rounded-full bg-white/10 blur-2xl" aria-hidden="true"></div>
-          <div class="absolute -bottom-28 -left-10 w-72 h-72 rounded-full bg-brand-400/30 blur-3xl" aria-hidden="true"></div>
-          <div class="relative">
-            <h2 class="font-display text-3xl md:text-4xl font-extrabold tracking-tight text-white">
-              Ready to start investing?
+      <!-- ===================== SHOWCASE ===================== -->
+      <section id="showcase" class="relative overflow-hidden pt-4 pb-24 md:pb-32">
+        <div class="max-w-6xl mx-auto px-4 sm:px-5">
+          <div class="max-w-2xl mx-auto text-center mb-16 md:mb-20 reveal">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-brand-600 mb-3">Inside NovaBlock.io</p>
+            <h2 class="font-display text-3xl md:text-4xl font-extrabold tracking-tight text-ink">
+              Built for the way you invest
             </h2>
-            <p class="text-brand-100 mt-3 mb-8 max-w-md mx-auto">
-              Join NovaBlock.io and take control of your portfolio today.
-            </p>
-            <a
-              href="signup.html"
-              class="inline-block px-8 py-3.5 rounded-xl bg-white text-brand-700 hover:bg-brand-50 font-semibold shadow-lg transition"
-            >
-              Open your account <i class="fa-solid fa-arrow-right ml-1.5 text-sm"></i>
-            </a>
+          </div>
+          <div class="space-y-24 md:space-y-32">
+            <article class="show-row grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+              <div class="relative">
+                <div class="show-blob" aria-hidden="true"></div>
+                <div class="show-media grade">
+                  <img src="/images/show-trade.jpg" alt="Two traders watching live market charts on several monitors" loading="lazy" style="object-position:center" />
+                </div>
+                <div class="chip top-5 left-5" style="--fd:0.0s; --cd:1.00s" aria-hidden="true">
+                  <span class="chip-dot"><i class="fa-solid fa-check"></i></span>
+                  <span>Order filled<small>Position opened</small></span>
+                </div>
+                <div class="chip bottom-5 right-5" style="--fd:1.6s; --cd:1.25s" aria-hidden="true">
+                  <span class="chip-dot"><i class="fa-solid fa-chart-line"></i></span>
+                  <span>Live chart<small>Updating in real time</small></span>
+                </div>
+              </div>
+              <div class="show-copy">
+                <p class="reveal-x show-num mb-3" style="--d:150ms">01 — TRADE</p>
+                <h3 class="reveal-x font-display text-2xl md:text-3xl font-extrabold tracking-tight text-ink leading-tight" style="--d:250ms">Trade stocks and crypto <span class="text-brand-600">side by side</span></h3>
+                <p class="reveal-x mt-4 text-slate-600 leading-relaxed" style="--d:350ms">Follow live markets with real-time charting, open and close positions in a click, and see your results update as prices move.</p>
+                <ul class="show-list mt-6 space-y-3 text-sm">
+                  <li class="flex items-start gap-3" style="--d:450ms">
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-none text-xs"><i class="fa-solid fa-check"></i></span>
+                    <span class="text-slate-700">Live price charts for stocks and crypto</span>
+                  </li>
+                  <li class="flex items-start gap-3" style="--d:570ms">
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-none text-xs"><i class="fa-solid fa-check"></i></span>
+                    <span class="text-slate-700">Buy and sell from one trade screen</span>
+                  </li>
+                  <li class="flex items-start gap-3" style="--d:690ms">
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-none text-xs"><i class="fa-solid fa-check"></i></span>
+                    <span class="text-slate-700">Clear, per-position reporting</span>
+                  </li>
+                </ul>
+              </div>
+            </article>
+            <article class="show-row flip grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+              <div class="relative lg:order-2">
+                <div class="show-blob" aria-hidden="true"></div>
+                <div class="show-media">
+                  <img src="/images/show-team.jpg" alt="A group of people reviewing a portfolio together on a laptop" loading="lazy" style="object-position:center 30%" />
+                </div>
+                <div class="chip top-5 right-5" style="--fd:0.0s; --cd:1.00s" aria-hidden="true">
+                  <span class="chip-dot"><i class="fa-solid fa-right-left"></i></span>
+                  <span>Swap complete<small>BTC → ETH</small></span>
+                </div>
+                <div class="chip bottom-5 left-5" style="--fd:1.6s; --cd:1.25s" aria-hidden="true">
+                  <span class="chip-dot"><i class="fa-solid fa-clock-rotate-left"></i></span>
+                  <span>History updated<small>Just now</small></span>
+                </div>
+              </div>
+              <div class="show-copy lg:order-1">
+                <p class="reveal-x show-num mb-3" style="--d:150ms">02 — SWAP &amp; TRACK</p>
+                <h3 class="reveal-x font-display text-2xl md:text-3xl font-extrabold tracking-tight text-ink leading-tight" style="--d:250ms">Your whole portfolio <span class="text-brand-600">in one view</span></h3>
+                <p class="reveal-x mt-4 text-slate-600 leading-relaxed" style="--d:350ms">Swap between assets at live rates, then follow every deposit, trade and swap in a single transaction history.</p>
+                <ul class="show-list mt-6 space-y-3 text-sm">
+                  <li class="flex items-start gap-3" style="--d:450ms">
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-none text-xs"><i class="fa-solid fa-check"></i></span>
+                    <span class="text-slate-700">One-click swaps between coins</span>
+                  </li>
+                  <li class="flex items-start gap-3" style="--d:570ms">
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-none text-xs"><i class="fa-solid fa-check"></i></span>
+                    <span class="text-slate-700">Every transaction in one searchable list</span>
+                  </li>
+                  <li class="flex items-start gap-3" style="--d:690ms">
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-none text-xs"><i class="fa-solid fa-check"></i></span>
+                    <span class="text-slate-700">A personal referral link to grow your network</span>
+                  </li>
+                </ul>
+              </div>
+            </article>
+            <article class="show-row grid lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+              <div class="relative">
+                <div class="show-blob" aria-hidden="true"></div>
+                <div class="show-media">
+                  <img src="/images/show-verified.jpg" alt="A professional discussing documents in a meeting room" loading="lazy" style="object-position:60% center" />
+                </div>
+                <div class="chip top-5 left-5" style="--fd:0.0s; --cd:1.00s" aria-hidden="true">
+                  <span class="chip-dot"><i class="fa-solid fa-shield-halved"></i></span>
+                  <span>Fully verified<small>KYC level 3</small></span>
+                </div>
+                <div class="chip bottom-5 right-5" style="--fd:1.6s; --cd:1.25s" aria-hidden="true">
+                  <span class="chip-dot"><i class="fa-solid fa-headset"></i></span>
+                  <span>Support<small>Here to help</small></span>
+                </div>
+              </div>
+              <div class="show-copy">
+                <p class="reveal-x show-num mb-3" style="--d:150ms">03 — VERIFIED &amp; SUPPORTED</p>
+                <h3 class="reveal-x font-display text-2xl md:text-3xl font-extrabold tracking-tight text-ink leading-tight" style="--d:250ms">Protected accounts, <span class="text-brand-600">real people behind them</span></h3>
+                <p class="reveal-x mt-4 text-slate-600 leading-relaxed" style="--d:350ms">Three-level verification keeps your account secure, and every deposit and withdrawal is reviewed by our team before it settles.</p>
+                <ul class="show-list mt-6 space-y-3 text-sm">
+                  <li class="flex items-start gap-3" style="--d:450ms">
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-none text-xs"><i class="fa-solid fa-check"></i></span>
+                    <span class="text-slate-700">Email, ID and address verification</span>
+                  </li>
+                  <li class="flex items-start gap-3" style="--d:570ms">
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-none text-xs"><i class="fa-solid fa-check"></i></span>
+                    <span class="text-slate-700">Deposits and withdrawals reviewed by our team</span>
+                  </li>
+                  <li class="flex items-start gap-3" style="--d:690ms">
+                    <span class="mt-0.5 w-6 h-6 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center flex-none text-xs"><i class="fa-solid fa-check"></i></span>
+                    <span class="text-slate-700">Support for every question along the way</span>
+                  </li>
+                </ul>
+                <div class="reveal-x mt-8" style="--d:850ms">
+                  <a href="signup.html" class="inline-flex items-center px-7 py-3.5 rounded-xl bg-brand-600 hover:bg-brand-700 active:bg-brand-800 text-white font-semibold shadow-brand transition">
+                    Open your account <i class="fa-solid fa-arrow-right ml-2 text-sm"></i>
+                  </a>
+                </div>
+              </div>
+            </article>
           </div>
         </div>
       </section>
@@ -624,7 +795,27 @@
           });
         }
 
-        var items = document.querySelectorAll('.reveal, .draw');
+        /* Showcase photos drift slightly slower than the page (desktop only). */
+        var media = document.querySelectorAll('.show-media');
+        if (!reduce && window.matchMedia('(min-width: 1024px)').matches && media.length) {
+          var ticking = false;
+          var parallax = function () {
+            ticking = false;
+            var vh = window.innerHeight;
+            media.forEach(function (m) {
+              var r = m.getBoundingClientRect();
+              if (r.bottom < 0 || r.top > vh) return;
+              var p = (r.top + r.height / 2 - vh / 2) / vh;   /* about -1..1 around the centre */
+              m.querySelector('img').style.setProperty('--py', (p * -28).toFixed(1) + 'px');
+            });
+          };
+          window.addEventListener('scroll', function () {
+            if (!ticking) { ticking = true; requestAnimationFrame(parallax); }
+          }, { passive: true });
+          parallax();
+        }
+
+        var items = document.querySelectorAll('.reveal, .draw, .show-row');
         if (!('IntersectionObserver' in window)) {
           items.forEach(function (el) { el.classList.add('in'); });
           return;
